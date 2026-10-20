@@ -44,7 +44,7 @@ cbuffer BurninFrame : register(b1) {
 #define RASTER            1      // 0 none, 1 scanlines, 2 pixel grid, 3 RGB subpixels
 #define PIXEL_SIZE        2.0    // screen pixels per font pixel
 #define RASTER_STRENGTH  0.35    // -1 = automatic like cool-retro-term (shows from 3 px up), else 0..1
-#define BURN_IN           0.5    // phosphor afterglow like cool-retro-term's Burn-in (0 off .. 1 long); needs the Windhawk mod
+#define BURN_IN           0.35   // phosphor afterglow like cool-retro-term's Burn-in (0 off .. 1 long); needs the Windhawk mod
 
 float hash(float2 p) { return frac(sin(dot(p, float2(12.9898, 78.233))) * 43758.5453); }
 float rgb2grey(float3 v) { return dot(v, float3(0.21, 0.72, 0.04)); }
@@ -192,7 +192,7 @@ float4 main(float4 pos : SV_POSITION, float2 tex : TEXCOORD) : SV_TARGET
     color = saturate(color);
 
     // Phosphor afterglow: the previous frame fades towards the background; keep whichever is further from it.
-    // Fade time as in cool-retro-term: 0.16 s .. 1.6 s (0.5 = about half a second).
+    // Fade time as in cool-retro-term: 0.16 s .. 1.6 s (0.35 = about a third of a second).
     if (BURN_IN > 0.0 && BurninDt > 0.0)
     {
         float4 prev = BurninPrevFrame.Load(int3(pos.xy, 0));

@@ -70,7 +70,7 @@ def shader(template, t, ctor, curvature):
     x = set_define(x, "RASTER", str(int(t["raster"])))
     x = set_define(x, "PIXEL_SIZE", num(t["pixel"]))
     x = set_define(x, "RASTER_STRENGTH", num(t["scanStrength"]))
-    x = set_define(x, "BURN_IN", num(t.get("burn", 0.0 if t.get("light") else 0.5)))   # paper/LCD looks: no phosphor
+    x = set_define(x, "BURN_IN", num(t.get("burn", 0.0 if t.get("light") else 0.35)))   # paper/LCD looks: no phosphor
     # cool-retro-term curvature * its 0.6 size factor, in this shader's units (* 0.25)
     return set_define(x, "CURVATURE", num(curvature))
 
