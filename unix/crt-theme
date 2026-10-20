@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# crt-theme - pick the CRT look in Ghostty (macOS / Linux). Part of crt-terminal-themes (GPL-3.0).
+# crt-theme - pick the CRT look in Ghostty (macOS / Linux). Part of BURNIN (GPL-3.0).
 #
 #   crt-theme                 show the current theme
 #   crt-theme list            list all themes

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# CRT Terminal Themes - macOS / Linux installer (Ghostty). Part of crt-terminal-themes, GPL-3.0.
+# BURNIN - macOS / Linux installer (Ghostty). Part of BURNIN, GPL-3.0.
 # The CRT shader is a port of cool-retro-term's.
 #
 #   bash unix/install.sh [--theme "Default Amber"] [--yes] [--skip-fonts]
@@ -116,7 +116,7 @@ GH_CONF="$GH_DIR/config"
 touch "$GH_CONF"
 INCLUDE="config-file = ?$CONFIG_HOME/crt-terminal/current.conf"
 if ! grep -qF "crt-terminal/current.conf" "$GH_CONF"; then
-  printf '\n# CRT Terminal Themes (crt-theme): keep this as the last line so the theme wins\n%s\n' "$INCLUDE" >> "$GH_CONF"
+  printf '\n# BURNIN (crt-theme): keep this as the last line so the theme wins\n%s\n' "$INCLUDE" >> "$GH_CONF"
 fi
 note "$GH_CONF"
 

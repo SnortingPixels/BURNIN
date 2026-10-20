@@ -1,4 +1,4 @@
-﻿; CRT Terminal Themes - Windows setup wizard (Inno Setup 6). Built by .github/workflows/release.yml:
+﻿; BURNIN - Windows setup wizard (Inno Setup 6). Built by .github/workflows/release.yml:
 ;     iscc /DAppVersion=1.0.0 installers\windows\setup.iss
 ; Installs for the current user (no admin), then runs windows\install.ps1 (the same script as the one-line
 ; install). Uninstalling from Settings > Apps runs windows\uninstall.ps1.
@@ -10,10 +10,10 @@
 
 [Setup]
 AppId={{470BF97E-37CD-4933-9525-AE0892567E38}
-AppName=CRT Terminal Themes
+AppName=BURNIN
 AppVersion={#AppVersion}
-AppPublisher=crt-terminal-themes contributors
-AppPublisherURL=https://github.com/SnortingPixels/crt-terminal-themes
+AppPublisher=BURNIN contributors
+AppPublisherURL=https://github.com/SnortingPixels/BURNIN
 DefaultDirName={localappdata}\CRT-Terminal-Setup
 DisableDirPage=yes
 DisableProgramGroupPage=yes

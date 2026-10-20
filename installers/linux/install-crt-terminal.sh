@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Install CRT Terminal Themes for Ghostty (Linux). Run it, or choose "Run as a program" in your file manager.
+# Install BURNIN for Ghostty (Linux). Run it, or choose "Run as a program" in your file manager.
 # If your file manager starts it without a terminal window, it reopens itself in one so you can see progress.
 if [ ! -t 1 ] && [ -z "${CRT_IN_TERMINAL:-}" ]; then
   for term in ghostty x-terminal-emulator gnome-terminal konsole xfce4-terminal xterm; do
@@ -11,9 +11,9 @@ if [ ! -t 1 ] && [ -z "${CRT_IN_TERMINAL:-}" ]; then
     fi
   done
 fi
-echo "CRT Terminal Themes - installing for Ghostty..."
+echo "BURNIN - installing for Ghostty..."
 echo
-if curl -fsSL "https://raw.githubusercontent.com/SnortingPixels/crt-terminal-themes/main/install.sh" | bash -s -- "$@"; then
+if curl -fsSL "https://raw.githubusercontent.com/SnortingPixels/BURNIN/main/install.sh" | bash -s -- "$@"; then
   echo
   echo "All set. Restart Ghostty, then try:  crt-theme list"
 else

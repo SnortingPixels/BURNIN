@@ -1,5 +1,5 @@
 <#
-  CRT Terminal Themes - Windows uninstaller.
+  BURNIN - Windows uninstaller.
   Stops the theme helper, removes its Startup entry, restores Windows Terminal's settings.json from the
   backup made at install, and removes the Windhawk menu mod if it was installed (asks for admin).
   Fonts stay installed (other apps may use them); remove them in Settings > Personalization > Fonts.

@@ -1,10 +1,10 @@
 #!/bin/bash
-# Double-click to install CRT Terminal Themes for Ghostty (macOS).
+# Double-click to install BURNIN for Ghostty (macOS).
 # First time: macOS may block an unsigned script; right-click this file, then Open.
 cd "$(dirname "$0")" || exit 1
-echo "CRT Terminal Themes - installing for Ghostty..."
+echo "BURNIN - installing for Ghostty..."
 echo
-if curl -fsSL "https://raw.githubusercontent.com/SnortingPixels/crt-terminal-themes/main/install.sh" | bash; then
+if curl -fsSL "https://raw.githubusercontent.com/SnortingPixels/BURNIN/main/install.sh" | bash; then
   echo
   echo "All set. Restart Ghostty, then try:  crt-theme list"
 else

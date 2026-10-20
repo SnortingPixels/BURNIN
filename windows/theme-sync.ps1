@@ -5,7 +5,7 @@
 # "Windows Terminal Retro Styler" (optional). Any other theme turns all of it off again.
 # While a Terminal window is focused: Ctrl+Alt+T = next theme, Ctrl+Alt+Shift+T = previous theme,
 # Ctrl+Alt+B = historic screen bulge on/off (crt-options.json).
-# Part of crt-terminal-themes (GPL-3.0). Runs hidden from the Startup folder. -Once applies the current theme and exits.
+# Part of BURNIN (GPL-3.0). Runs hidden from the Startup folder. -Once applies the current theme and exits.
 param([switch]$Once, [int]$Cycle = 0, [string]$UiFor = '', [string]$UiOut = '', [string]$SettingsPath = '')   # -UiFor <theme> -UiOut <file>: write that theme's menu colours to a file (testing)   # -Cycle 1 / -1: step the theme once and exit
 $ErrorActionPreference = 'Stop'
 $Prefix = 'Retro ' + [char]0x00B7 + ' '   # window theme names: "Retro <middle dot> <theme>"

@@ -1,6 +1,20 @@
-<p align="center"><img src="assets/icon.png" width="128" alt="CRT Terminal Themes icon"></p>
+<p align="center"><img src="assets/icon.png" width="128" alt="BURNIN icon"></p>
 
-# CRT Terminal Themes
+# BURNIN
+
+**Install in one line:**
+
+```sh
+# macOS / Linux (Ghostty)
+curl -fsSL https://raw.githubusercontent.com/SnortingPixels/BURNIN/main/install.sh | bash
+```
+
+```powershell
+# Windows (Windows Terminal), in PowerShell
+irm https://raw.githubusercontent.com/SnortingPixels/BURNIN/main/install.ps1 | iex
+```
+
+Or download the double-click installer for your system from [Releases](https://github.com/SnortingPixels/BURNIN/releases/latest).
 
 Turn your everyday terminal into a glowing CRT, and pick the screen of a real historic machine: a DEC VT100,
 an Apple ][, a Commodore 64, an IBM 3278 mainframe terminal, a Teletype on paper, a ZX Spectrum on a TV and 39 more.
@@ -17,7 +31,7 @@ so the looks are cool-retro-term's, running inside the terminal you already use.
 
 ### Download and double-click
 
-From the [latest release](https://github.com/SnortingPixels/crt-terminal-themes/releases/latest):
+From the [latest release](https://github.com/SnortingPixels/BURNIN/releases/latest):
 
 | System | File | First run |
 |---|---|---|
@@ -30,13 +44,13 @@ From the [latest release](https://github.com/SnortingPixels/crt-terminal-themes/
 Windows (PowerShell):
 
 ```powershell
-irm https://raw.githubusercontent.com/SnortingPixels/crt-terminal-themes/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/SnortingPixels/BURNIN/main/install.ps1 | iex
 ```
 
 macOS / Linux:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/SnortingPixels/crt-terminal-themes/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/SnortingPixels/BURNIN/main/install.sh | bash
 ```
 
 Everything installs for your user only. Nothing needs admin rights except the optional Windows menu styling.
@@ -153,7 +167,7 @@ computer fonts, are drawn smaller to fit.
 
 ## Uninstall
 
-* **Windows:** Settings, Apps, *CRT Terminal Themes*, Uninstall. Or run
+* **Windows:** Settings, Apps, *BURNIN*, Uninstall. Or run
   `%LOCALAPPDATA%\CRT-Terminal\uninstall.ps1`. Windows Terminal's settings are restored from the install backup.
 * **macOS / Linux:** `bash ~/.local/share/crt-terminal/uninstall.sh`
 

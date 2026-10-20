@@ -1,6 +1,6 @@
 <#
-  CRT Terminal Themes - Windows installer (Windows Terminal).
-  Part of crt-terminal-themes, GPL-3.0. The CRT shader is a port of cool-retro-term's.
+  BURNIN - Windows installer (Windows Terminal).
+  Part of BURNIN, GPL-3.0. The CRT shader is a port of cool-retro-term's.
 
   Usually run by CRT-Terminal-Setup.exe or the one-line install.ps1 at the repository root.
   Direct use, from a downloaded copy of the repository:
@@ -165,7 +165,7 @@ if (-not $NoStartup) {
   $sc.TargetPath = "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe"
   $sc.Arguments = "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$InstallDir\theme-sync.ps1`""
   $sc.WindowStyle = 7
-  $sc.Description = 'CRT Terminal Themes: theme switching, Ctrl+Alt+T / Ctrl+Alt+B, menu colours'
+  $sc.Description = 'BURNIN: theme switching, Ctrl+Alt+T / Ctrl+Alt+B, menu colours'
   $sc.Save()
   Get-CimInstance Win32_Process -Filter "Name='powershell.exe'" | Where-Object { $_.CommandLine -like "*$InstallDir\theme-sync.ps1*" } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }
   Start-Process powershell.exe -WindowStyle Hidden -ArgumentList '-NoProfile', '-ExecutionPolicy', 'Bypass', '-WindowStyle', 'Hidden', '-File', "$InstallDir\theme-sync.ps1"

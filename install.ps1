@@ -1,10 +1,10 @@
-# CRT Terminal Themes - one-line Windows install:
-#     irm https://raw.githubusercontent.com/SnortingPixels/crt-terminal-themes/main/install.ps1 | iex
+# BURNIN - one-line Windows install:
+#     irm https://raw.githubusercontent.com/SnortingPixels/BURNIN/main/install.ps1 | iex
 # Downloads this repository and runs windows\install.ps1.
 # Options (set before running):  $env:CRT_THEME = 'Commodore 64'   $env:CRT_MENUS = '1'  (Windhawk menu styling)
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
-$repo = 'SnortingPixels/crt-terminal-themes'
+$repo = 'SnortingPixels/BURNIN'
 $tmp = Join-Path $env:TEMP ('crt-terminal-' + [guid]::NewGuid())
 New-Item -ItemType Directory $tmp | Out-Null
 try {
