@@ -30,6 +30,25 @@ UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like 
 STANDARD_STYLES = {"regular", "medium", "book", "normal", "roman"}
 
 
+# Afterglow (burn-in) per phosphor: (tau in seconds, power, what it is). Brightness after the beam leaves, in linear light:
+#   power 0: exp(-t / tau)                (Mn-activated silicates; the Mn2+ transition has a fixed lifetime)
+#   power n: 1 / (1 + t / tau)^n          (Becquerel law; trap-limited recombination with a long dim tail)
+# Sources: RCA TPM-1508A "Phosphors" (1961) for times to 10 %; Dyall, MIT RLE TR-56 (1948) for the decay laws;
+# Morgan (IBM) for the 1/t tail of Zn2SiO4:Mn,As. tau = t10 / ln 10 for exponentials, t10 / 9 for 1/t.
+PHOSPHORS = {
+    "P1": (0.0106, 0, "Zn2SiO4:Mn green, exponential, 10 % after 24.5 ms"),
+    "P3": (0.0056, 0, "Zn8BeSi5O19:Mn amber, exponential, 10 % after 13 ms"),
+    "P39": (0.0167, 1, "Zn2SiO4:Mn,As green, 10 % after 150 ms, then a 1/t tail"),
+    "P4": (0.0, 0, "sulfide white, 10 % after 60 us: nothing visible at screen refresh rates"),
+    "P22": (0.0, 0, "colour CRT (rare-earth red, sulfide green and blue): microseconds to ~1 ms, nothing visible"),
+    "storage": (0.0, 0, "direct-view storage tube: the picture doesn't fade; it stays until erased"),
+    "plasma": (0.0, 0, "neon gas plasma: the discharge stops in microseconds"),
+    "EL": (0.0, 0, "electroluminescent panel: no afterglow"),
+    "LED": (0.0, 0, "LED panel: no afterglow"),
+    "paper": (0.0, 0, "paper, LCD or e-ink: nothing glows"),
+}
+
+
 def slug(name):
     return re.sub(r"[^A-Za-z0-9]+", "-", name).strip("-").lower()
 
@@ -70,7 +89,9 @@ def shader(template, t, ctor, curvature):
     x = set_define(x, "RASTER", str(int(t["raster"])))
     x = set_define(x, "PIXEL_SIZE", num(t["pixel"]))
     x = set_define(x, "RASTER_STRENGTH", num(t["scanStrength"]))
-    x = set_define(x, "BURN_IN", num(t.get("burn", 0.0 if t.get("light") else 0.35)))   # paper/LCD looks: no phosphor
+    tau, power, _ = PHOSPHORS[t["phosphor"]]
+    x = set_define(x, "PHOSPHOR_TAU", num(tau), t["phosphor"])
+    x = set_define(x, "PHOSPHOR_POWER", num(power))
     # cool-retro-term curvature * its 0.6 size factor, in this shader's units (* 0.25)
     return set_define(x, "CURVATURE", num(curvature))
 

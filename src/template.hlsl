@@ -44,7 +44,8 @@ cbuffer BurninFrame : register(b1) {
 #define RASTER            0      // 0 none, 1 scanlines, 2 pixel grid, 3 RGB subpixels
 #define PIXEL_SIZE        1.0    // screen pixels per font pixel
 #define RASTER_STRENGTH  -1.0    // -1 = automatic like cool-retro-term (shows from 3 px up), else 0..1
-#define BURN_IN           0.35   // phosphor afterglow like cool-retro-term's Burn-in (0 off .. 1 long); needs the Windhawk mod
+#define PHOSPHOR_TAU      0.0106 // afterglow time constant in seconds, 0 = none (burn-in; needs the Windhawk mod)
+#define PHOSPHOR_POWER    0.0    // 0 = exponential decay, n = hyperbolic 1/(1+t/tau)^n with a long dim tail
 
 float hash(float2 p) { return frac(sin(dot(p, float2(12.9898, 78.233))) * 43758.5453); }
 float rgb2grey(float3 v) { return dot(v, float3(0.21, 0.72, 0.04)); }
@@ -191,16 +192,21 @@ float4 main(float4 pos : SV_POSITION, float2 tex : TEXCOORD) : SV_TARGET
 
     color = saturate(color);
 
-    // Phosphor afterglow: the previous frame fades towards the background; keep whichever is further from it.
-    // Fade time as in cool-retro-term: 0.16 s .. 1.6 s (0.35 = about a third of a second).
-    if (BURN_IN > 0.0 && BurninDt > 0.0)
+    // Phosphor afterglow: the previous frame decays by the phosphor's own law (see PHOSPHORS in src/build.py), in linear
+    // light; keep whichever of it and the new picture is further from the background.
+    if (PHOSPHOR_TAU > 0.0 && BurninDt > 0.0)
     {
         float4 prev = BurninPrevFrame.Load(int3(pos.xy, 0));
-        float fade = lerp(0.16, 1.6, BURN_IN * BURN_IN);
+        float dt = min(BurninDt, 1.0);
         float3 d = prev.rgb - BACK_COLOR;
-        d = sign(d) * max(abs(d) - min(BurninDt, 1.0) / fade, 0.0);   // linear, as cool-retro-term: full brightness is gone after "fade"
-        float3 ghost = BACK_COLOR + d;
-        color = lerp(color, ghost, step(abs(color - BACK_COLOR), abs(d)) * step(0.5, prev.a));
+        float3 lin = pow(abs(d), 2.2);
+        if (PHOSPHOR_POWER > 0.0)
+            lin = pow(pow(max(lin, 1e-6), -1.0 / max(PHOSPHOR_POWER, 0.001)) + dt / PHOSPHOR_TAU, -PHOSPHOR_POWER);
+        else
+            lin *= exp(-dt / PHOSPHOR_TAU);
+        float3 a = pow(lin, 1.0 / 2.2);
+        a *= step(0.006, a);   // below 8-bit visibility: done
+        color = lerp(color, BACK_COLOR + sign(d) * a, step(abs(color - BACK_COLOR), a) * step(0.5, prev.a));
     }
 
     return float4(color, 1.0);

@@ -22,7 +22,7 @@ an Apple ][, a Commodore 64, an IBM 3278 mainframe terminal, a Teletype on paper
 * **Windows:** [Windows Terminal](https://aka.ms/terminal), with a CRT pixel shader, matching window colours,
   theme switching from Settings, and optional CRT-styled menus.
 * **macOS and Linux:** [Ghostty](https://ghostty.org), with the same shader in GLSL and a `crt-theme` command.
-* **🔥 Burn-in:** text leaves a fading phosphor glow, like a real tube (optional on Windows; the cursor on Ghostty).
+* **🔥 Burn-in:** text fades out the way each machine's phosphor really did (optional on Windows; the cursor on Ghostty).
 
 The CRT effect is a port of **[cool-retro-term](https://github.com/Swordfish90/cool-retro-term)**'s shaders
 (glow, scan lines, static noise, flicker, the rolling bright band, rasterisation, RGB fringing and the screen bulge),
@@ -100,22 +100,32 @@ crt-theme bulge off            # flat screen (bulge on = historic)
 
 ## 🔥 Burn-in
 
-A real CRT's phosphor keeps glowing for a moment after the beam has moved on, so scrolling or changing text leaves a
-fading trail. cool-retro-term calls this burn-in. Terminal shaders normally can't do it, because they never see the
-previous frame.
+A CRT's phosphor keeps glowing for a moment after the beam has moved on, so changing text can leave a fading trail.
+How long, and how it fades, depends on the phosphor, so each theme uses its machine's own:
 
-* **Windows:** the optional **BURNIN Phosphor Burn-in** [Windhawk](https://windhawk.net) mod
-  (`windows/windhawk/burnin-phosphor.wh.cpp`) hands each BURNIN shader the previous frame, so all text fades out
-  over about a third of a second. Install it with the setup wizard's checkbox or `$env:CRT_BURNIN='1'`.
-  It starts working after the next theme switch (Ctrl+Alt+T) or Windows Terminal restart.
-  Without the mod the shaders work as before, just without burn-in.
+| Phosphor | Themes | Afterglow |
+|---|---|---|
+| **P39** green (Zn₂SiO₄:Mn,As) | IBM 5151 MDA | 10 % after 150 ms, then a long dim 1/t tail: the famous MDA smear |
+| **P1** green (Zn₂SiO₄:Mn) | DEC VT220 Green, and the green screens whose phosphor isn't documented | exponential, 10 % after 24.5 ms |
+| **P3** amber (Zn₈BeSi₅O₁₉:Mn) | the DEC VT220/VT320 and Hercules ambers, Default Amber | exponential, 10 % after 13 ms |
+| **P4** white, colour CRTs | DEC VT100, Commodore PET, the home computers and workstations | gone within about a millisecond: no visible trail |
+| none | storage tube, plasma, EL, LED, paper, LCD, e-ink | nothing glows on |
+
+Brightness decays in linear light: exponentially for the manganese-activated silicates (the Mn²⁺ glow has a fixed
+lifetime) and as 1/(1+t/τ)ⁿ for trap-limited phosphors like P39. Times are from RCA's *Phosphors* (TPM-1508A, 1961),
+decay laws from Dyall (MIT RLE TR-56, 1948). The cool-retro-term looks borrow P1 or P3 timing. The table is
+`PHOSPHORS` in `src/build.py`, and each theme's `"phosphor"` is in `themes/themes.json`.
+
+* **Windows:** terminal shaders never see the previous frame, so this needs the optional
+  **BURNIN Phosphor Burn-in** [Windhawk](https://windhawk.net) mod (`windows/windhawk/burnin-phosphor.wh.cpp`).
+  It hands each BURNIN shader the previous frame and the time since it. Install it with the setup wizard's
+  checkbox or `$env:CRT_BURNIN='1'`. It starts working after the next theme switch (Ctrl+Alt+T) or Windows Terminal
+  restart. Without the mod the shaders work as before, just without burn-in.
 * **macOS / Linux (Ghostty 1.2 or newer):** Ghostty tells shaders where the cursor is and where it just was, so the
-  cell the cursor leaves keeps glowing and fades. Text itself can't leave trails there.
-* Paper, LCD, plasma and e-ink looks have no burn-in. Set `"burn"` (0 to 1) on a theme in `themes/themes.json`
-  to change its length, then rebuild.
+  cell the cursor leaves fades by the same law. Text itself can't leave trails there.
 
-<p align="center"><img src="docs/burn-in.jpg" width="520" alt="Text scrolled up three lines, the old lines still glowing faintly"><br>
-<i>One frame after scrolling three lines: the old text is still glowing.</i></p>
+<p align="center"><img src="docs/burn-in.jpg" width="520" alt="IBM 5151 MDA theme scrolled up three lines, the old lines still glowing"><br>
+<i>IBM 5151 MDA, one 60 Hz frame after scrolling three lines: the P39 phosphor is still at half brightness.</i></p>
 
 ## 🤖 Using Claude Code?
 

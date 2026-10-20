@@ -30,7 +30,8 @@
 #define RASTER            1      // 0 none, 1 scanlines, 2 pixel grid, 3 RGB subpixels
 #define PIXEL_SIZE        2.0    // screen pixels per font pixel
 #define RASTER_STRENGTH  0.5    // -1 = automatic like cool-retro-term (shows from 3 px up), else 0..1
-#define BURN_IN           0.35   // cursor afterglow like cool-retro-term's Burn-in (0 off .. 1 long)
+#define PHOSPHOR_TAU      0.0056   // P3
+#define PHOSPHOR_POWER    0.0    // 0 = exponential decay, n = hyperbolic 1/(1+t/tau)^n with a long dim tail
 
 float hash(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
 float rgb2grey(vec3 v) { return dot(v, vec3(0.21, 0.72, 0.04)); }
@@ -145,15 +146,17 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
         vec3 txt = sampleRgb(coords);
 
-        // Burn-in: the cell the cursor just left keeps glowing and fades, as cool-retro-term: 0.16 s .. 1.6 s.
+        // Burn-in: the cell the cursor just left keeps glowing and fades by the phosphor's decay law (src/build.py).
         // Cursor rectangles are (left, top, width, height) in pixels, y up.
-        if (BURN_IN > 0.0 && iPreviousCursor.xy != iCurrentCursor.xy)
+        if (PHOSPHOR_TAU > 0.0 && iPreviousCursor.xy != iCurrentCursor.xy)
         {
             vec2 p = coords * iResolution.xy;
             vec2 lo = iPreviousCursor.xy - vec2(0.0, iPreviousCursor.w);
             vec2 inside = smoothstep(lo - 1.0, lo + 1.0, p) * (1.0 - smoothstep(lo + iPreviousCursor.zw - 1.0, lo + iPreviousCursor.zw + 1.0, p));
-            float fade = mix(0.16, 1.6, BURN_IN * BURN_IN);
-            float glow = inside.x * inside.y * max(1.0 - max(iTime - iTimeCursorChange, 0.0) / fade, 0.0) * 0.6;
+            float t = max(iTime - iTimeCursorChange, 0.0);
+            float lin = PHOSPHOR_POWER > 0.0 ? pow(1.0 + t / PHOSPHOR_TAU, -PHOSPHOR_POWER) : exp(-t / PHOSPHOR_TAU);
+            float glow = inside.x * inside.y * pow(lin, 1.0 / 2.2);
+            glow *= step(0.006, glow);
             txt = max(txt, vec3(glow));
         }
 
