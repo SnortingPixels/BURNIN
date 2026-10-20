@@ -41,6 +41,30 @@ Part of [BURNIN](https://github.com/SnortingPixels/BURNIN).
 #include <string.h>
 #include <vector>
 
+// Test builds: -DRETRO_LOG_FILE=L"..." mirrors every Wh_Log line into that file.
+#ifdef RETRO_LOG_FILE
+#include <cstdarg>
+#include <cstdio>
+static void RetroLog(const wchar_t* format, ...) {
+    FILE* file = _wfopen(RETRO_LOG_FILE, L"a");
+    if (!file) {
+        return;
+    }
+    SYSTEMTIME time;
+    GetLocalTime(&time);
+    fwprintf(file, L"%02d:%02d:%02d.%03d [%lu] ", time.wHour, time.wMinute,
+             time.wSecond, time.wMilliseconds, GetCurrentThreadId());
+    va_list args;
+    va_start(args, format);
+    vfwprintf(file, format, args);
+    va_end(args);
+    fputwc(L'\n', file);
+    fclose(file);
+}
+#undef Wh_Log
+#define Wh_Log(format, ...) RetroLog(format, ##__VA_ARGS__)
+#endif
+
 // Private-data keys. On a pixel shader: "this is a BURNIN shader". On Terminal's back buffer: our state for it
 // (lives and dies with the back buffer, so nothing to track or free).
 static const GUID kShaderTag = {0x6b1f2a4e, 0x51c3, 0x4d7a, {0x9e, 0x22, 0x0b, 0x8d, 0x3c, 0x51, 0x7e, 0x01}};
@@ -167,7 +191,13 @@ static float FrameDt(ID3D11Texture2D* backBuffer) {
 
 static void DrawImpl(Draw_t orig, ID3D11DeviceContext* ctx, UINT count, UINT start) {
     // Terminal's custom-shader pass is a single Draw(4, 0) of a full-window strip into the back buffer.
-    if (count != 4 || start != 0 || !IsBurninShader(ctx)) return orig(ctx, count, start);
+    if (count != 4 || start != 0) return orig(ctx, count, start);
+    static bool loggedOther, loggedOurs;
+    if (!IsBurninShader(ctx)) {
+        if (!loggedOther) { loggedOther = true; Wh_Log(L"Draw(4, 0) with a shader that isn't tagged"); }
+        return orig(ctx, count, start);
+    }
+    if (!loggedOurs) { loggedOurs = true; Wh_Log(L"first BURNIN draw"); }
 
     ID3D11RenderTargetView* rtv = nullptr;
     ctx->OMGetRenderTargets(1, &rtv, nullptr);

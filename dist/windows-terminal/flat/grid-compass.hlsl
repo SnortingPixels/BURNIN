@@ -44,7 +44,7 @@ cbuffer BurninFrame : register(b1) {
 #define RASTER            2      // 0 none, 1 scanlines, 2 pixel grid, 3 RGB subpixels
 #define PIXEL_SIZE        1.0    // screen pixels per font pixel
 #define RASTER_STRENGTH  0.3    // -1 = automatic like cool-retro-term (shows from 3 px up), else 0..1
-#define BURN_IN           0.25   // phosphor afterglow like cool-retro-term's Burn-in (0 off .. 1 long); needs the Windhawk mod
+#define BURN_IN           0.5    // phosphor afterglow like cool-retro-term's Burn-in (0 off .. 1 long); needs the Windhawk mod
 
 float hash(float2 p) { return frac(sin(dot(p, float2(12.9898, 78.233))) * 43758.5453); }
 float rgb2grey(float3 v) { return dot(v, float3(0.21, 0.72, 0.04)); }
@@ -192,13 +192,13 @@ float4 main(float4 pos : SV_POSITION, float2 tex : TEXCOORD) : SV_TARGET
     color = saturate(color);
 
     // Phosphor afterglow: the previous frame fades towards the background; keep whichever is further from it.
-    // Fade time as in cool-retro-term: 0.16 s .. 1.6 s.
+    // Fade time as in cool-retro-term: 0.16 s .. 1.6 s (0.5 = about half a second).
     if (BURN_IN > 0.0 && BurninDt > 0.0)
     {
         float4 prev = BurninPrevFrame.Load(int3(pos.xy, 0));
         float fade = lerp(0.16, 1.6, BURN_IN * BURN_IN);
         float3 d = prev.rgb - BACK_COLOR;
-        d = sign(d) * max(abs(d) * exp(-min(BurninDt, 1.0) * 4.6 / fade) - 0.006, 0.0);   // 1% left after "fade"; the -0.006 stops 8-bit leftovers
+        d = sign(d) * max(abs(d) - min(BurninDt, 1.0) / fade, 0.0);   // linear, as cool-retro-term: full brightness is gone after "fade"
         float3 ghost = BACK_COLOR + d;
         color = lerp(color, ghost, step(abs(color - BACK_COLOR), abs(d)) * step(0.5, prev.a));
     }

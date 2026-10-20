@@ -106,7 +106,7 @@ previous frame.
 
 * **Windows:** the optional **BURNIN Phosphor Burn-in** [Windhawk](https://windhawk.net) mod
   (`windows/windhawk/burnin-phosphor.wh.cpp`) hands each BURNIN shader the previous frame, so all text fades out
-  over about a quarter of a second. Install it with the setup wizard's checkbox or `$env:CRT_BURNIN='1'`.
+  over about half a second. Install it with the setup wizard's checkbox or `$env:CRT_BURNIN='1'`.
   It starts working after the next theme switch (Ctrl+Alt+T) or Windows Terminal restart.
   Without the mod the shaders work as before, just without burn-in.
 * **macOS / Linux (Ghostty 1.2 or newer):** Ghostty tells shaders where the cursor is and where it just was, so the

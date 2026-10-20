@@ -30,7 +30,7 @@
 #define RASTER            0      // 0 none, 1 scanlines, 2 pixel grid, 3 RGB subpixels
 #define PIXEL_SIZE        2.0    // screen pixels per font pixel
 #define RASTER_STRENGTH  -1.0    // -1 = automatic like cool-retro-term (shows from 3 px up), else 0..1
-#define BURN_IN           0.0   // cursor afterglow like cool-retro-term's Burn-in (0 off .. 1 long)
+#define BURN_IN           0.0    // cursor afterglow like cool-retro-term's Burn-in (0 off .. 1 long)
 
 float hash(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
 float rgb2grey(vec3 v) { return dot(v, vec3(0.21, 0.72, 0.04)); }
@@ -153,7 +153,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
             vec2 lo = iPreviousCursor.xy - vec2(0.0, iPreviousCursor.w);
             vec2 inside = smoothstep(lo - 1.0, lo + 1.0, p) * (1.0 - smoothstep(lo + iPreviousCursor.zw - 1.0, lo + iPreviousCursor.zw + 1.0, p));
             float fade = mix(0.16, 1.6, BURN_IN * BURN_IN);
-            float glow = inside.x * inside.y * exp(-max(iTime - iTimeCursorChange, 0.0) * 4.6 / fade) * 0.6;
+            float glow = inside.x * inside.y * max(1.0 - max(iTime - iTimeCursorChange, 0.0) / fade, 0.0) * 0.6;
             txt = max(txt, vec3(glow));
         }
 
