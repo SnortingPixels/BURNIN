@@ -1,0 +1,120 @@
+name: build
+
+# Every push / pull request: rebuild dist/ and check it's committed, compile every shader, run the installers
+# and uninstallers in a throwaway home / settings file, and build the downloadable installers.
+# A tag like v1.0.0 also publishes a GitHub release with CRT-Terminal-Setup.exe, the macOS .command (zipped)
+# and the Linux script attached.
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  unix:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq glslang-tools
+          python3 -m pip install --user --quiet fonttools
+
+      - name: Rebuild dist/ and check it is committed
+        run: |
+          python3 src/build.py
+          git diff --exit-code --stat -- dist || { echo "dist/ is out of date: run 'python src/build.py' and commit it"; exit 1; }
+
+      - name: Compile the Ghostty shaders (GLSL to SPIR-V, as Ghostty does)
+        run: |
+          n=0
+          for f in dist/ghostty/*/*.glsl; do
+            cat src/ghostty_prefix.glsl "$f" > /tmp/shader.frag
+            glslangValidator -V -S frag /tmp/shader.frag -o /tmp/shader.spv > /tmp/out.txt || { echo "FAILED: $f"; cat /tmp/out.txt; exit 1; }
+            n=$((n + 1))
+          done
+          echo "$n Ghostty shaders compile"
+
+      - name: Install, crt-theme and uninstall in a throwaway home
+        run: |
+          export HOME="$(mktemp -d)"
+          unset XDG_CONFIG_HOME XDG_DATA_HOME   # the runner sets these to the real home; keep the test in the throwaway one
+          bash unix/install.sh --yes --theme "Commodore 64"
+          grep -q 'commodore-64.glsl' "$HOME/.config/crt-terminal/current.conf"
+          "$HOME/.local/bin/crt-theme" next
+          "$HOME/.local/bin/crt-theme" bulge off
+          grep -q '/flat/' "$HOME/.config/crt-terminal/current.conf"
+          test -f "$HOME/.local/share/fonts/crt-terminal/ZXSpectrumROM.ttf"
+          bash "$HOME/.local/share/crt-terminal/uninstall.sh"
+          ! grep -q 'crt-terminal' "$HOME/.config/ghostty/config"
+
+      - name: Package the macOS and Linux installers
+        run: |
+          mkdir -p installers/out
+          chmod +x "installers/macos/Install CRT Terminal.command" installers/linux/install-crt-terminal.sh
+          (cd installers/macos && zip -X ../out/Install-CRT-Terminal-macOS.zip "Install CRT Terminal.command")
+          cp installers/linux/install-crt-terminal.sh installers/out/
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: unix-installers
+          path: installers/out/*
+
+  windows:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compile the Windows Terminal shaders (ps_4_0, as Windows Terminal does)
+        shell: powershell
+        run: |
+          $files = Get-ChildItem dist\windows-terminal -Recurse -Filter *.hlsl | ForEach-Object FullName
+          & .\windows\check-shaders.ps1 @files | Select-Object -Last 3
+          if ($LASTEXITCODE) { exit 1 }
+          "$($files.Count) Windows Terminal shaders compile"
+
+      - name: Install and uninstall against a sample settings.json
+        shell: powershell
+        run: |
+          $t = Join-Path $env:RUNNER_TEMP 'crt'
+          New-Item -ItemType Directory -Force $t | Out-Null
+          '{ "profiles": { "defaults": {}, "list": [] }, "schemes": [], "themes": [] }' | Set-Content "$t\settings.json" -Encoding UTF8
+          & .\windows\install.ps1 -InstallDir "$t\CRT-Terminal" -SettingsPath "$t\settings.json" -Theme 'Commodore 64' -NoStartup -SkipFonts
+          $j = Get-Content "$t\settings.json" -Raw | ConvertFrom-Json
+          if ($j.profiles.defaults.'experimental.pixelShaderPath' -notlike '*commodore-64.hlsl') { throw 'shader not applied' }
+          if (@($j.themes).Count -lt 45) { throw 'window themes missing' }
+          & "$t\CRT-Terminal\uninstall.ps1" -SettingsPath "$t\settings.json"
+
+      - name: Build CRT-Terminal-Setup.exe
+        shell: powershell
+        run: |
+          choco install innosetup -y --no-progress | Out-Null
+          $v = if ($env:GITHUB_REF -like 'refs/tags/v*') { $env:GITHUB_REF_NAME.TrimStart('v') } else { '0.0.0' }
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" "/DAppVersion=$v" installers\windows\setup.iss
+          if ($LASTEXITCODE) { exit 1 }
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-installer
+          path: installers/out/CRT-Terminal-Setup.exe
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [unix, windows]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: out
+          merge-multiple: true
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" out/* --repo "$GITHUB_REPOSITORY" --title "BURNIN $GITHUB_REF_NAME" --generate-notes
