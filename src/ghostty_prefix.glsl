@@ -12,6 +12,14 @@ layout(binding = 1, std140) uniform Globals {
     uniform vec4 iMouse;
     uniform vec4 iDate;
     uniform float iSampleRate;
+    uniform vec4 iCurrentCursor;
+    uniform vec4 iPreviousCursor;
+    uniform vec4 iCurrentCursorColor;
+    uniform vec4 iPreviousCursorColor;
+    uniform int iCurrentCursorStyle;
+    uniform int iPreviousCursorStyle;
+    uniform int iCursorVisible;
+    uniform float iTimeCursorChange;
 };
 layout(binding = 0) uniform sampler2D iChannel0;
 layout(location = 0) out vec4 _fragColor;

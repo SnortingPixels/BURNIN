@@ -1,8 +1,10 @@
-﻿# Compiles and installs the "Windows Terminal Retro Styler" Windhawk mod, the same way
+﻿# Compiles and installs a Windhawk mod (default: "Windows Terminal Retro Styler"; -Source burnin-phosphor.wh.cpp for burn-in), the same way
 # Windhawk's own editor does (bundled clang, Engine\Mods\64, HKLM\SOFTWARE\Windhawk\Engine\Mods).
 # Must run as administrator. Output goes to install-mod.log next to this script.
 param(
   [string]$ModId = 'local@windows-terminal-retro-styler',
+  [string]$Source = 'windows-terminal-retro-styler.wh.cpp',
+  [string]$Libs = 'comctl32,ole32,oleaut32,runtimeobject',   # libraries to link, comma-separated
   [string]$Include = 'WindowsTerminal.exe',
   [string]$ColorsFile = '',          # empty = the default themes\ui-current.txt
   [string]$LogName = 'install-mod.log',
@@ -19,7 +21,7 @@ try {
   $data    = "$env:ProgramData\Windhawk"
   $modId   = $ModId
   $version = '1.0'
-  $src     = Join-Path $here 'windows-terminal-retro-styler.wh.cpp'
+  $src     = Join-Path $here $Source
   $modsDir = Join-Path $data 'Engine\Mods\64'
   $regKey  = "HKLM:\SOFTWARE\Windhawk\Engine\Mods\$modId"
   New-Item -ItemType Directory -Force $modsDir | Out-Null
@@ -31,7 +33,7 @@ try {
             '-D_WIN32_IE=0x0A00', '-DNTDDI_VERSION=0x0A000008', '-D__USE_MINGW_ANSI_STDIO=0', '-DWH_MOD',
             "-DWH_MOD_ID=L\`"$modId\`"", "-DWH_MOD_VERSION=L\`"$version\`"", (Join-Path $engine '64\windhawk.lib'),
             '-x', 'c++', $src, '-include', 'windhawk_api.h', '-target', 'x86_64-w64-mingw32', '-Wl,--export-all-symbols',
-            '-o', $dll, '-lcomctl32', '-lole32', '-loleaut32', '-lruntimeobject')
+            '-o', $dll) + ($Libs -split ',' | Where-Object { $_ } | ForEach-Object { '-l' + $_.Trim() })
   if ($ColorsFile) { $args += ('-DRETRO_COLORS_FILE=L\"' + $ColorsFile.Replace('\', '\\') + '\"') }
   if ($ModLogFile) { $args += ('-DRETRO_LOG_FILE=L\"' + $ModLogFile.Replace('\', '\\') + '\"') }
   Push-Location "$wh\Compiler"

@@ -2,11 +2,11 @@
   BURNIN - Windows installer (Windows Terminal).
   Part of BURNIN, GPL-3.0. The CRT shader is a port of cool-retro-term's.
 
-  Usually run by CRT-Terminal-Setup.exe or the one-line install.ps1 at the repository root.
+  Usually run by BURNIN-WINDOWS.exe or the one-line install.ps1 at the repository root.
   Direct use, from a downloaded copy of the repository:
-      powershell -ExecutionPolicy Bypass -File windows\install.ps1 [-Theme "Default Amber"] [-WithMenus]
+      powershell -ExecutionPolicy Bypass -File windows\install.ps1 [-Theme "Default Amber"] [-WithMenus] [-WithBurnIn]
 
-  What it does (per user, no admin unless -WithMenus):
+  What it does (per user, no admin unless -WithMenus / -WithBurnIn):
     1. copies the shaders and scripts to %LOCALAPPDATA%\CRT-Terminal
     2. downloads the fonts from their original sources and installs them for this user
        (the ZX Spectrum / Amstrad CPC / BBC teletext fonts are built from ROM data, which needs Python)
@@ -15,11 +15,13 @@
     4. starts the theme helper (theme switching from Settings > Appearance > Theme, Ctrl+Alt+T / Ctrl+Alt+B)
        and adds it to the Startup folder
     5. -WithMenus: installs Windhawk (winget) and the menu-styling mod; both ask for admin
+    6. -WithBurnIn: installs Windhawk (winget) and the phosphor burn-in mod; both ask for admin
 #>
 param(
   [string]$InstallDir = "$env:LOCALAPPDATA\CRT-Terminal",
   [string]$Theme = 'Default Amber',
   [switch]$WithMenus,
+  [switch]$WithBurnIn,
   [switch]$NoStartup,
   [string]$SettingsPath = '',    # testing: use this settings.json instead of Windows Terminal's
   [switch]$SkipFonts             # testing: don't download or install fonts
@@ -171,12 +173,13 @@ if (-not $NoStartup) {
   Start-Process powershell.exe -WindowStyle Hidden -ArgumentList '-NoProfile', '-ExecutionPolicy', 'Bypass', '-WindowStyle', 'Hidden', '-File', "$InstallDir\theme-sync.ps1"
 }
 
-# ---------------------------------------------------------------- 5. optional menus (Windhawk)
+# ---------------------------------------------------------------- 5./6. optional Windhawk mods
+if (($WithMenus -or $WithBurnIn) -and -not (Test-Path "$env:ProgramFiles\Windhawk\windhawk.exe")) {
+  Step 'Installing Windhawk (Windows will ask for admin)'
+  winget install --id RamenSoftware.Windhawk --exact --silent --accept-package-agreements --accept-source-agreements
+}
 if ($WithMenus) {
-  Step 'Installing the menu styling (Windhawk + mod; Windows will ask for admin)'
-  if (-not (Test-Path "$env:ProgramFiles\Windhawk\windhawk.exe")) {
-    winget install --id RamenSoftware.Windhawk --exact --silent --accept-package-agreements --accept-source-agreements
-  }
+  Step 'Installing the menu styling (Windhawk mod; Windows will ask for admin)'
   if (Test-Path "$env:ProgramFiles\Windhawk\windhawk.exe") {
     & "$InstallDir\windhawk\build-mod.ps1" | Out-Null
     Start-Process powershell.exe -Verb RunAs -Wait -ArgumentList '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', "$InstallDir\windhawk\install-mod.ps1", '-ColorsFile', "$InstallDir\ui-current.txt"
@@ -186,6 +189,21 @@ if ($WithMenus) {
     if ($result -and $result[-1].Line -eq 'OK') { Set-Content "$InstallDir\windhawk\mod-installed.txt" 'local@windows-terminal-retro-styler' -Encoding ASCII }
   } else {
     Note 'Windhawk was not installed, so the menu styling was skipped.'
+  }
+}
+if ($WithBurnIn) {
+  Step 'Installing phosphor burn-in (Windhawk mod; Windows will ask for admin)'
+  if (Test-Path "$env:ProgramFiles\Windhawk\windhawk.exe") {
+    Start-Process powershell.exe -Verb RunAs -Wait -ArgumentList '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', "$InstallDir\windhawk\install-mod.ps1", '-ModId', 'local@burnin-phosphor', '-Source', 'burnin-phosphor.wh.cpp', '-Libs', 'd3d11,dxguid', '-LogName', 'install-burnin.log'
+    $result = Get-Content "$InstallDir\windhawk\install-burnin.log" -ErrorAction SilentlyContinue | Select-String '^OK|FAILED'
+    $result | ForEach-Object { Note $_.Line }
+    # marker: this installation installed the mod, so its uninstaller may remove it
+    if ($result -and $result[-1].Line -eq 'OK') {
+      Set-Content "$InstallDir\windhawkurnin-installed.txt" 'local@burnin-phosphor' -Encoding ASCII
+      Note 'Burn-in starts with the next theme switch (Ctrl+Alt+T) or the next Windows Terminal start.'
+    }
+  } else {
+    Note 'Windhawk was not installed, so burn-in was skipped.'
   }
 }
 

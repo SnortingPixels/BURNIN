@@ -2,8 +2,8 @@ name: build
 
 # Every push / pull request: rebuild dist/ and check it's committed, compile every shader, run the installers
 # and uninstallers in a throwaway home / settings file, and build the downloadable installers.
-# A tag like v1.0.0 also publishes a GitHub release with CRT-Terminal-Setup.exe, the macOS .command (zipped)
-# and the Linux script attached.
+# A tag like v1.0.0 also publishes a GitHub release with BURNIN-WINDOWS.exe, BURNIN-MACOS.zip
+# and BURNIN-LINUX.sh attached.
 
 on:
   push:
@@ -59,8 +59,8 @@ jobs:
         run: |
           mkdir -p installers/out
           chmod +x "installers/macos/Install CRT Terminal.command" installers/linux/install-crt-terminal.sh
-          (cd installers/macos && zip -X ../out/Install-CRT-Terminal-macOS.zip "Install CRT Terminal.command")
-          cp installers/linux/install-crt-terminal.sh installers/out/
+          (cd installers/macos && zip -X ../out/BURNIN-MACOS.zip "Install CRT Terminal.command")
+          cp installers/linux/install-crt-terminal.sh installers/out/BURNIN-LINUX.sh
 
       - uses: actions/upload-artifact@v4
         with:
@@ -92,7 +92,7 @@ jobs:
           if (@($j.themes).Count -lt 45) { throw 'window themes missing' }
           & "$t\CRT-Terminal\uninstall.ps1" -SettingsPath "$t\settings.json"
 
-      - name: Build CRT-Terminal-Setup.exe
+      - name: Build BURNIN-WINDOWS.exe
         shell: powershell
         run: |
           choco install innosetup -y --no-progress | Out-Null
@@ -103,7 +103,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: windows-installer
-          path: installers/out/CRT-Terminal-Setup.exe
+          path: installers/out/BURNIN-WINDOWS.exe
 
   release:
     if: startsWith(github.ref, 'refs/tags/v')

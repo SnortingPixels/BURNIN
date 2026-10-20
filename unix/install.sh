@@ -27,7 +27,7 @@ REPO="$(cd "$(dirname "$0")/.." && pwd)"
 OS="${CRT_OS:-$(uname -s)}"
 case "$OS" in
   Darwin|Linux) ;;
-  *) echo "This installer is for macOS and Linux. On Windows, run install.ps1 or CRT-Terminal-Setup.exe." >&2; exit 1 ;;
+  *) echo "This installer is for macOS and Linux. On Windows, run install.ps1 or BURNIN-WINDOWS.exe." >&2; exit 1 ;;
 esac
 DATA="${XDG_DATA_HOME:-$HOME/.local/share}/crt-terminal"
 CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"

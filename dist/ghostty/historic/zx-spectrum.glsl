@@ -3,7 +3,8 @@
 // Ghostty custom shader (Shadertoy style). GLSL port of the Windows Terminal shader, which is a port of
 // Swordfish90/cool-retro-term's terminal_dynamic.frag + terminal_static.frag (GPL-3.0).
 // No bezel: the margin is the theme's own background colour; noise and the rolling scan line run through it.
-// No burn-in: the shader can't read the previous frame.
+// Burn-in: Ghostty can't give a shader the previous frame, so only the cursor leaves a fading phosphor afterglow
+// where it just was (Ghostty 1.2+ cursor uniforms).
 // Ghostty draws the terminal with the "CRT Source" colours (white text on black); this shader tints it.
 
 // Shape
@@ -29,6 +30,7 @@
 #define RASTER            1      // 0 none, 1 scanlines, 2 pixel grid, 3 RGB subpixels
 #define PIXEL_SIZE        2.0    // screen pixels per font pixel
 #define RASTER_STRENGTH  0.3    // -1 = automatic like cool-retro-term (shows from 3 px up), else 0..1
+#define BURN_IN           0.0   // cursor afterglow like cool-retro-term's Burn-in (0 off .. 1 long)
 
 float hash(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
 float rgb2grey(vec3 v) { return dot(v, vec3(0.21, 0.72, 0.04)); }
@@ -141,7 +143,21 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
         // Jitter.
         coords += (vec2(n1, n2) - 0.5) * vec2(0.007, 0.002) * JITTER * JITTER;
 
-        vec3 txt = raster(coords, sampleRgb(coords), density);
+        vec3 txt = sampleRgb(coords);
+
+        // Burn-in: the cell the cursor just left keeps glowing and fades, as cool-retro-term: 0.16 s .. 1.6 s.
+        // Cursor rectangles are (left, top, width, height) in pixels, y up.
+        if (BURN_IN > 0.0 && iPreviousCursor.xy != iCurrentCursor.xy)
+        {
+            vec2 p = coords * iResolution.xy;
+            vec2 lo = iPreviousCursor.xy - vec2(0.0, iPreviousCursor.w);
+            vec2 inside = smoothstep(lo - 1.0, lo + 1.0, p) * (1.0 - smoothstep(lo + iPreviousCursor.zw - 1.0, lo + iPreviousCursor.zw + 1.0, p));
+            float fade = mix(0.16, 1.6, BURN_IN * BURN_IN);
+            float glow = inside.x * inside.y * exp(-max(iTime - iTimeCursorChange, 0.0) * 4.6 / fade) * 0.6;
+            txt = max(txt, vec3(glow));
+        }
+
+        txt = raster(coords, txt, density);
 
         // Work on light above the background, so empty screen equals the margin exactly.
         vec3 pic = tint(txt) + (surround - BACK_COLOR);

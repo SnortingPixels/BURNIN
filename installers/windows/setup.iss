@@ -19,7 +19,7 @@ DisableDirPage=yes
 DisableProgramGroupPage=yes
 PrivilegesRequired=lowest
 OutputDir={#Root}\installers\out
-OutputBaseFilename=CRT-Terminal-Setup
+OutputBaseFilename=BURNIN-WINDOWS
 SetupIconFile={#Root}\assets\icon.ico
 UninstallDisplayIcon={app}\assets\icon.ico
 WizardStyle=modern
@@ -29,6 +29,7 @@ LicenseFile={#Root}\LICENSE
 
 [Tasks]
 Name: "menus"; Description: "Also style Windows Terminal's menus to match (installs Windhawk; Windows asks for admin)"; Flags: unchecked
+Name: "burnin"; Description: "Also add phosphor burn-in: text leaves a fading glow (installs Windhawk; Windows asks for admin)"; Flags: unchecked
 
 [Files]
 Source: "{#Root}\dist\*"; DestDir: "{app}\dist"; Flags: recursesubdirs ignoreversion
@@ -40,8 +41,16 @@ Source: "{#Root}\LICENSE"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#Root}\README.md"; DestDir: "{app}"; Flags: ignoreversion isreadme
 
 [Run]
-Filename: "powershell.exe"; Parameters: "-NoProfile -ExecutionPolicy Bypass -File ""{app}\windows\install.ps1"""; StatusMsg: "Setting up Windows Terminal (fonts, shaders, themes)..."; Flags: waituntilterminated runhidden; Tasks: not menus
-Filename: "powershell.exe"; Parameters: "-NoProfile -ExecutionPolicy Bypass -File ""{app}\windows\install.ps1"" -WithMenus"; StatusMsg: "Setting up Windows Terminal (fonts, shaders, themes, menus)..."; Flags: waituntilterminated runhidden; Tasks: menus
+Filename: "powershell.exe"; Parameters: "-NoProfile -ExecutionPolicy Bypass -File ""{app}\windows\install.ps1""{code:ExtraArgs}"; StatusMsg: "Setting up Windows Terminal (fonts, shaders, themes)..."; Flags: waituntilterminated runhidden
 
 [UninstallRun]
 Filename: "powershell.exe"; Parameters: "-NoProfile -ExecutionPolicy Bypass -File ""{localappdata}\CRT-Terminal\uninstall.ps1"""; RunOnceId: "CrtUninstall"; Flags: waituntilterminated runhidden
+
+[Code]
+// The optional Windhawk mods picked on the Tasks page, as install.ps1 switches.
+function ExtraArgs(Param: String): String;
+begin
+  Result := '';
+  if WizardIsTaskSelected('menus') then Result := Result + ' -WithMenus';
+  if WizardIsTaskSelected('burnin') then Result := Result + ' -WithBurnIn';
+end;

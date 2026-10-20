@@ -1,7 +1,7 @@
 <#
   BURNIN - Windows uninstaller.
   Stops the theme helper, removes its Startup entry, restores Windows Terminal's settings.json from the
-  backup made at install, and removes the Windhawk menu mod if it was installed (asks for admin).
+  backup made at install, and removes the Windhawk menu and burn-in mods if it installed them (asks for admin).
   Fonts stay installed (other apps may use them); remove them in Settings > Personalization > Fonts.
 #>
 param([string]$SettingsPath = '', [switch]$KeepFiles)
@@ -34,6 +34,12 @@ $modKey = 'HKLM:\SOFTWARE\Windhawk\Engine\Mods\local@windows-terminal-retro-styl
 if ((Test-Path $modKey) -and (Test-Path "$InstallDir\windhawk\mod-installed.txt")) {
   Write-Host 'Removing the Windhawk menu mod (Windows will ask for admin)...'
   Start-Process powershell.exe -Verb RunAs -Wait -ArgumentList '-NoProfile', '-Command', "Remove-Item '$modKey' -Recurse -Force"
+}
+$burnKey = 'HKLM:\SOFTWARE\Windhawk\Engine\Mods\local@burnin-phosphor'
+# only if this installation installed it (marker written by install.ps1 -WithBurnIn)
+if ((Test-Path $burnKey) -and (Test-Path "$InstallDir\windhawkurnin-installed.txt")) {
+  Write-Host 'Removing the Windhawk burn-in mod (Windows will ask for admin)...'
+  Start-Process powershell.exe -Verb RunAs -Wait -ArgumentList '-NoProfile', '-Command', "Remove-Item '$burnKey' -Recurse -Force"
 }
 
 if (-not $KeepFiles) {
