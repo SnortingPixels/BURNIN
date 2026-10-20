@@ -1,0 +1,13 @@
+* text=auto
+*.sh text eol=lf
+unix/crt-theme text eol=lf
+*.command text eol=lf
+*.glsl text eol=lf
+*.hlsl text eol=lf
+*.tsv text eol=lf
+*.ps1 text eol=crlf
+*.bat text eol=crlf
+*.iss text eol=crlf
+*.ttf binary
+*.ico binary
+*.png binary

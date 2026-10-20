@@ -1,0 +1,26 @@
+# key	file	url (or 'build')	zip member (- = none)	needs browser user agent
+altomono	AltoMono.ttf	https://dl.damieng.com/fonts/reproduced/AltoMono.zip	AltoMono.ttf	0
+apple2	PrintChar21.ttf	https://raw.githubusercontent.com/Swordfish90/cool-retro-term/master/app/qml/fonts/apple2/PrintChar21.ttf	-	0
+atari	AtariClassic-Regular.ttf	https://raw.githubusercontent.com/Swordfish90/cool-retro-term/master/app/qml/fonts/atari-400-800/AtariClassic-Regular.ttf	-	0
+bigblue	BigBlueTerm437NerdFontMono-Regular.ttf	https://raw.githubusercontent.com/Swordfish90/cool-retro-term/master/app/qml/fonts/bigblue-terminal/BigBlueTerm437NerdFontMono-Regular.ttf	-	0
+cpcrom	AmstradCPCROM.ttf	build	-	0
+departure	DepartureMonoNerdFontMono-Regular.otf	https://raw.githubusercontent.com/Swordfish90/cool-retro-term/master/app/qml/fonts/departure-mono/DepartureMonoNerdFontMono-Regular.otf	-	0
+ega8	PxPlus_IBM_EGA_8x8.ttf	https://raw.githubusercontent.com/Swordfish90/cool-retro-term/master/app/qml/fonts/oldschool-pc-fonts/PxPlus_IBM_EGA_8x8.ttf	-	0
+fira	FiraCodeNerdFontMono-Regular.ttf	https://raw.githubusercontent.com/Swordfish90/cool-retro-term/master/app/qml/fonts/fira-code/FiraCodeNerdFontMono-Regular.ttf	-	0
+gallant	gallant.ttf	https://raw.githubusercontent.com/NanoBillion/gallant/HEAD/gallant.ttf	-	0
+glasstty	Glass_TTY_VT220.ttf	https://raw.githubusercontent.com/svofski/glasstty/master/Glass_TTY_VT220.ttf	-	0
+h19	Heathkit-H19.otf	https://raw.githubusercontent.com/scruss/HeathkitH19Font/main/Heathkit-H19.otf	-	0
+hack	HackNerdFontMono-Regular.ttf	https://raw.githubusercontent.com/Swordfish90/cool-retro-term/master/app/qml/fonts/hack/HackNerdFontMono-Regular.ttf	-	0
+ibm3270	3270NerdFontMono-Regular.ttf	https://raw.githubusercontent.com/Swordfish90/cool-retro-term/master/app/qml/fonts/ibm-3278/3270NerdFontMono-Regular.ttf	-	0
+iosevka	IosevkaTermNerdFontMono-Regular.ttf	https://raw.githubusercontent.com/Swordfish90/cool-retro-term/master/app/qml/fonts/iosevka/IosevkaTermNerdFontMono-Regular.ttf	-	0
+jetbrains	JetBrainsMonoNerdFontMono-Regular.ttf	https://raw.githubusercontent.com/Swordfish90/cool-retro-term/master/app/qml/fonts/jetbrains-mono/JetBrainsMonoNerdFontMono-Regular.ttf	-	0
+lisa	LisaTerminalPaper2X3Y.ttf	https://www.kreativekorp.com/swdownload/fonts/retro/lisa1.zip	2X3Y/LisaTerminalPaper2X3Y.ttf	1
+petme	PetMe.ttf	https://raw.githubusercontent.com/Swordfish90/cool-retro-term/master/app/qml/fonts/pet-me/PetMe.ttf	-	0
+petme64	PetMe64.ttf	https://raw.githubusercontent.com/Swordfish90/cool-retro-term/master/app/qml/fonts/pet-me/PetMe64.ttf	-	0
+terminess	TerminessNerdFontMono-Regular.ttf	https://raw.githubusercontent.com/Swordfish90/cool-retro-term/master/app/qml/fonts/terminus/TerminessNerdFontMono-Regular.ttf	-	0
+topaz	Topaz_a500_v1.0.ttf	https://raw.githubusercontent.com/rewtnull/amigafonts/master/ttf/Topaz_a500_v1.0.ttf	-	0
+ttxt	BBCTeletextSAA5050.ttf	build	-	0
+tty33	Teletype33.ttf	https://raw.githubusercontent.com/progs-n-things/Teletype33-Font/main/Teletype33.ttf	-	0
+vga	PxPlus_IBM_VGA_8x16.ttf	https://raw.githubusercontent.com/Swordfish90/cool-retro-term/master/app/qml/fonts/oldschool-pc-fonts/PxPlus_IBM_VGA_8x16.ttf	-	0
+vt323	VT323-Regular.ttf	https://raw.githubusercontent.com/google/fonts/main/ofl/vt323/VT323-Regular.ttf	-	0
+zxrom	ZXSpectrumROM.ttf	build	-	0

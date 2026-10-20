@@ -1,0 +1,120 @@
+#!/usr/bin/env bash
+# crt-theme - pick the CRT look in Ghostty (macOS / Linux). Part of crt-terminal-themes (GPL-3.0).
+#
+#   crt-theme                 show the current theme
+#   crt-theme list            list all themes
+#   crt-theme set "Commodore 64"
+#   crt-theme next | prev     step through the themes
+#   crt-theme bulge on|off    historic screen bulge or flat (all themes)
+#
+# Writes ~/.config/crt-terminal/current.conf, which the Ghostty config includes, then asks Ghostty to
+# reload its config (SIGUSR2). If a window doesn't change, use Ghostty's "Reload Configuration"
+# (macOS: Cmd+Shift+, ; Linux: Ctrl+Shift+,).
+set -euo pipefail
+
+DATA="${CRT_TERMINAL_HOME:-${XDG_DATA_HOME:-$HOME/.local/share}/crt-terminal}"
+CONF_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/crt-terminal"
+CURRENT="$CONF_DIR/current.conf"
+STATE="$CONF_DIR/state"          # lines: theme=<name>, bulge=historic|flat
+TSV="$DATA/dist/themes.tsv"
+
+[ -f "$TSV" ] || { echo "crt-theme: $TSV not found; run the installer first" >&2; exit 1; }
+mkdir -p "$CONF_DIR"
+
+state_get() { [ -f "$STATE" ] && sed -n "s/^$1=//p" "$STATE" | head -n1 || true; }
+state_set() {
+  local theme bulge
+  theme="$(state_get theme)"; bulge="$(state_get bulge)"
+  [ "$1" = theme ] && theme="$2"
+  [ "$1" = bulge ] && bulge="$2"
+  printf 'theme=%s\nbulge=%s\n' "${theme:-Default Amber}" "${bulge:-historic}" > "$STATE"
+}
+
+names() { grep -v '^#' "$TSV" | cut -f1; }
+
+row() {  # row <name> -> tab-separated line for that theme
+  awk -F'\t' -v n="$1" '!/^#/ && tolower($1) == tolower(n) { print; exit }' "$TSV"
+}
+
+cursor_style() {
+  case "$1" in
+    bar) echo bar ;;
+    underscore|vintage|doubleUnderscore) echo underline ;;
+    emptyBox) echo block_hollow ;;
+    *) echo block ;;
+  esac
+}
+
+apply() {
+  local name="$1" line slug font size cursor light bulge shader px
+  line="$(row "$name")"
+  [ -n "$line" ] || { echo "crt-theme: no theme called \"$name\" (crt-theme list)" >&2; exit 1; }
+  IFS=$'\t' read -r name slug font size cursor light <<< "$line"
+  bulge="$(state_get bulge)"; bulge="${bulge:-historic}"
+  shader="$DATA/dist/ghostty/$bulge/$slug.glsl"
+  # the theme sizes are points at 96 dpi (Windows); macOS points are 72 dpi, so scale to the same pixels
+  if [ "$(uname -s)" = Darwin ]; then px="$(awk -v s="$size" 'BEGIN { printf "%.2f", s * 96 / 72 }')"; else px="$size"; fi
+  cat > "$CURRENT" <<EOF
+# Written by crt-theme - theme: $name (bulge: $bulge). Edit themes with crt-theme, not here.
+custom-shader = $shader
+custom-shader-animation = always
+font-family = "$font"
+font-size = $px
+window-padding-x = 0
+window-padding-y = 0
+cursor-style = $(cursor_style "$cursor")
+cursor-style-blink = false
+# Ghostty draws plain white-on-black text; the shader turns it into the theme's phosphor colours.
+background = #000000
+foreground = #ffffff
+cursor-color = #ffffff
+selection-background = #808080
+selection-foreground = #000000
+palette = 0=#000000
+palette = 1=#c50f1f
+palette = 2=#13a10e
+palette = 3=#c19c00
+palette = 4=#3b78ff
+palette = 5=#881798
+palette = 6=#3a96dd
+palette = 7=#cccccc
+palette = 8=#767676
+palette = 9=#e74856
+palette = 10=#16c60c
+palette = 11=#f9f1a5
+palette = 12=#3b78ff
+palette = 13=#b4009e
+palette = 14=#61d6d6
+palette = 15=#ffffff
+EOF
+  state_set theme "$name"
+  # ask running Ghostty instances to reload their config
+  pkill -USR2 -x ghostty 2>/dev/null || pkill -USR2 -f 'Ghostty.app/Contents/MacOS/ghostty' 2>/dev/null || true
+  echo "CRT theme: $name (bulge: $bulge)"
+}
+
+step() {  # step +1 | -1   (awk instead of mapfile: macOS ships bash 3.2)
+  local current next
+  current="$(state_get theme)"; current="${current:-Default Amber}"
+  next="$(names | awk -v c="$current" -v d="$1" '
+    { a[NR] = $0; if (tolower($0) == tolower(c)) i = NR }
+    END { if (!i) i = 1; j = ((i - 1 + d) % NR + NR) % NR + 1; print a[j] }')"
+  apply "$next"
+}
+
+case "${1:-}" in
+  "")    echo "$(state_get theme) (bulge: $(state_get bulge))" ;;
+  list)  names ;;
+  set)   shift; apply "$*" ;;
+  next)  step 1 ;;
+  prev)  step -1 ;;
+  bulge)
+    case "${2:-}" in
+      on|historic) state_set bulge historic ;;
+      off|flat)    state_set bulge flat ;;
+      *) echo "usage: crt-theme bulge on|off" >&2; exit 2 ;;
+    esac
+    apply "$(state_get theme)" ;;
+  -h|--help|help) sed -n '2,12p' "$0" ;;
+  *) echo "usage: crt-theme [list | set <name> | next | prev | bulge on|off]" >&2; exit 2 ;;
+esac

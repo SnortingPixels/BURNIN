@@ -1,0 +1,8 @@
+.build-cache/
+.venv/
+__pycache__/
+*.pyc
+installers/out/
+windows/windhawk/upstream-*.wh.cpp
+windows/windhawk/windows-terminal-retro-styler.wh.cpp
+windows/windhawk/*.log

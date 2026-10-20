@@ -1,0 +1,46 @@
+# name	slug	font (macOS/Linux)	size (pt at 96 dpi)	cursor	light
+Default Amber	default-amber	Terminess Nerd Font Mono	18.0	filledBox	0
+Monochrome Green	monochrome-green	DepartureMono Nerd Font Mono	14.5	filledBox	0
+Deep Blue	deep-blue	BigBlueTerm437 Nerd Font Mono	14.0	filledBox	0
+Neon Cyan	neon-cyan	IosevkaTerm Nerd Font Mono	16.25	bar	0
+Plasma	plasma	FiraCode Nerd Font Mono	15.0	bar	0
+Ghost Terminal	ghost-terminal	JetBrainsMono Nerd Font Mono	15.5	bar	0
+Boring	boring	JetBrainsMono Nerd Font Mono	15.5	bar	0
+E-Ink	e-ink	Hack Nerd Font Mono	15.5	filledBox	1
+DEC VT100	dec-vt100	Glass TTY VT220	18.0	filledBox	0
+DEC VT220 Amber	dec-vt220-amber	Glass TTY VT220	18.0	filledBox	0
+DEC VT220 Green	dec-vt220-green	Glass TTY VT220	18.0	filledBox	0
+Zenith Z-19	zenith-z-19	Heathkit-H19 Regular	18.0	filledBox	0
+IBM 5151 MDA	ibm-5151-mda	PxPlus IBM VGA 8x16	18.0	underscore	0
+IBM PC CGA	ibm-pc-cga	PxPlus IBM EGA 8x8	9.25	underscore	0
+IBM 3278	ibm-3278	3270 Nerd Font Mono	17.25	underscore	0
+IBM P70 Plasma	ibm-p70-plasma	PxPlus IBM VGA 8x16	18.0	underscore	0
+Apple ][	apple	Print Char 21	10.5	filledBox	0
+Commodore PET	commodore-pet	Pet Me	9.25	filledBox	0
+Commodore 64	commodore-64	Pet Me 64	9.25	filledBox	0
+Atari 800	atari-800	Atari Classic	9.25	filledBox	0
+Amiga 500	amiga-500	Topaz a500a1000a2000	18.0	filledBox	0
+Tektronix 4014	tektronix-4014	DepartureMono Nerd Font Mono	14.5	emptyBox	0
+Xerox Alto	xerox-alto	Alto Mono	10.5	bar	1
+Sun SPARCstation 20	sun-sparcstation-20	Gallant Raster Term	17.0	filledBox	1
+SGI Indigo2	sgi-indigo2	DepartureMono Nerd Font Mono	14.5	filledBox	0
+SGI Octane	sgi-octane	DepartureMono Nerd Font Mono	14.5	filledBox	0
+NeXTcube	nextcube	DepartureMono Nerd Font Mono	14.5	filledBox	1
+Cray-1	cray-1	Glass TTY VT220	18.0	filledBox	0
+IBM System/360	ibm-system-360	3270 Nerd Font Mono	17.25	underscore	0
+DEC PDP-11	dec-pdp-11	Glass TTY VT220	18.0	filledBox	0
+Apollo DN10000	apollo-dn10000	DepartureMono Nerd Font Mono	14.5	filledBox	1
+IBM 5100	ibm-5100	3270 Nerd Font Mono	17.25	underscore	0
+Altair 8800	altair-8800	Teletype33	15.5	vintage	1
+IMSAI 8080	imsai-8080	Teletype33	15.5	vintage	1
+Amiga 1000	amiga-1000	Topaz a500a1000a2000	18.0	filledBox	0
+Apple Lisa	apple-lisa	LisaTerminal Paper 2X3Y	18.0	filledBox	1
+GRiD Compass	grid-compass	DepartureMono Nerd Font Mono	14.5	filledBox	0
+Symbolics 3600	symbolics-3600	DepartureMono Nerd Font Mono	14.5	filledBox	1
+Thinking Machines CM-5	thinking-machines-cm-5	DepartureMono Nerd Font Mono	14.5	filledBox	0
+DEC VT320 Amber	dec-vt320-amber	VT323	18.0	filledBox	0
+MS-DOS Norton Blue	ms-dos-norton-blue	PxPlus IBM VGA 8x16	18.0	underscore	0
+Hercules Amber	hercules-amber	PxPlus IBM VGA 8x16	18.0	underscore	0
+ZX Spectrum	zx-spectrum	ZX Spectrum ROM	9.25	filledBox	1
+Amstrad CPC 464	amstrad-cpc-464	Amstrad CPC ROM	9.25	filledBox	0
+BBC Micro Teletext	bbc-micro-teletext	BBC Teletext SAA5050	15.5	underscore	0
