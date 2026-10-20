@@ -35,7 +35,7 @@ static BOOL Wh_ApplyHookOperations() { return TRUE; }
 
 static bool g_windhawk;
 
-// Windhawk injects mods shortly after a process starts; wait for ours (its DLL name contains "burnin").
+// Windhawk injects mods shortly after a process starts; wait for ours (its DLL name contains "burnin-phosphor").
 static bool WaitForMod() {
     for (int i = 0; i < 100; i++) {
         HMODULE mods[512];
@@ -43,7 +43,7 @@ static bool WaitForMod() {
         if (EnumProcessModules(GetCurrentProcess(), mods, sizeof(mods), &needed))
             for (DWORD j = 0; j < needed / sizeof(HMODULE) && j < 512; j++) {
                 wchar_t name[MAX_PATH];
-                if (GetModuleBaseNameW(GetCurrentProcess(), mods[j], name, MAX_PATH) && wcsstr(name, L"burnin")) {
+                if (GetModuleBaseNameW(GetCurrentProcess(), mods[j], name, MAX_PATH) && wcsstr(name, L"burnin-phosphor")) {
                     fwprintf(stderr, L"mod loaded: %ls\n", name);
                     Sleep(500);   // let its init finish
                     return true;
