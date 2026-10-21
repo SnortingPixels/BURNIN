@@ -45,6 +45,8 @@ PHOSPHORS = {
     "P31": (0.0, 0, None, "ZnS:Cu green, 10 % after 38 us: nothing visible (its very dim tail is undocumented)"),
     "LCD": (0.0, 0, None, "liquid crystal: no glow; slow pixels come from the theme's \"lcd\" response time"),
     "P134": (0.0, 0, None, "DEC amber (VR201 and its terminals); its decay is undocumented, so no afterglow is modelled"),
+    "film": (0.0, 0, None, "a fictional screen: no modelled afterglow"),
+    "none": (0.0, 0, None, "phosphor undocumented: no afterglow modelled"),
     "P4": (0.0, 0, None, "sulfide white, 10 % after 60 us: nothing visible at screen refresh rates"),
     "P22": (0.0, 0, None, "colour CRT (rare-earth red, sulfide green and blue): microseconds to ~1 ms, nothing visible"),
     "storage": (0.0, 0, None, "direct-view storage tube: the picture doesn't fade; it stays until erased"),
@@ -96,7 +98,7 @@ def set_define(src, name, value, comment=None):
     return rx.sub(lambda m: m.group(1) + value + (f"   // {comment}" if comment else (m.group(3) or "")), src, count=1)
 
 
-def shader(template, t, ctor, curvature, cell_height=26):
+def shader(template, t, ctor, curvature, cell_height=26, cell_width=12):
     x = template.replace("__NAME__", f"{t['name']} - {t['note']}")
     x = set_define(x, "FONT_COLOR", colour(t["fg"], ctor), t["fg"])
     x = set_define(x, "BACK_COLOR", colour(t["bg"], ctor), t["bg"])
@@ -139,6 +141,17 @@ def shader(template, t, ctor, curvature, cell_height=26):
         x = set_define(x, "MESH", num(t["mesh"]["strength"]))
         x = set_define(x, "MESH_PITCH", num(t["mesh"]["pitch"]))
     x = set_define(x, "CELL_HEIGHT", num(cell_height))
+    x = set_define(x, "CELL_WIDTH", num(cell_width))
+    if "rain" in t:
+        x = set_define(x, "RAIN", "1")
+        x = set_define(x, "RAIN_COLOR", colour(t["rain"]["colour"], ctor), t["rain"]["colour"])
+        x = set_define(x, "RAIN_STRENGTH", num(t["rain"]["strength"]))
+    if "palette" in t:
+        x = set_define(x, "PALETTE_SIZE", str(len(t["palette"])))
+        for i, hexstr in enumerate(t["palette"][:4]):
+            x = set_define(x, f"PALETTE_{i}", colour(hexstr, ctor), hexstr)
+    if "lampSize" in t:
+        x = set_define(x, "LAMP_SIZE", num(t["lampSize"]))
     if "refresh" in t and REFRESH_FLICKER:
         x = set_define(x, "REFRESH_HZ", num(t["refresh"]))
         line_hz = t["refresh"] / 2 if t.get("interlaced") else t["refresh"]
@@ -243,8 +256,8 @@ def main():
         s = slug(t["name"])
         curve = float(t.get("curve", 0)) * 0.15
         for kind, k in (("historic", curve), ("flat", 0.0)):
-            (out / f"windows-terminal/{kind}/{s}.hlsl").write_text(shader(hlsl, t, "float3", k, data["cell"]["height"]), encoding="utf-8", newline="\n")
-            (out / f"ghostty/{kind}/{s}.glsl").write_text(shader(glsl, t, "vec3", k, data["cell"]["height"]), encoding="utf-8", newline="\n")
+            (out / f"windows-terminal/{kind}/{s}.hlsl").write_text(shader(hlsl, t, "float3", k, data["cell"]["height"], data["cell"]["width"]), encoding="utf-8", newline="\n")
+            (out / f"ghostty/{kind}/{s}.glsl").write_text(shader(glsl, t, "vec3", k, data["cell"]["height"], data["cell"]["width"]), encoding="utf-8", newline="\n")
         f = fonts[t["font"]]
         index.append({
             "name": t["name"], "slug": s, "note": t["note"], "fg": t["fg"], "bg": t["bg"],

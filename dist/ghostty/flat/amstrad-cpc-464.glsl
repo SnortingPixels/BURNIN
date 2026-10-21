@@ -51,6 +51,16 @@
 #define REFRESH_DEPTH     0.0    // how deep the pulse is at that rate, from the phosphor's decay time (src/build.py)
 #define SCANLINES_PER_ROW 8.0    // the real screen's scan lines per text row; sets the scanline pitch (0 = PIXEL_SIZE)
 #define INTERLACED        0      // 1 = interlaced: odd and even scan lines refresh in turn, each at half the rate
+#define CELL_WIDTH        12.0   // text column width in pixels at 100 % scaling
+#define LAMP_SIZE         0.8    // RASTER 5 (lamps / plotted points): lamp diameter as a fraction of its spacing
+#define RAIN              0      // 1 = falling "digital rain" behind the text (The Matrix)
+#define RAIN_COLOR        vec3(0.0, 1.0, 0.25)
+#define RAIN_STRENGTH     0.35   // brightness of the rain's trails
+#define PALETTE_SIZE      0      // 1..4: coloured text takes the nearest of these colours (e.g. LCARS)
+#define PALETTE_0         vec3(1.0, 1.0, 1.0)
+#define PALETTE_1         vec3(1.0, 1.0, 1.0)
+#define PALETTE_2         vec3(1.0, 1.0, 1.0)
+#define PALETTE_3         vec3(1.0, 1.0, 1.0)
 #define REFRESH_ACROSS    0      // 1 = the picture is scanned left to right (a mirror-swept LED column), not top to bottom
 
 float hash(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
@@ -71,6 +81,35 @@ vec3 afterglow(vec3 light, float amount)
     return mix(light, a, amount);
 }
 
+
+// Coloured text takes the palette colour closest in hue (PALETTE_SIZE > 0).
+vec3 paletteColour(vec3 full)
+{
+    vec3 best = PALETTE_0;
+    float score = dot(normalize(full + 1e-4), normalize(PALETTE_0 + 1e-4));
+    if (PALETTE_SIZE > 1) { float k = dot(normalize(full + 1e-4), normalize(PALETTE_1 + 1e-4)); if (k > score) { score = k; best = PALETTE_1; } }
+    if (PALETTE_SIZE > 2) { float k = dot(normalize(full + 1e-4), normalize(PALETTE_2 + 1e-4)); if (k > score) { score = k; best = PALETTE_2; } }
+    if (PALETTE_SIZE > 3) { float k = dot(normalize(full + 1e-4), normalize(PALETTE_3 + 1e-4)); if (k > score) { score = k; best = PALETTE_3; } }
+    return best;
+}
+
+// Falling code: columns of glyph-like dot patterns with a bright head and a fading trail (y counted from the top).
+vec3 digitalRain(vec2 p, float s)
+{
+    vec2 cell = vec2(CELL_WIDTH, CELL_HEIGHT) * s;
+    float col = floor(p.x / cell.x), row = floor(p.y / cell.y);
+    float rows = iResolution.y / cell.y + 24.0;
+    float speed = mix(5.0, 14.0, hash(vec2(col, 3.1)));
+    float head = fract(iTime * speed / rows + hash(vec2(col, 7.7))) * rows;
+    float d = head - row;   // rows behind the head
+    float trail = d >= 0.0 ? exp(-d / 7.0) : 0.0;
+    vec2 gl = floor(fract(p / cell) * vec2(5.0, 9.0));
+    float shape = step(0.45, hash(vec2(col * 7.0 + gl.x, row * 13.0 + gl.y) + floor(iTime * 2.0 + hash(vec2(col, row)) * 9.0)));
+    shape *= step(1.0, gl.y) * step(gl.y, 7.0);
+    float headLight = step(0.0, d) * step(d, 1.0);
+    return (RAIN_COLOR * trail + headLight * 0.3) * shape * RAIN_STRENGTH;
+}
+
 vec3 chroma(vec3 c)
 {
     float grey = rgb2grey(c);
@@ -87,6 +126,7 @@ vec3 tint(vec3 c)
     // The terminal draws text on black, so anti-aliased edges are "colour x coverage".
     // Rebuild them over the theme background instead, so edges fade into the screen, not into black.
     vec3 full = c / max(hi, 0.0001);
+    if (PALETTE_SIZE > 0) full = paletteColour(full);
     vec3 accent = mix(BACK_COLOR, full * ACCENT_SCALE, hi);
     return mix(chroma(c), accent, keep * KEEP_ACCENTS);
 }
@@ -131,6 +171,8 @@ vec3 raster(vec2 uv, vec3 texel, float density)
     vec2 c2 = cell * cell;
     float mask = 1.0 - c2.x - c2.y;
     return mix(texel, mix(loC, hiC, mask), intensity);
+  #elif RASTER == 5
+    return texel;   // lamps: shaped in mainImage
   #elif RASTER == 4
     float mask = 1.0 - abs(cell.x);   // vertical columns (a scanned LED column)
     return mix(texel, mix(loC, hiC, mask), intensity);
@@ -177,6 +219,9 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
         extra = extra * lit + flash * 0.12;   // the beam lights the noise ("grass") as it passes
     }
     vec3 surround = chroma(vec3(extra));   // BACK_COLOR plus noise and scan line
+#if RAIN
+    surround += digitalRain(vec2(fragCoord.x, iResolution.y - fragCoord.y), s);
+#endif
     if (SWEEP_PERIOD > 0.0)
         surround = BACK_COLOR + afterglow(surround - BACK_COLOR, 1.0 - flash);
 
@@ -195,7 +240,14 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
         // Jitter.
         coords += (vec2(n1, n2) - 0.5) * vec2(0.007, 0.002) * JITTER * JITTER;
 
+#if RASTER == 5
+        // Lamps / plotted points: each lamp shows the text at its centre, as a round spot.
+        vec2 lampPx = coords * iResolution.xy / density;
+        vec2 lampOff = fract(lampPx) * 2.0 - 1.0;
+        vec3 txt = sampleRgb((floor(lampPx) + 0.5) * density / iResolution.xy) * smoothstep(LAMP_SIZE, LAMP_SIZE * 0.6, length(lampOff));
+#else
         vec3 txt = sampleRgb(coords);
+#endif
 
         // Burn-in: the cell the cursor just left keeps glowing and fades by the phosphor's decay law (src/build.py).
         // Cursor rectangles are (left, top, width, height) in pixels, y up.
