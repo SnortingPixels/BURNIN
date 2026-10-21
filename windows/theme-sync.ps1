@@ -1,5 +1,5 @@
 # Makes Windows Terminal's Settings > Appearance > Theme switch the whole look.
-# Checks settings.json twice a second; when "theme" is a "BURNIN <dot> <name>" theme, sets the default
+# Checks settings.json twice a second; when "theme" is a "<name> <fire emoji>" theme, sets the default
 # profile's CRT shader, colour scheme, font and cursor to match (Terminal then re-skins every open
 # tab), and writes themes\ui-current.txt, the menu/Settings-page colours read by the Windhawk mod
 # "Windows Terminal Retro Styler" (optional). Any other theme turns all of it off again.
@@ -8,7 +8,7 @@
 # Part of BURNIN (GPL-3.0). Runs hidden from the Startup folder. -Once applies the current theme and exits.
 param([switch]$Once, [int]$Cycle = 0, [string]$UiFor = '', [string]$UiOut = '', [string]$SettingsPath = '')   # -UiFor <theme> -UiOut <file>: write that theme's menu colours to a file (testing)   # -Cycle 1 / -1: step the theme once and exit
 $ErrorActionPreference = 'Stop'
-$Prefix = 'BURNIN ' + [char]0x00B7 + ' '   # window theme names: "BURNIN <middle dot> <theme>"
+$Suffix = ' ' + [char]::ConvertFromUtf32(0x1F525)   # window theme names: "<theme> <fire emoji>"
 $root     = Split-Path -Parent $MyInvocation.MyCommand.Path   # the install folder (holds dist\ and this script)
 # Windows Terminal settings: -SettingsPath, else the Store, Preview or unpackaged install
 $settings = if ($SettingsPath) { $SettingsPath } else { @("$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json",
@@ -32,7 +32,7 @@ function WriteText([string]$path, [string]$text) {
   if ($path -eq $settings) {
     # Safety net: never write a settings file that has lost the colour scheme or the window themes,
     # and keep the previous version next to it (settings.json.crt-prev).
-    if ($text -notmatch '"Retro Source"' -or $text -notmatch '"name":\s*"BURNIN ') {
+    if ($text -notmatch '"Retro Source"' -or $text -notmatch '(\uD83D\uDD25|\\ud83d\\udd25)"') {
       Log 'refused to write settings.json: Retro Source scheme or BURNIN window themes missing'
       return
     }
@@ -101,7 +101,7 @@ function Apply {
   $j = ReadText | ConvertFrom-Json
   $theme = if ($j.theme -is [string]) { $j.theme } else { '' }
   $d = $j.profiles.defaults
-  $t = $index | Where-Object { "$Prefix$($_.name)" -eq $theme } | Select-Object -First 1
+  $t = $index | Where-Object { "$($_.name)$Suffix" -eq $theme } | Select-Object -First 1
 
   # menu colours first (cheap, and independent of whether the profile needs rewriting)
   $ui = if ($t) { UiColors $t } else { '' }
@@ -141,7 +141,7 @@ function Cycle([int]$step) {
   $index = LoadIndex
   $text = ReadText
   $current = (($text | ConvertFrom-Json).theme) -as [string]
-  $names = @($index | ForEach-Object { "$Prefix$($_.name)" })
+  $names = @($index | ForEach-Object { "$($_.name)$Suffix" })
   $i = [Array]::IndexOf($names, $current)
   $next = if ($i -lt 0) { $names[0] } else { $names[($i + $step + $names.Count) % $names.Count] }
   $escaped = $next.Replace('\', '\\').Replace('"', '\"')

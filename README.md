@@ -78,7 +78,7 @@ burn-in.
 
 ### 🪟 Windows
 
-* **Settings, Appearance, Theme, "BURNIN · …"** switches everything: shader, colours, font, cursor and window colours.
+* **Settings, Appearance, Theme, "… 🔥"** (each theme's name with a fire emoji) switches everything: shader, colours, font, cursor and window colours.
 * While Windows Terminal is in front:
   * **Ctrl+Alt+T** next theme, **Ctrl+Alt+Shift+T** previous theme.
   * **Ctrl+Alt+B** historic screen bulge on/off. A bulge moves text slightly away from where Terminal places the mouse
