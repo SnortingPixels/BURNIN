@@ -44,3 +44,13 @@ Hercules Amber	hercules-amber	PxPlus IBM VGA 8x16	18.0	underscore	0
 ZX Spectrum	zx-spectrum	ZX Spectrum ROM	9.25	filledBox	1
 Amstrad CPC 464	amstrad-cpc-464	Amstrad CPC ROM	9.25	filledBox	0
 BBC Micro Teletext	bbc-micro-teletext	BBC Teletext SAA5050	15.5	underscore	0
+Radar Scope P7	radar-scope-p7	B612 Mono	14.25	filledBox	0
+Nintendo Virtual Boy	nintendo-virtual-boy	Virtual Boy VUEngine	9.25	filledBox	0
+Nintendo Game Boy	nintendo-game-boy	Early GameBoy	9.25	filledBox	1
+PLATO IV	plato-iv	PlatoAscii	18.0	filledBox	0
+SAGE Console	sage-console	B612 Mono	14.25	filledBox	0
+Minitel 1	minitel-1	Minitel	9.25	filledBox	0
+Elektronika 15IE	elektronika-15ie	Elektronika 15IE	9.25	filledBox	0
+Green-Bar Printout	green-bar-printout	NearlyQMono	16.0	filledBox	1
+Vacuum Fluorescent	vacuum-fluorescent	Doto	15.5	filledBox	0
+Vectrex	vectrex	Relief SingleLine Outline	15.0	filledBox	0

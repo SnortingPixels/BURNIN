@@ -36,16 +36,21 @@ STANDARD_STYLES = {"regular", "medium", "book", "normal", "roman"}
 # Sources: RCA TPM-1508A "Phosphors" (1961) for times to 10 %; Dyall, MIT RLE TR-56 (1948) for the decay laws;
 # Morgan (IBM) for the 1/t tail of Zn2SiO4:Mn,As. tau = t10 / ln 10 for exponentials, t10 / 9 for 1/t.
 PHOSPHORS = {
-    "P1": (0.0106, 0, "Zn2SiO4:Mn green, exponential, 10 % after 24.5 ms"),
-    "P3": (0.0056, 0, "Zn8BeSi5O19:Mn amber, exponential, 10 % after 13 ms"),
-    "P39": (0.0167, 1, "Zn2SiO4:Mn,As green, 10 % after 150 ms, then a 1/t tail"),
-    "P4": (0.0, 0, "sulfide white, 10 % after 60 us: nothing visible at screen refresh rates"),
-    "P22": (0.0, 0, "colour CRT (rare-earth red, sulfide green and blue): microseconds to ~1 ms, nothing visible"),
-    "storage": (0.0, 0, "direct-view storage tube: the picture doesn't fade; it stays until erased"),
-    "plasma": (0.0, 0, "neon gas plasma: the discharge stops in microseconds"),
-    "EL": (0.0, 0, "electroluminescent panel: no afterglow"),
-    "LED": (0.0, 0, "LED panel: no afterglow"),
-    "paper": (0.0, 0, "paper, LCD or e-ink: nothing glows"),
+    "P1": (0.0106, 0, None, "Zn2SiO4:Mn green, exponential, 10 % after 24.5 ms"),
+    "P3": (0.0056, 0, None, "Zn8BeSi5O19:Mn amber, exponential, 10 % after 13 ms"),
+    "P39": (0.0167, 1, None, "Zn2SiO4:Mn,As green, 10 % after 150 ms, then a 1/t tail"),
+    "P7": (0.044, 1, "#b8e040", "(Zn,Cd)S:Cu cascade: blue flash, yellow-green afterglow, 10 % after 400 ms then 1/t"),
+    "P14": (0.044, 1, "#e0b040", "cascade: blue flash, orange afterglow (timing estimated from P7)"),
+    "P24": (0.0, 0, None, "ZnO:Zn (VFD) green, 1-10 us: nothing visible"),
+    "P31": (0.0, 0, None, "ZnS:Cu green, 10 % after 38 us: nothing visible (its very dim tail is undocumented)"),
+    "LCD": (0.0, 0, None, "liquid crystal: no glow; slow pixels come from the theme's \"lcd\" response time"),
+    "P4": (0.0, 0, None, "sulfide white, 10 % after 60 us: nothing visible at screen refresh rates"),
+    "P22": (0.0, 0, None, "colour CRT (rare-earth red, sulfide green and blue): microseconds to ~1 ms, nothing visible"),
+    "storage": (0.0, 0, None, "direct-view storage tube: the picture doesn't fade; it stays until erased"),
+    "plasma": (0.0, 0, None, "neon gas plasma: the discharge stops in microseconds"),
+    "EL": (0.0, 0, None, "electroluminescent panel: no afterglow"),
+    "LED": (0.0, 0, None, "LED panel: no afterglow"),
+    "paper": (0.0, 0, None, "paper, LCD or e-ink: nothing glows"),
 }
 
 
@@ -71,7 +76,7 @@ def set_define(src, name, value, comment=None):
     return rx.sub(lambda m: m.group(1) + value + (f"   // {comment}" if comment else (m.group(3) or "")), src, count=1)
 
 
-def shader(template, t, ctor, curvature):
+def shader(template, t, ctor, curvature, cell_height=26):
     x = template.replace("__NAME__", f"{t['name']} - {t['note']}")
     x = set_define(x, "FONT_COLOR", colour(t["fg"], ctor), t["fg"])
     x = set_define(x, "BACK_COLOR", colour(t["bg"], ctor), t["bg"])
@@ -89,9 +94,31 @@ def shader(template, t, ctor, curvature):
     x = set_define(x, "RASTER", str(int(t["raster"])))
     x = set_define(x, "PIXEL_SIZE", num(t["pixel"]))
     x = set_define(x, "RASTER_STRENGTH", num(t["scanStrength"]))
-    tau, power, _ = PHOSPHORS[t["phosphor"]]
+    tau, power, after, _ = PHOSPHORS[t["phosphor"]]
     x = set_define(x, "PHOSPHOR_TAU", num(tau), t["phosphor"])
     x = set_define(x, "PHOSPHOR_POWER", num(power))
+    if after:
+        x = set_define(x, "AFTERGLOW_COLOR", colour(after, ctor), after)
+    # Optional effects for unusual screens (see the defines in src/template.*)
+    if "lcd" in t:
+        x = set_define(x, "LCD_RESPONSE", num(t["lcd"]))
+    if "sweep" in t:
+        x = set_define(x, "SWEEP_PERIOD", num(t["sweep"]))
+    if "shades" in t:
+        x = set_define(x, "SHADES", "4")
+        x = set_define(x, "SHADE_1", colour(t["shades"][0], ctor), t["shades"][0])
+        x = set_define(x, "SHADE_2", colour(t["shades"][1], ctor), t["shades"][1])
+    if "bars" in t:
+        x = set_define(x, "PAPER_BARS", str(int(t["bars"]["rows"])))
+        x = set_define(x, "BAR_COLOR", colour(t["bars"]["colour"], ctor), t["bars"]["colour"])
+    if "overlay" in t:
+        x = set_define(x, "OVERLAY", "1")
+        for name, hexstr in zip(("OVERLAY_TOP", "OVERLAY_MID", "OVERLAY_BOTTOM"), t["overlay"]):
+            x = set_define(x, name, colour(hexstr, ctor), hexstr)
+    if "mesh" in t:
+        x = set_define(x, "MESH", num(t["mesh"]["strength"]))
+        x = set_define(x, "MESH_PITCH", num(t["mesh"]["pitch"]))
+    x = set_define(x, "CELL_HEIGHT", num(cell_height))
     # cool-retro-term curvature * its 0.6 size factor, in this shader's units (* 0.25)
     return set_define(x, "CURVATURE", num(curvature))
 
@@ -183,8 +210,8 @@ def main():
         s = slug(t["name"])
         curve = float(t.get("curve", 0)) * 0.15
         for kind, k in (("historic", curve), ("flat", 0.0)):
-            (out / f"windows-terminal/{kind}/{s}.hlsl").write_text(shader(hlsl, t, "float3", k), encoding="utf-8", newline="\n")
-            (out / f"ghostty/{kind}/{s}.glsl").write_text(shader(glsl, t, "vec3", k), encoding="utf-8", newline="\n")
+            (out / f"windows-terminal/{kind}/{s}.hlsl").write_text(shader(hlsl, t, "float3", k, data["cell"]["height"]), encoding="utf-8", newline="\n")
+            (out / f"ghostty/{kind}/{s}.glsl").write_text(shader(glsl, t, "vec3", k, data["cell"]["height"]), encoding="utf-8", newline="\n")
         f = fonts[t["font"]]
         index.append({
             "name": t["name"], "slug": s, "note": t["note"], "fg": t["fg"], "bg": t["bg"],

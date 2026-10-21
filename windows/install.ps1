@@ -103,7 +103,7 @@ if ($SkipFonts) {
       $pyArgs = @('-3')
       if (-not $py) { $py = (Get-Command python -ErrorAction SilentlyContinue).Source; $pyArgs = @() }
       if ($py -and $py -notlike '*WindowsApps*') {
-        Note 'Building the ZX Spectrum, Amstrad CPC and BBC teletext fonts from their ROM data'
+        Note 'Building the ZX Spectrum, Amstrad CPC, BBC teletext, Virtual Boy and Elektronika fonts from their character data'
         $venv = "$InstallDir\fontbuild\venv"
         if (-not (Test-Path "$venv\Scripts\python.exe")) { & $py @pyArgs -m venv $venv }
         & "$venv\Scripts\python.exe" -m pip install --quiet --disable-pip-version-check fonttools
@@ -111,10 +111,10 @@ if ($SkipFonts) {
         foreach ($rp in $data.roms.PSObject.Properties) {
           if (-not (Test-Path "$roms\$($rp.Name)")) { Invoke-WebRequest $rp.Value -OutFile "$roms\$($rp.Name)" -UseBasicParsing -UserAgent $UA }
         }
-        & "$venv\Scripts\python.exe" -I "$InstallDir\fontbuild\retro_fonts.py" "$roms\48.rom" "$roms\cpc464.rom" "$roms\teletext_data.js" "$InstallDir\fontbuild\out" | Out-Null
+        & "$venv\Scripts\python.exe" -I "$InstallDir\fontbuild\retro_fonts.py" "$roms\48.rom" "$roms\cpc464.rom" "$roms\teletext_data.js" "$roms\vuengine.font" "$roms\dvk_15ie.draw" "$InstallDir\fontbuild\out" | Out-Null
         foreach ($n in $need) { Install-FontFile "$InstallDir\fontbuild\out\$($n.Value.build)"; Note $n.Value.build }
       } else {
-        Note 'Python not found: the ZX Spectrum, Amstrad CPC and BBC teletext themes will use a fallback font.'
+        Note 'Python not found: the ZX Spectrum, Amstrad CPC, BBC teletext, Virtual Boy and Elektronika themes will use a fallback font.'
         Note 'Install Python (winget install Python.Python.3.12) and run this installer again to build them.'
       }
     }

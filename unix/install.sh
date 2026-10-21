@@ -88,7 +88,7 @@ else
 
   if [ "$need_rom" = 1 ]; then
     if command -v python3 >/dev/null 2>&1 && python3 -c 'import venv' 2>/dev/null; then
-      note "Building the ZX Spectrum, Amstrad CPC and BBC teletext fonts from their ROM data"
+      note "Building the ZX Spectrum, Amstrad CPC, BBC teletext, Virtual Boy and Elektronika fonts from their character data"
       [ -x "$DATA/fontbuild/venv/bin/python" ] || python3 -m venv "$DATA/fontbuild/venv"
       "$DATA/fontbuild/venv/bin/python" -m pip install --quiet --disable-pip-version-check fonttools
       mkdir -p "$DATA/fontbuild/roms" "$DATA/fontbuild/out"
@@ -97,10 +97,11 @@ else
         [ -f "$DATA/fontbuild/roms/$name" ] || curl -fsSL -A "$UA" -o "$DATA/fontbuild/roms/$name" "$url"
       done < "$REPO/dist/roms.tsv"
       "$DATA/fontbuild/venv/bin/python" -I "$DATA/retro_fonts.py" "$DATA/fontbuild/roms/48.rom" "$DATA/fontbuild/roms/cpc464.rom" \
-        "$DATA/fontbuild/roms/teletext_data.js" "$DATA/fontbuild/out" >/dev/null
+        "$DATA/fontbuild/roms/teletext_data.js" "$DATA/fontbuild/roms/vuengine.font" \
+        "$DATA/fontbuild/roms/dvk_15ie.draw" "$DATA/fontbuild/out" >/dev/null
       cp "$DATA"/fontbuild/out/*.ttf "$FONT_DIR/"
     else
-      note "python3 (with venv) not found: the ZX Spectrum, Amstrad CPC and BBC teletext themes use a fallback font."
+      note "python3 (with venv) not found: the ZX Spectrum, Amstrad CPC, BBC teletext, Virtual Boy and Elektronika themes use a fallback font."
       note "Install python3 and run this installer again to build them."
     fi
   fi
