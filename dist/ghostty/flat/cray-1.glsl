@@ -32,9 +32,44 @@
 #define RASTER_STRENGTH  0.5    // -1 = automatic like cool-retro-term (shows from 3 px up), else 0..1
 #define PHOSPHOR_TAU      0.0106   // P1
 #define PHOSPHOR_POWER    0.0    // 0 = exponential decay, n = hyperbolic 1/(1+t/tau)^n with a long dim tail
+#define AFTERGLOW_COLOR   vec3(0.0, 0.0, 0.0)   // cascade phosphors (P7): the colour the glow turns as it fades; 0 = unchanged
+#define LCD_RESPONSE      0.0    // LCD pixel response (needs the previous frame: Windows only; unused here)
+#define SWEEP_PERIOD      0.0    // radar: seconds per antenna turn; text is lit only where the beam passed, then fades; 0 = off
+#define SHADES            0      // 4 = only four shades (Game Boy): BACK_COLOR, SHADE_1, SHADE_2, FONT_COLOR
+#define SHADE_1           vec3(0.0, 0.0, 0.0)
+#define SHADE_2           vec3(0.0, 0.0, 0.0)
+#define PAPER_BARS        0      // > 0: printout paper, bands of BAR_COLOR this many text rows high
+#define BAR_COLOR         vec3(0.0, 0.0, 0.0)
+#define CELL_HEIGHT       26.0   // text row height in pixels at 100 % scaling
+#define OVERLAY           0      // 1 = coloured plastic overlay in three horizontal bands (Vectrex)
+#define OVERLAY_TOP       vec3(1.0, 1.0, 1.0)
+#define OVERLAY_MID       vec3(1.0, 1.0, 1.0)
+#define OVERLAY_BOTTOM    vec3(1.0, 1.0, 1.0)
+#define MESH              0.0    // control-grid wire mesh in front of the glow (VFD): 0 none .. 1 opaque wires
+#define MESH_PITCH        4.0    // mesh spacing in pixels
+#define REFRESH_HZ        0.0    // the real screen's refresh rate; its light pulses at this rate (0 = steady)
+#define REFRESH_DEPTH     0.0    // how deep the pulse is at that rate, from the phosphor's decay time (src/build.py)
+#define SCANLINES_PER_ROW 0.0    // the real screen's scan lines per text row; sets the scanline pitch (0 = PIXEL_SIZE)
+#define INTERLACED        0      // 1 = interlaced: odd and even scan lines refresh in turn, each at half the rate
+#define REFRESH_ACROSS    0      // 1 = the picture is scanned left to right (a mirror-swept LED column), not top to bottom
 
 float hash(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
 float rgb2grey(vec3 v) { return dot(v, vec3(0.21, 0.72, 0.04)); }
+float max3(vec3 v) { return max(v.r, max(v.g, v.b)); }
+
+// Phosphor brightness (linear light) t seconds after the beam left; see PHOSPHORS in src/build.py.
+float phosphorDecay(float t)
+{
+    float tau = max(PHOSPHOR_TAU, 1e-4);
+    return PHOSPHOR_POWER > 0.0 ? pow(1.0 + t / tau, -PHOSPHOR_POWER) : exp(-t / tau);
+}
+
+// Light above the background, recoloured towards the afterglow colour (cascade phosphors).
+vec3 afterglow(vec3 light, float amount)
+{
+    vec3 a = AFTERGLOW_COLOR * max3(light) / max(max3(AFTERGLOW_COLOR), 1e-4);
+    return mix(light, a, amount);
+}
 
 vec3 chroma(vec3 c)
 {
@@ -96,6 +131,9 @@ vec3 raster(vec2 uv, vec3 texel, float density)
     vec2 c2 = cell * cell;
     float mask = 1.0 - c2.x - c2.y;
     return mix(texel, mix(loC, hiC, mask), intensity);
+  #elif RASTER == 4
+    float mask = 1.0 - abs(cell.x);   // vertical columns (a scanned LED column)
+    return mix(texel, mix(loC, hiC, mask), intensity);
   #else
     vec3 offs = 3.141592654 * vec3(0.5, 0.5 - 2.0 / 3.0, 0.5 - 4.0 / 3.0);
     float ang = uv.x * iResolution.x / density * 6.283185307;
@@ -116,7 +154,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float frame = floor(iTime * 60.0);
     float r1 = hash(vec2(frame, 1.7));
     float r2 = hash(vec2(frame, 9.1));
-    float density = PIXEL_SIZE * s;
+    float density = SCANLINES_PER_ROW > 0.0 ? CELL_HEIGHT * s / max(SCANLINES_PER_ROW, 1.0) : PIXEL_SIZE * s;
 
     // Whole-window effects (picture and margin alike): grain, rolling scan line.
     vec2 grain = floor(fragCoord / max(2.0 * s, density));
@@ -127,7 +165,20 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float band = 120.0 * s;
     float yWin = yDown * iResolution.y;
     extra += fract(smoothstep(-band, 0.0, yWin - (iResolution.y + band) * fract(iTime * 0.15))) * GLOWING_LINE;
+
+    // Radar sweep: the beam turns clockwise from 12 o'clock; "since" is how long ago it passed this pixel.
+    float lit = 1.0, flash = 1.0;
+    if (SWEEP_PERIOD > 0.0)
+    {
+        vec2 c = (tex - 0.5) * iResolution.xy;
+        float since = fract(iTime / SWEEP_PERIOD - atan(c.x, c.y) / 6.283185) * SWEEP_PERIOD;
+        lit = pow(phosphorDecay(since), 1.0 / 2.2);
+        flash = exp(-since / 0.03);
+        extra = extra * lit + flash * 0.12;   // the beam lights the noise ("grass") as it passes
+    }
     vec3 surround = chroma(vec3(extra));   // BACK_COLOR plus noise and scan line
+    if (SWEEP_PERIOD > 0.0)
+        surround = BACK_COLOR + afterglow(surround - BACK_COLOR, 1.0 - flash);
 
     vec3 color = surround;
     vec2 uv = shape(tex);
@@ -148,22 +199,25 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
         // Burn-in: the cell the cursor just left keeps glowing and fades by the phosphor's decay law (src/build.py).
         // Cursor rectangles are (left, top, width, height) in pixels, y up.
-        if (PHOSPHOR_TAU > 0.0 && iPreviousCursor.xy != iCurrentCursor.xy)
+        if (PHOSPHOR_TAU > 0.0 && SWEEP_PERIOD == 0.0 && iPreviousCursor.xy != iCurrentCursor.xy)
         {
             vec2 p = coords * iResolution.xy;
             vec2 lo = iPreviousCursor.xy - vec2(0.0, iPreviousCursor.w);
             vec2 inside = smoothstep(lo - 1.0, lo + 1.0, p) * (1.0 - smoothstep(lo + iPreviousCursor.zw - 1.0, lo + iPreviousCursor.zw + 1.0, p));
             float t = max(iTime - iTimeCursorChange, 0.0);
-            float lin = PHOSPHOR_POWER > 0.0 ? pow(1.0 + t / PHOSPHOR_TAU, -PHOSPHOR_POWER) : exp(-t / PHOSPHOR_TAU);
+            float lin = phosphorDecay(t);
             float glow = inside.x * inside.y * pow(lin, 1.0 / 2.2);
             glow *= step(0.006, glow);
             txt = max(txt, vec3(glow));
         }
 
-        txt = raster(coords, txt, density);
+        txt = raster(coords, txt, density) * lit;
 
         // Work on light above the background, so empty screen equals the margin exactly.
-        vec3 pic = tint(txt) + (surround - BACK_COLOR);
+        vec3 pic = tint(txt) - BACK_COLOR;
+        if (SWEEP_PERIOD > 0.0)
+            pic = afterglow(pic, 1.0 - flash);
+        pic += surround;
 
         // Bloom: wide gaussian of the lit picture, capped by its brightest channel, screen-blended.
         vec2 px = GLOW_SPREAD * s / iResolution.xy;
@@ -178,6 +232,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
             }
         vec3 bloom = max(tint(blur / wsum) - BACK_COLOR, 0.0) * BLOOM_GAIN;
         bloom *= min(1.0, BLOOM_MAX / max(max(bloom.r, max(bloom.g, bloom.b)), 0.0001));
+        if (SWEEP_PERIOD > 0.0)
+            bloom = afterglow(bloom * lit, 1.0 - flash);
         pic = 1.0 - (1.0 - clamp(pic, 0.0, 1.0)) * (1.0 - bloom);
 
         // Soft edge into the margin.
@@ -190,6 +246,46 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
     // Flicker scales the light, not the background.
     color = BACK_COLOR + (color - BACK_COLOR) * (1.0 + (r2 - 0.5) * FLICKERING);
+
+    // Refresh: the real screen's light pulses at its refresh rate as the beam scans down. Shown as the pulse's
+    // fundamental, averaged over this monitor's frame; left out when this monitor is too slow to show that rate.
+    if (REFRESH_HZ > 0.0 && REFRESH_DEPTH > 0.0 && iTimeDelta > 0.0)
+    {
+        float fdt = min(iTimeDelta, 0.1);
+        float x = 3.14159265 * REFRESH_HZ * fdt;
+        float shown = step(REFRESH_HZ * fdt, 0.5) * sin(x) / max(x, 1e-4);
+        float rate = INTERLACED != 0 ? REFRESH_HZ * 0.5 : REFRESH_HZ;   // each line's own refresh rate
+        x = 3.14159265 * rate * fdt;
+        shown = step(rate * fdt, 0.5) * sin(x) / max(x, 1e-4);
+        float odd = INTERLACED != 0 ? mod(floor((iResolution.y - fragCoord.y) / density), 2.0) * 0.5 : 0.0;   // the other field comes half a frame later
+        float pulse = cos(6.2831853 * ((iTime - fdt * 0.5) * rate - (REFRESH_ACROSS != 0 ? tex.x : yDown) - odd));
+        color *= 1.0 + REFRESH_DEPTH * shown * pulse;   // all the tube's light pulses, background glow included
+    }
+
+#if SHADES == 4
+    // Four-shade LCD: snap to the nearest of the panel's shades along the background-to-text line.
+    vec3 axis = FONT_COLOR - BACK_COLOR;
+    float q = floor(clamp(dot(color - BACK_COLOR, axis) / max(dot(axis, axis), 1e-5), 0.0, 1.0) * 3.0 + 0.5);
+    color = q < 0.5 ? BACK_COLOR : (q < 1.5 ? SHADE_1 : (q < 2.5 ? SHADE_2 : FONT_COLOR));
+#endif
+
+    // Control-grid wire mesh in front of a vacuum fluorescent display.
+    if (MESH > 0.0)
+    {
+        vec2 m = mod(floor(fragCoord), max(floor(MESH_PITCH * s), 2.0));
+        color = BACK_COLOR + (color - BACK_COLOR) * (1.0 - MESH * clamp(step(m.x, 0.0) + step(m.y, 0.0), 0.0, 1.0));
+    }
+
+#if PAPER_BARS > 0
+    // Printout paper: ink is printed over alternating plain and coloured bands (counted from the top).
+    float bar = mod(floor(yDown * iResolution.y / (CELL_HEIGHT * s * float(PAPER_BARS))), 2.0);
+    color *= mix(vec3(1.0), BAR_COLOR / max(BACK_COLOR, vec3(0.001)), bar);
+#endif
+
+#if OVERLAY
+    // Translucent coloured plastic over the tube, in three bands.
+    color *= yDown < 0.25 ? OVERLAY_TOP : (yDown < 0.75 ? OVERLAY_MID : OVERLAY_BOTTOM);
+#endif
 
     // Fine dither noise, as in the original static pass.
     color += (hash(tex * iResolution.xy + fract(iTime)) - 0.5) * 0.025;

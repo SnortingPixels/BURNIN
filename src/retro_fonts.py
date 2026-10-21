@@ -3,9 +3,11 @@
   ZX Spectrum ROM   - 48K ROM character set at 0x3D00 (96 chars, 8x8)
   Amstrad CPC ROM   - CPC 464 OS ROM character set at 0x3800 (8x8)
   BBC Teletext      - SAA5050 teletext characters (6x10) from jsbeeb's teletext_data.js (via b-em)
+  Virtual Boy       - VUEngine's default 8x8 font (Default.font, JSON; MIT); the console has no built-in font
+  Elektronika 15IE  - the Soviet DVK terminal's 8x8 character generator (hoard-of-bitfonts dvk_15ie.draw), KOI-8
 
 Each lit pixel row becomes a solid rectangle, so the font draws exactly the original bitmaps.
-Usage: python build_retro_fonts.py <48.rom> <cpc464.rom> <teletext_data.js> <out dir>
+Usage: python retro_fonts.py <48.rom> <cpc464.rom> <teletext_data.js> [<vuengine.font>] [<dvk_15ie.draw>] <out dir>
 """
 import re
 import sys
@@ -100,8 +102,34 @@ def teletext_chars(path):
     return glyphs
 
 
+def vuengine_chars(path):
+    import json
+    chars = json.loads(Path(path).read_text(encoding="utf-8"))["characters"]
+    glyphs = {}
+    for code in range(0x20, 0x7F):
+        rows = [(r or []) + [None] * 8 for r in (chars[code] or [])] + [[None] * 8] * 8
+        glyphs[code] = [[1 if v else 0 for v in r[:8]] for r in rows[:8]]
+    return glyphs
+
+
+def draw_chars(path):
+    """hoard-of-bitfonts .draw: "xx:" then rows of # and -. Codes above 0x7F are KOI-8 (Cyrillic)."""
+    glyphs, code, rows = {}, None, []
+    for line in Path(path).read_text(encoding="utf-8").splitlines() + [""]:
+        m = re.match(r"^([0-9a-fA-F]{2}):", line)
+        if m or not line.strip():
+            if code is not None and rows:
+                cp = code if code < 0x80 else ord(bytes([code]).decode("koi8_r"))
+                if code >= 0x20 and code != 0x7F:
+                    glyphs[cp] = rows
+            code, rows = (int(m.group(1), 16), []) if m else (None, [])
+        elif code is not None:
+            rows.append([1 if c == "#" else 0 for c in line.strip()])
+    return glyphs
+
+
 def build_all(files, out_dir):
-    """files: {'48.rom': path, 'cpc464.rom': path, 'teletext_data.js': path}"""
+    """files: {'48.rom': path, 'cpc464.rom': path, 'teletext_data.js': path, 'vuengine.font': path}"""
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     # Spectrum: 0x60 is the pound sign, 0x7F the copyright sign
@@ -110,11 +138,16 @@ def build_all(files, out_dir):
     build("Amstrad CPC ROM", str(out / "AmstradCPCROM.ttf"),
           rom_chars(files["cpc464.rom"], 0x3800 + 8 * 0x20, range(0x20, 0x7F)), 8, 8)
     build("BBC Teletext SAA5050", str(out / "BBCTeletextSAA5050.ttf"), teletext_chars(files["teletext_data.js"]), 6, 10)
+    if "vuengine.font" in files:
+        build("Virtual Boy VUEngine", str(out / "VirtualBoyVUEngine.ttf"), vuengine_chars(files["vuengine.font"]), 8, 8)
+    if "dvk_15ie.draw" in files:
+        build("Elektronika 15IE", str(out / "Elektronika15IE.ttf"), draw_chars(files["dvk_15ie.draw"]), 8, 8)
 
 
 def main():
-    spectrum_rom, cpc_rom, teletext_js, out_dir = sys.argv[1:5]
-    build_all({"48.rom": spectrum_rom, "cpc464.rom": cpc_rom, "teletext_data.js": teletext_js}, out_dir)
+    # retro_fonts.py <48.rom> <cpc464.rom> <teletext_data.js> [<vuengine.font>] [<dvk_15ie.draw>] <out dir>
+    files = {Path(a).name: a for a in sys.argv[1:-1]}
+    build_all(files, sys.argv[-1])
 
 
 if __name__ == "__main__":

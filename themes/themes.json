@@ -8,7 +8,9 @@
     "roms":  {
                  "48.rom":  "https://raw.githubusercontent.com/chriswilson2020/zx-spectrum-emulator/main/ROM/48.rom",
                  "cpc464.rom":  "https://raw.githubusercontent.com/ColinPitrat/caprice32/master/rom/cpc464.rom",
-                 "teletext_data.js":  "https://raw.githubusercontent.com/mattgodbolt/jsbeeb/main/src/teletext_data.js"
+                 "teletext_data.js":  "https://raw.githubusercontent.com/mattgodbolt/jsbeeb/main/src/teletext_data.js",
+                 "vuengine.font":  "https://raw.githubusercontent.com/VUEngine/VUEngine-Core/master/assets/Font/Default.font",
+                 "dvk_15ie.draw":  "https://raw.githubusercontent.com/robhagemans/hoard-of-bitfonts/master/elektronika/dvk_15ie.draw"
              },
     "fonts":  {
                   "altomono":  {
@@ -89,7 +91,36 @@
                             },
                   "zxrom":  {
                                 "build":  "ZXSpectrumROM.ttf"
-                            }
+                            },
+                  "b612":  {
+                      "url":  "https://raw.githubusercontent.com/polarsys/b612/master/fonts/ttf/B612Mono-Regular.ttf"
+                  },
+                  "vbfont":  {
+                      "build":  "VirtualBoyVUEngine.ttf"
+                  },
+                  "earlygb":  {
+                      "url":  "https://dl.dafont.com/dl/?f=early_gameboy",
+                      "member":  "Early GameBoy.ttf",
+                      "userAgent":  true
+                  },
+                  "plato":  {
+                      "url":  "https://raw.githubusercontent.com/kej715/DtCyber/main/webterm/www/css/fonts/PlatoAscii.ttf"
+                  },
+                  "minitel":  {
+                      "url":  "https://raw.githubusercontent.com/zigazou/minitel-canvas/master/Minitel.ttf"
+                  },
+                  "dvk":  {
+                      "build":  "Elektronika15IE.ttf"
+                  },
+                  "nearlyq":  {
+                      "url":  "https://raw.githubusercontent.com/scruss/nearlyq/HEAD/NearlyQMono-Regular.otf"
+                  },
+                  "doto":  {
+                      "url":  "https://raw.githubusercontent.com/google/fonts/main/ofl/doto/Doto%5BROND,wght%5D.ttf"
+                  },
+                  "relief":  {
+                      "url":  "https://raw.githubusercontent.com/isdat-type/Relief-SingleLine/HEAD/fonts/outline_otf/ReliefSingleLineOutline-Regular.otf"
+                  }
               },
     "themes":  [
                    {
@@ -315,11 +346,13 @@
                        "ambient":  0.03,
                        "accents":  1,
                        "cursor":  "filledBox",
-                       "light":  false
+                       "light":  false,
+                       "refresh":  60,
+                       "scanlines":  10
                    },
                    {
                        "name":  "DEC VT220 Amber",
-                       "phosphor":  "P3",
+                       "phosphor":  "P134",
                        "note":  "P3 amber, Glass TTY VT220 font",
                        "fg":  "#ffa700",
                        "bg":  "#0a0600",
@@ -340,7 +373,9 @@
                        "ambient":  0.04,
                        "accents":  1,
                        "cursor":  "filledBox",
-                       "light":  false
+                       "light":  false,
+                       "refresh":  60,
+                       "scanlines":  10
                    },
                    {
                        "name":  "DEC VT220 Green",
@@ -365,7 +400,9 @@
                        "ambient":  0.04,
                        "accents":  1,
                        "cursor":  "filledBox",
-                       "light":  false
+                       "light":  false,
+                       "refresh":  60,
+                       "scanlines":  10
                    },
                    {
                        "name":  "Zenith Z-19",
@@ -415,7 +452,9 @@
                        "ambient":  0.03,
                        "accents":  1,
                        "cursor":  "underscore",
-                       "light":  false
+                       "light":  false,
+                       "refresh":  50,
+                       "scanlines":  14
                    },
                    {
                        "name":  "IBM PC CGA",
@@ -440,7 +479,9 @@
                        "ambient":  0.02,
                        "accents":  1,
                        "cursor":  "underscore",
-                       "light":  false
+                       "light":  false,
+                       "refresh":  59.92,
+                       "scanlines":  8
                    },
                    {
                        "name":  "IBM 3278",
@@ -494,7 +535,7 @@
                    },
                    {
                        "name":  "Apple ][",
-                       "phosphor":  "P1",
+                       "phosphor":  "P31",
                        "note":  "green monitor, Apple II ROM font",
                        "fg":  "#33ff66",
                        "bg":  "#010a03",
@@ -515,7 +556,9 @@
                        "ambient":  0.06,
                        "accents":  1,
                        "cursor":  "filledBox",
-                       "light":  false
+                       "light":  false,
+                       "refresh":  60,
+                       "scanlines":  8
                    },
                    {
                        "name":  "Commodore PET",
@@ -540,7 +583,9 @@
                        "ambient":  0,
                        "accents":  1,
                        "cursor":  "filledBox",
-                       "light":  false
+                       "light":  false,
+                       "refresh":  60,
+                       "scanlines":  8
                    },
                    {
                        "name":  "Commodore 64",
@@ -565,7 +610,9 @@
                        "ambient":  0.08,
                        "accents":  1,
                        "cursor":  "filledBox",
-                       "light":  false
+                       "light":  false,
+                       "refresh":  50.12,
+                       "scanlines":  8
                    },
                    {
                        "name":  "Atari 800",
@@ -590,7 +637,9 @@
                        "ambient":  0.02,
                        "accents":  1,
                        "cursor":  "filledBox",
-                       "light":  false
+                       "light":  false,
+                       "refresh":  59.94,
+                       "scanlines":  8
                    },
                    {
                        "name":  "Amiga 500",
@@ -615,7 +664,9 @@
                        "ambient":  0.02,
                        "accents":  1,
                        "cursor":  "filledBox",
-                       "light":  false
+                       "light":  false,
+                       "refresh":  50,
+                       "scanlines":  8
                    },
                    {
                        "name":  "Tektronix 4014",
@@ -644,7 +695,7 @@
                    },
                    {
                        "name":  "Xerox Alto",
-                       "phosphor":  "paper",
+                       "phosphor":  "P4",
                        "note":  "ContrAlto colours, Alto Mono font",
                        "fg":  "#000000",
                        "bg":  "#ffffff",
@@ -665,11 +716,13 @@
                        "ambient":  0,
                        "accents":  1,
                        "cursor":  "bar",
-                       "light":  true
+                       "light":  true,
+                       "refresh":  60,
+                       "interlaced":  true
                    },
                    {
                        "name":  "Sun SPARCstation 20",
-                       "phosphor":  "paper",
+                       "phosphor":  "P22",
                        "note":  "Sun console, Gallant font",
                        "fg":  "#000000",
                        "bg":  "#ffffff",
@@ -690,7 +743,8 @@
                        "ambient":  0,
                        "accents":  1,
                        "cursor":  "filledBox",
-                       "light":  true
+                       "light":  true,
+                       "refresh":  76
                    },
                    {
                        "name":  "SGI Indigo2",
@@ -744,7 +798,7 @@
                    },
                    {
                        "name":  "NeXTcube",
-                       "phosphor":  "paper",
+                       "phosphor":  "P4",
                        "note":  "MegaPixel greyscale (estimate)",
                        "fg":  "#000000",
                        "bg":  "#e6e6e6",
@@ -765,7 +819,8 @@
                        "ambient":  0,
                        "accents":  1,
                        "cursor":  "filledBox",
-                       "light":  true
+                       "light":  true,
+                       "refresh":  68
                    },
                    {
                        "name":  "Cray-1",
@@ -815,7 +870,9 @@
                        "ambient":  0.05,
                        "accents":  1,
                        "cursor":  "underscore",
-                       "light":  false
+                       "light":  false,
+                       "refresh":  30,
+                       "scanAcross":  true
                    },
                    {
                        "name":  "DEC PDP-11",
@@ -840,11 +897,13 @@
                        "ambient":  0.03,
                        "accents":  1,
                        "cursor":  "filledBox",
-                       "light":  false
+                       "light":  false,
+                       "refresh":  60,
+                       "scanlines":  10
                    },
                    {
                        "name":  "Apollo DN10000",
-                       "phosphor":  "paper",
+                       "phosphor":  "P4",
                        "note":  "Display Manager pads (estimate)",
                        "fg":  "#000000",
                        "bg":  "#f0f0f0",
@@ -965,11 +1024,13 @@
                        "ambient":  0.02,
                        "accents":  1,
                        "cursor":  "filledBox",
-                       "light":  false
+                       "light":  false,
+                       "refresh":  60,
+                       "scanlines":  8
                    },
                    {
                        "name":  "Apple Lisa",
-                       "phosphor":  "paper",
+                       "phosphor":  "P4",
                        "note":  "LisaTerminal font",
                        "fg":  "#000000",
                        "bg":  "#ffffff",
@@ -990,7 +1051,9 @@
                        "ambient":  0,
                        "accents":  1,
                        "cursor":  "filledBox",
-                       "light":  true
+                       "light":  true,
+                       "refresh":  60,
+                       "interlaced":  true
                    },
                    {
                        "name":  "GRiD Compass",
@@ -1019,7 +1082,7 @@
                    },
                    {
                        "name":  "Symbolics 3600",
-                       "phosphor":  "paper",
+                       "phosphor":  "P4",
                        "note":  "Genera console (estimate)",
                        "fg":  "#000000",
                        "bg":  "#e8eee8",
@@ -1069,7 +1132,7 @@
                    },
                    {
                        "name":  "DEC VT320 Amber",
-                       "phosphor":  "P3",
+                       "phosphor":  "P134",
                        "note":  "P3 amber, VT323 font",
                        "fg":  "#ffa700",
                        "bg":  "#0a0600",
@@ -1115,7 +1178,9 @@
                        "ambient":  0.02,
                        "accents":  1,
                        "cursor":  "underscore",
-                       "light":  false
+                       "light":  false,
+                       "refresh":  70,
+                       "scanlines":  16
                    },
                    {
                        "name":  "Hercules Amber",
@@ -1140,7 +1205,9 @@
                        "ambient":  0.04,
                        "accents":  1,
                        "cursor":  "underscore",
-                       "light":  false
+                       "light":  false,
+                       "refresh":  50,
+                       "scanlines":  14
                    },
                    {
                        "name":  "ZX Spectrum",
@@ -1165,7 +1232,9 @@
                        "ambient":  0,
                        "accents":  1,
                        "cursor":  "filledBox",
-                       "light":  true
+                       "light":  true,
+                       "refresh":  50.08,
+                       "scanlines":  8
                    },
                    {
                        "name":  "Amstrad CPC 464",
@@ -1190,7 +1259,9 @@
                        "ambient":  0.02,
                        "accents":  1,
                        "cursor":  "filledBox",
-                       "light":  false
+                       "light":  false,
+                       "refresh":  50,
+                       "scanlines":  8
                    },
                    {
                        "name":  "BBC Micro Teletext",
@@ -1215,7 +1286,276 @@
                        "ambient":  0.02,
                        "accents":  1,
                        "cursor":  "underscore",
+                       "light":  false,
+                       "refresh":  50,
+                       "scanlines":  20,
+                       "interlaced":  true
+                   },
+                   {
+                       "name":  "Radar Scope P7",
+                       "phosphor":  "P7",
+                       "note":  "P7 cascade phosphor PPI, 15 rpm sweep (colours estimate)",
+                       "fg":  "#c8d4ff",
+                       "bg":  "#050805",
+                       "font":  "b612",
+                       "size":  16,
+                       "curve":  0.5,
+                       "pixel":  1,
+                       "raster":  0,
+                       "scanStrength":  -1,
+                       "bloom":  0.6,
+                       "chroma":  0,
+                       "noise":  0.15,
+                       "line":  0,
+                       "flicker":  0.02,
+                       "jitter":  0.1,
+                       "hSync":  0,
+                       "rgbShift":  0,
+                       "ambient":  0.03,
+                       "accents":  0,
+                       "cursor":  "filledBox",
+                       "light":  false,
+                       "sweep":  4
+                   },
+                   {
+                       "name":  "Nintendo Virtual Boy",
+                       "phosphor":  "LED",
+                       "note":  "red LED column + 50 Hz mirror, VUEngine font",
+                       "fg":  "#ff0000",
+                       "bg":  "#000000",
+                       "font":  "vbfont",
+                       "size":  18,
+                       "curve":  0,
+                       "pixel":  2,
+                       "raster":  4,
+                       "scanStrength":  0.6,
+                       "bloom":  0.5,
+                       "chroma":  0,
+                       "noise":  0.02,
+                       "line":  0,
+                       "flicker":  0.15,
+                       "jitter":  0,
+                       "hSync":  0,
+                       "rgbShift":  0,
+                       "ambient":  0,
+                       "accents":  0,
+                       "cursor":  "filledBox",
+                       "light":  false,
+                       "refresh":  50,
+                       "scanAcross":  true,
+                       "refreshDepth":  1
+                   },
+                   {
+                       "name":  "Nintendo Game Boy",
+                       "phosphor":  "LCD",
+                       "note":  "SameBoy DMG palette, STN LCD ghosting (response estimate)",
+                       "fg":  "#081810",
+                       "bg":  "#c6de8c",
+                       "font":  "earlygb",
+                       "size":  16,
+                       "curve":  0,
+                       "pixel":  2,
+                       "raster":  2,
+                       "scanStrength":  0.5,
+                       "bloom":  0,
+                       "chroma":  0,
+                       "noise":  0,
+                       "line":  0,
+                       "flicker":  0,
+                       "jitter":  0,
+                       "hSync":  0,
+                       "rgbShift":  0,
+                       "ambient":  0,
+                       "accents":  0,
+                       "cursor":  "filledBox",
+                       "light":  true,
+                       "lcd":  0.04,
+                       "shades":  ["#84a563", "#396139"]
+                   },
+                   {
+                       "name":  "PLATO IV",
+                       "phosphor":  "plasma",
+                       "note":  "orange neon plasma panel, PLATO character set",
+                       "fg":  "#ffa500",
+                       "bg":  "#000000",
+                       "font":  "plato",
+                       "size":  18,
+                       "curve":  0,
+                       "pixel":  2,
+                       "raster":  2,
+                       "scanStrength":  0.3,
+                       "bloom":  0.5,
+                       "chroma":  0,
+                       "noise":  0.02,
+                       "line":  0,
+                       "flicker":  0,
+                       "jitter":  0,
+                       "hSync":  0,
+                       "rgbShift":  0,
+                       "ambient":  0,
+                       "accents":  0,
+                       "cursor":  "filledBox",
                        "light":  false
+                   },
+                   {
+                       "name":  "SAGE Console",
+                       "phosphor":  "P7",
+                       "note":  "Charactron, P7 blue flash with yellow-green afterglow (colours estimate)",
+                       "fg":  "#c8d4ff",
+                       "bg":  "#070605",
+                       "font":  "b612",
+                       "size":  16,
+                       "curve":  0.6,
+                       "pixel":  1,
+                       "raster":  0,
+                       "scanStrength":  -1,
+                       "bloom":  0.6,
+                       "chroma":  0,
+                       "noise":  0.08,
+                       "line":  0,
+                       "flicker":  0.15,
+                       "jitter":  0.1,
+                       "hSync":  0,
+                       "rgbShift":  0,
+                       "ambient":  0.03,
+                       "accents":  0,
+                       "cursor":  "filledBox",
+                       "light":  false
+                   },
+                   {
+                       "name":  "Minitel 1",
+                       "phosphor":  "P4",
+                       "note":  "9-inch monochrome CRT, Minitel font (phosphor tint estimate)",
+                       "fg":  "#e8e8e8",
+                       "bg":  "#000000",
+                       "font":  "minitel",
+                       "size":  18,
+                       "curve":  0.5,
+                       "pixel":  2,
+                       "raster":  1,
+                       "scanStrength":  0.4,
+                       "bloom":  0.4,
+                       "chroma":  0,
+                       "noise":  0.05,
+                       "line":  0,
+                       "flicker":  0.03,
+                       "jitter":  0,
+                       "hSync":  0,
+                       "rgbShift":  0,
+                       "ambient":  0.02,
+                       "accents":  0,
+                       "cursor":  "filledBox",
+                       "light":  false
+                   },
+                   {
+                       "name":  "Elektronika 15IE",
+                       "phosphor":  "P31",
+                       "note":  "Soviet DVK terminal, MAME colours, KOI-8 ROM font",
+                       "fg":  "#00c000",
+                       "bg":  "#000000",
+                       "font":  "dvk",
+                       "size":  18,
+                       "curve":  0.4,
+                       "pixel":  2,
+                       "raster":  1,
+                       "scanStrength":  0.4,
+                       "bloom":  0.5,
+                       "chroma":  0,
+                       "noise":  0.06,
+                       "line":  0,
+                       "flicker":  0.03,
+                       "jitter":  0,
+                       "hSync":  0,
+                       "rgbShift":  0,
+                       "ambient":  0.03,
+                       "accents":  0,
+                       "cursor":  "filledBox",
+                       "light":  false
+                   },
+                   {
+                       "name":  "Green-Bar Printout",
+                       "phosphor":  "paper",
+                       "note":  "line-printer paper, 3-line green bars (colours estimate)",
+                       "fg":  "#2b2b33",
+                       "bg":  "#f4f1e6",
+                       "font":  "nearlyq",
+                       "size":  16,
+                       "curve":  0,
+                       "pixel":  1,
+                       "raster":  0,
+                       "scanStrength":  -1,
+                       "bloom":  0,
+                       "chroma":  0,
+                       "noise":  0.03,
+                       "line":  0,
+                       "flicker":  0,
+                       "jitter":  0,
+                       "hSync":  0,
+                       "rgbShift":  0,
+                       "ambient":  0,
+                       "accents":  0,
+                       "cursor":  "filledBox",
+                       "light":  true,
+                       "bars":  {
+                           "rows":  3,
+                           "colour":  "#cfe6c9"
+                       }
+                   },
+                   {
+                       "name":  "Vacuum Fluorescent",
+                       "phosphor":  "P24",
+                       "note":  "ZnO:Zn 505 nm glow behind a wire mesh",
+                       "fg":  "#00ffb8",
+                       "bg":  "#0a1412",
+                       "font":  "doto",
+                       "size":  18,
+                       "curve":  0,
+                       "pixel":  1,
+                       "raster":  0,
+                       "scanStrength":  -1,
+                       "bloom":  0.7,
+                       "chroma":  0,
+                       "noise":  0.02,
+                       "line":  0,
+                       "flicker":  0.03,
+                       "jitter":  0,
+                       "hSync":  0,
+                       "rgbShift":  0,
+                       "ambient":  0.02,
+                       "accents":  0,
+                       "cursor":  "filledBox",
+                       "light":  false,
+                       "mesh":  {
+                           "strength":  0.35,
+                           "pitch":  3
+                       }
+                   },
+                   {
+                       "name":  "Vectrex",
+                       "phosphor":  "P4",
+                       "note":  "vector CRT with a coloured overlay (overlay colours estimate)",
+                       "fg":  "#eef2ff",
+                       "bg":  "#050505",
+                       "font":  "relief",
+                       "size":  18,
+                       "curve":  0.3,
+                       "pixel":  1,
+                       "raster":  0,
+                       "scanStrength":  -1,
+                       "bloom":  0.6,
+                       "chroma":  0,
+                       "noise":  0.02,
+                       "line":  0,
+                       "flicker":  0.2,
+                       "jitter":  0.3,
+                       "hSync":  0,
+                       "rgbShift":  0,
+                       "ambient":  0.02,
+                       "accents":  0,
+                       "cursor":  "filledBox",
+                       "light":  false,
+                       "overlay":  ["#ff7a7a", "#8fb8ff", "#7dff9a"],
+                       "refresh":  50
                    }
                ]
 }

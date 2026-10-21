@@ -24,3 +24,12 @@ tty33	Teletype33.ttf	https://raw.githubusercontent.com/progs-n-things/Teletype33
 vga	PxPlus_IBM_VGA_8x16.ttf	https://raw.githubusercontent.com/Swordfish90/cool-retro-term/master/app/qml/fonts/oldschool-pc-fonts/PxPlus_IBM_VGA_8x16.ttf	-	0
 vt323	VT323-Regular.ttf	https://raw.githubusercontent.com/google/fonts/main/ofl/vt323/VT323-Regular.ttf	-	0
 zxrom	ZXSpectrumROM.ttf	build	-	0
+b612	B612Mono-Regular.ttf	https://raw.githubusercontent.com/polarsys/b612/master/fonts/ttf/B612Mono-Regular.ttf	-	0
+vbfont	VirtualBoyVUEngine.ttf	build	-	0
+earlygb	Early GameBoy.ttf	https://dl.dafont.com/dl/?f=early_gameboy	Early GameBoy.ttf	1
+plato	PlatoAscii.ttf	https://raw.githubusercontent.com/kej715/DtCyber/main/webterm/www/css/fonts/PlatoAscii.ttf	-	0
+minitel	Minitel.ttf	https://raw.githubusercontent.com/zigazou/minitel-canvas/master/Minitel.ttf	-	0
+dvk	Elektronika15IE.ttf	build	-	0
+nearlyq	NearlyQMono-Regular.otf	https://raw.githubusercontent.com/scruss/nearlyq/HEAD/NearlyQMono-Regular.otf	-	0
+doto	Doto%5BROND,wght%5D.ttf	https://raw.githubusercontent.com/google/fonts/main/ofl/doto/Doto%5BROND,wght%5D.ttf	-	0
+relief	ReliefSingleLineOutline-Regular.otf	https://raw.githubusercontent.com/isdat-type/Relief-SingleLine/HEAD/fonts/outline_otf/ReliefSingleLineOutline-Regular.otf	-	0

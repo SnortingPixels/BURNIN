@@ -7,6 +7,7 @@ tools/render_hlsl.exe, and saves docs/screenshots/<slug>.jpg. Fonts come from th
     python tools/screenshots.py <render_hlsl.exe>
 """
 import json
+import urllib.request
 import subprocess
 import sys
 import tempfile
@@ -49,7 +50,7 @@ def font_file(spec):
         return CACHE / spec["build"]
     if "member" in spec:
         return CACHE / Path(spec["member"]).name
-    return CACHE / Path(spec["url"].split("?")[0]).name
+    return CACHE / Path(urllib.request.url2pathname(spec["url"].split("?")[0])).name   # as src/build.py names it
 
 
 def draw_source(theme, font_path, size_pt):

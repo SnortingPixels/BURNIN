@@ -46,9 +46,45 @@ cbuffer BurninFrame : register(b1) {
 #define RASTER_STRENGTH  0.6    // -1 = automatic like cool-retro-term (shows from 3 px up), else 0..1
 #define PHOSPHOR_TAU      0.0   // LED
 #define PHOSPHOR_POWER    0.0    // 0 = exponential decay, n = hyperbolic 1/(1+t/tau)^n with a long dim tail
+#define AFTERGLOW_COLOR   float3(0.0, 0.0, 0.0)   // cascade phosphors (P7): the colour the glow turns as it fades; 0 = unchanged
+#define LCD_RESPONSE      0.0    // LCD pixel response time constant in seconds: slow pixels smear both ways; 0 = not an LCD
+#define SWEEP_PERIOD      0.0    // radar: seconds per antenna turn; text is lit only where the beam passed, then fades; 0 = off
+#define SHADES            0      // 4 = only four shades (Game Boy): BACK_COLOR, SHADE_1, SHADE_2, FONT_COLOR
+#define SHADE_1           float3(0.0, 0.0, 0.0)
+#define SHADE_2           float3(0.0, 0.0, 0.0)
+#define PAPER_BARS        0      // > 0: printout paper, bands of BAR_COLOR this many text rows high
+#define BAR_COLOR         float3(0.0, 0.0, 0.0)
+#define CELL_HEIGHT       26.0   // text row height in pixels at 100 % scaling
+#define OVERLAY           0      // 1 = coloured plastic overlay in three horizontal bands (Vectrex)
+#define OVERLAY_TOP       float3(1.0, 1.0, 1.0)
+#define OVERLAY_MID       float3(1.0, 1.0, 1.0)
+#define OVERLAY_BOTTOM    float3(1.0, 1.0, 1.0)
+#define MESH              0.0    // control-grid wire mesh in front of the glow (VFD): 0 none .. 1 opaque wires
+#define MESH_PITCH        4.0    // mesh spacing in pixels at 100 % scaling
+#define REFRESH_HZ        0.0    // the real screen's refresh rate; its light pulses at this rate (0 = steady)
+#define REFRESH_DEPTH     0.0    // how deep the pulse is at that rate, from the phosphor's decay time (src/build.py)
+#define SCANLINES_PER_ROW 0.0    // the real screen's scan lines per text row; sets the scanline pitch (0 = PIXEL_SIZE)
+#define INTERLACED        0      // 1 = interlaced: odd and even scan lines refresh in turn, each at half the rate
+#define REFRESH_ACROSS    0      // 1 = the picture is scanned left to right (a mirror-swept LED column), not top to bottom
 
 float hash(float2 p) { return frac(sin(dot(p, float2(12.9898, 78.233))) * 43758.5453); }
 float rgb2grey(float3 v) { return dot(v, float3(0.21, 0.72, 0.04)); }
+
+float max3(float3 v) { return max(v.r, max(v.g, v.b)); }
+
+// Phosphor brightness (linear light) t seconds after the beam left; see PHOSPHORS in src/build.py.
+float phosphorDecay(float t)
+{
+    float tau = max(PHOSPHOR_TAU, 1e-4);
+    return PHOSPHOR_POWER > 0.0 ? pow(1.0 + t / tau, -PHOSPHOR_POWER) : exp(-t / tau);
+}
+
+// Light above the background, recoloured towards the afterglow colour (cascade phosphors).
+float3 afterglow(float3 light, float amount)
+{
+    float3 a = AFTERGLOW_COLOR * max3(light) / max(max3(AFTERGLOW_COLOR), 1e-4);
+    return lerp(light, a, amount);
+}
 
 float3 chroma(float3 c)
 {
@@ -110,6 +146,9 @@ float3 raster(float2 uv, float3 texel, float density)
     float2 c2 = cell * cell;
     float mask = 1.0 - c2.x - c2.y;
     return lerp(texel, lerp(loC, hiC, mask), intensity);
+  #elif RASTER == 4
+    float mask = 1.0 - abs(cell.x);   // vertical columns (a scanned LED column)
+    return lerp(texel, lerp(loC, hiC, mask), intensity);
   #else
     float3 offs = 3.141592654 * float3(0.5, 0.5 - 2.0 / 3.0, 0.5 - 4.0 / 3.0);
     float ang = uv.x * Resolution.x / density * 6.283185307;
@@ -128,7 +167,7 @@ float4 main(float4 pos : SV_POSITION, float2 tex : TEXCOORD) : SV_TARGET
     float frame = floor(Time * 60.0);
     float r1 = hash(float2(frame, 1.7));
     float r2 = hash(float2(frame, 9.1));
-    float density = PIXEL_SIZE * s;
+    float density = SCANLINES_PER_ROW > 0.0 ? CELL_HEIGHT * s / max(SCANLINES_PER_ROW, 1.0) : PIXEL_SIZE * s;
 
     // Whole-window effects (picture and margin alike): grain, rolling scan line.
     float2 grain = floor(pos.xy / max(2.0 * s, density));
@@ -139,7 +178,20 @@ float4 main(float4 pos : SV_POSITION, float2 tex : TEXCOORD) : SV_TARGET
     float band = 120.0 * s;
     float yWin = tex.y * Resolution.y;
     extra += frac(smoothstep(-band, 0.0, yWin - (Resolution.y + band) * frac(Time * 0.15))) * GLOWING_LINE;
+
+    // Radar sweep: the beam turns clockwise from 12 o'clock; "since" is how long ago it passed this pixel.
+    float lit = 1.0, flash = 1.0;
+    if (SWEEP_PERIOD > 0.0)
+    {
+        float2 c = (tex - 0.5) * Resolution;
+        float since = frac(Time / SWEEP_PERIOD - atan2(c.x, -c.y) / 6.283185) * SWEEP_PERIOD;
+        lit = pow(phosphorDecay(since), 1.0 / 2.2);
+        flash = exp(-since / 0.03);
+        extra = extra * lit + flash * 0.12;   // the beam lights the noise ("grass") as it passes
+    }
     float3 surround = chroma(extra);   // BACK_COLOR plus noise and scan line
+    if (SWEEP_PERIOD > 0.0)
+        surround = BACK_COLOR + afterglow(surround - BACK_COLOR, 1.0 - flash);
 
     float3 color = surround;
     float2 uv = shape(tex);
@@ -156,10 +208,13 @@ float4 main(float4 pos : SV_POSITION, float2 tex : TEXCOORD) : SV_TARGET
         // Jitter.
         coords += (float2(n1, n2) - 0.5) * float2(0.007, 0.002) * JITTER * JITTER;
 
-        float3 txt = raster(coords, sampleRgb(coords), density);
+        float3 txt = raster(coords, sampleRgb(coords), density) * lit;
 
         // Work on light above the background, so empty screen equals the margin exactly.
-        float3 pic = tint(txt) + (surround - BACK_COLOR);
+        float3 pic = tint(txt) - BACK_COLOR;
+        if (SWEEP_PERIOD > 0.0)
+            pic = afterglow(pic, 1.0 - flash);
+        pic += surround;
 
         // Bloom: wide gaussian of the lit picture, capped by its brightest channel, screen-blended.
         float2 px = GLOW_SPREAD * s / Resolution;
@@ -174,6 +229,8 @@ float4 main(float4 pos : SV_POSITION, float2 tex : TEXCOORD) : SV_TARGET
             }
         float3 bloom = max(tint(blur / wsum) - BACK_COLOR, 0.0) * BLOOM_GAIN;
         bloom *= min(1.0, BLOOM_MAX / max(max(bloom.r, max(bloom.g, bloom.b)), 0.0001));
+        if (SWEEP_PERIOD > 0.0)
+            bloom = afterglow(bloom * lit, 1.0 - flash);
         pic = 1.0 - (1.0 - saturate(pic)) * (1.0 - bloom);
 
         // Soft edge into the margin.
@@ -187,26 +244,81 @@ float4 main(float4 pos : SV_POSITION, float2 tex : TEXCOORD) : SV_TARGET
     // Flicker scales the light, not the background.
     color = BACK_COLOR + (color - BACK_COLOR) * (1.0 + (r2 - 0.5) * FLICKERING);
 
+    // Refresh: the real screen's light pulses at its refresh rate as the beam scans down. Shown as the pulse's
+    // fundamental, averaged over this monitor's frame (needs the frame time from the Windhawk mod); left out when this
+    // monitor is too slow to show that rate, rather than faking a slower flicker.
+    if (REFRESH_HZ > 0.0 && REFRESH_DEPTH > 0.0 && BurninDt > 0.0)
+    {
+        float fdt = min(BurninDt, 0.1);
+        float x = 3.14159265 * REFRESH_HZ * fdt;
+        float shown = step(REFRESH_HZ * fdt, 0.5) * sin(x) / max(x, 1e-4);
+        float rate = INTERLACED ? REFRESH_HZ * 0.5 : REFRESH_HZ;   // each line's own refresh rate
+        x = 3.14159265 * rate * fdt;
+        shown = step(rate * fdt, 0.5) * sin(x) / max(x, 1e-4);
+        float odd = INTERLACED ? fmod(floor(pos.y / density), 2.0) * 0.5 : 0.0;   // the other field comes half a frame later
+        float pulse = cos(6.2831853 * ((Time - fdt * 0.5) * rate - (REFRESH_ACROSS ? tex.x : tex.y) - odd));
+        color *= 1.0 + REFRESH_DEPTH * shown * pulse;   // all the tube's light pulses, background glow included
+    }
+
+#if SHADES == 4
+    // Four-shade LCD: snap to the nearest of the panel's shades along the background-to-text line.
+    float3 axis = FONT_COLOR - BACK_COLOR;
+    float q = floor(saturate(dot(color - BACK_COLOR, axis) / max(dot(axis, axis), 1e-5)) * 3.0 + 0.5);
+    color = q < 0.5 ? BACK_COLOR : (q < 1.5 ? SHADE_1 : (q < 2.5 ? SHADE_2 : FONT_COLOR));
+#endif
+
+    // Control-grid wire mesh in front of a vacuum fluorescent display.
+    if (MESH > 0.0)
+    {
+        float2 m = fmod(floor(pos.xy), max(floor(MESH_PITCH * s), 2.0));
+        color = BACK_COLOR + (color - BACK_COLOR) * (1.0 - MESH * saturate(step(m.x, 0.0) + step(m.y, 0.0)));
+    }
+
+#if PAPER_BARS > 0
+    // Printout paper: ink is printed over alternating plain and coloured bands.
+    float bar = fmod(floor(pos.y / (CELL_HEIGHT * s * PAPER_BARS)), 2.0);
+    color *= lerp(float3(1.0, 1.0, 1.0), BAR_COLOR / max(BACK_COLOR, 0.001), bar);
+#endif
+
+#if OVERLAY
+    // Translucent coloured plastic over the tube, in three bands.
+    color *= tex.y < 0.25 ? OVERLAY_TOP : (tex.y < 0.75 ? OVERLAY_MID : OVERLAY_BOTTOM);
+#endif
+
     // Fine dither noise, as in the original static pass.
     color += (hash(tex * Resolution + frac(Time)) - 0.5) * 0.025;
 
     color = saturate(color);
 
-    // Phosphor afterglow: the previous frame decays by the phosphor's own law (see PHOSPHORS in src/build.py), in linear
-    // light; keep whichever of it and the new picture is further from the background.
-    if (PHOSPHOR_TAU > 0.0 && BurninDt > 0.0)
+    // Previous frame (from the Windhawk mod): phosphor afterglow or slow LCD pixels.
+    if ((PHOSPHOR_TAU > 0.0 || LCD_RESPONSE > 0.0) && BurninDt > 0.0)
     {
         float4 prev = BurninPrevFrame.Load(int3(pos.xy, 0));
         float dt = min(BurninDt, 1.0);
-        float3 d = prev.rgb - BACK_COLOR;
-        float3 lin = pow(abs(d), 2.2);
-        if (PHOSPHOR_POWER > 0.0)
-            lin = pow(pow(max(lin, 1e-6), -1.0 / max(PHOSPHOR_POWER, 0.001)) + dt / PHOSPHOR_TAU, -PHOSPHOR_POWER);
+        float valid = step(0.5, prev.a);
+        if (LCD_RESPONSE > 0.0)
+        {
+            // Liquid crystal turns slowly both ways: move from the previous picture towards the new one, in linear light.
+            float3 lin = lerp(pow(max(prev.rgb, 0.0), 2.2), pow(max(color, 0.0), 2.2), 1.0 - exp(-dt / LCD_RESPONSE));
+            color = lerp(color, pow(max(lin, 0.0), 1.0 / 2.2), valid);
+        }
         else
-            lin *= exp(-dt / PHOSPHOR_TAU);
-        float3 a = pow(lin, 1.0 / 2.2);
-        a *= step(0.006, a);   // below 8-bit visibility: done
-        color = lerp(color, BACK_COLOR + sign(d) * a, step(abs(color - BACK_COLOR), a) * step(0.5, prev.a));
+        {
+            // Phosphor: the previous frame decays by the phosphor's own law (PHOSPHORS in src/build.py), in linear light;
+            // keep whichever of it and the new picture is further from the background.
+            float3 d = prev.rgb - BACK_COLOR;
+            float3 lin = pow(abs(d), 2.2);
+            if (PHOSPHOR_POWER > 0.0)
+                lin = pow(pow(max(lin, 1e-6), -1.0 / max(PHOSPHOR_POWER, 0.001)) + dt / PHOSPHOR_TAU, -PHOSPHOR_POWER);
+            else
+                lin *= exp(-dt / PHOSPHOR_TAU);
+            float3 a = pow(max(lin, 0.0), 1.0 / 2.2);
+            a *= step(0.006, a);   // below 8-bit visibility: done
+            float3 ghost = sign(d) * a;
+            if (max3(AFTERGLOW_COLOR) > 0.0)
+                ghost = afterglow(max(ghost, 0.0), 1.0);
+            color = lerp(color, BACK_COLOR + ghost, step(abs(color - BACK_COLOR), abs(ghost)) * valid);
+        }
     }
 
     return float4(color, 1.0);

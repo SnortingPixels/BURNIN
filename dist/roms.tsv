@@ -2,3 +2,5 @@
 48.rom	https://raw.githubusercontent.com/chriswilson2020/zx-spectrum-emulator/main/ROM/48.rom
 cpc464.rom	https://raw.githubusercontent.com/ColinPitrat/caprice32/master/rom/cpc464.rom
 teletext_data.js	https://raw.githubusercontent.com/mattgodbolt/jsbeeb/main/src/teletext_data.js
+vuengine.font	https://raw.githubusercontent.com/VUEngine/VUEngine-Core/master/assets/Font/Default.font
+dvk_15ie.draw	https://raw.githubusercontent.com/robhagemans/hoard-of-bitfonts/master/elektronika/dvk_15ie.draw

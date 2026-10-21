@@ -22,8 +22,8 @@ text that scrolls or changes leaves a fading trail. cool-retro-term calls it
 burn-in. Windows Terminal can't give a pixel shader the previous frame, so
 this mod does it:
 
-- When Windows Terminal creates a pixel shader that declares
-  `BurninPrevFrame` (all BURNIN shaders do), the mod tags it.
+- When Windows Terminal creates a pixel shader that uses
+  the `BurninFrame` constants (BURNIN shaders with burn-in or refresh flicker do), the mod tags it.
 - Each time Terminal draws with a tagged shader, the mod binds the previous
   finished frame at `t2` and the time since that frame at `b1`, then copies
   the new frame for next time.
@@ -72,7 +72,7 @@ static const GUID kPrevFrame = {0x6b1f2a4e, 0x51c3, 0x4d7a, {0x9e, 0x22, 0x0b, 0
 static const GUID kFrameCb   = {0x6b1f2a4e, 0x51c3, 0x4d7a, {0x9e, 0x22, 0x0b, 0x8d, 0x3c, 0x51, 0x7e, 0x03}};
 static const GUID kFrameTime = {0x6b1f2a4e, 0x51c3, 0x4d7a, {0x9e, 0x22, 0x0b, 0x8d, 0x3c, 0x51, 0x7e, 0x04}};
 
-static const char kMarker[] = "BurninPrevFrame";   // resource name in the shader's reflection data
+static const char kMarker[] = "BurninFrame";   // constant-buffer name in the shader's reflection data (only kept if used)
 
 using CreatePixelShader_t = HRESULT(STDMETHODCALLTYPE*)(ID3D11Device*, const void*, SIZE_T, ID3D11ClassLinkage*, ID3D11PixelShader**);
 using Draw_t = void(STDMETHODCALLTYPE*)(ID3D11DeviceContext*, UINT, UINT);
