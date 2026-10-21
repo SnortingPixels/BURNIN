@@ -157,6 +157,10 @@ void ProcessAllStylesFromSettings() {
     std::vector<std::wstring> fileLines = ReadColorsFile();
     std::vector<PCWSTR> fileVariables;
     for (const auto& line : fileLines) {
+        // "!Key=Value" lines are for the theme-name label (UpdateThemeLabels), not styles.
+        if (line.starts_with(L"!")) {
+            continue;
+        }
         // "@Target|Property=Value|Property=Value" adds control styles; anything else is a resource variable.
         if (line.starts_with(L"@")) {
             std::vector<std::wstring> parts;
@@ -259,6 +263,75 @@ HANDLE g_colorsWatchThread;
 void Wh_ModSettingsChanged();
 HWND GetCoreWnd();
 
+// The active theme's name, small, at the right of the title bar next to the minimize button. Windows Terminal's
+// TitlebarControl has an empty Border "DragBar" between the tabs and the caption buttons; the label goes in it
+// (not hit-testable, so the window still drags). Text, colour and font come from "!ThemeLabel*" lines in the
+// colours file; no ThemeLabel line (a normal theme) removes it.
+std::vector<winrt::weak_ref<winrt::Windows::UI::Xaml::Controls::Border>> g_labelHosts;
+
+void UpdateThemeLabel(winrt::Windows::UI::Xaml::Controls::Border const& host) {
+    namespace wuxc = winrt::Windows::UI::Xaml::Controls;
+    std::wstring name, font;
+    unsigned long color = 0;
+    for (const auto& line : ReadColorsFile()) {
+        if (line.starts_with(L"!ThemeLabel=")) name = line.substr(12);
+        else if (line.starts_with(L"!ThemeLabelColor=#")) color = wcstoul(line.c_str() + 18, nullptr, 16);
+        else if (line.starts_with(L"!ThemeLabelFont=")) font = line.substr(16);
+    }
+    auto label = host.Child().try_as<wuxc::TextBlock>();
+    bool ours = label && label.Name() == L"BurninThemeLabel";
+    if (name.empty()) {
+        if (ours) host.Child(nullptr);
+        return;
+    }
+    if (!ours) {
+        if (host.Child()) return;   // something else lives there: leave it alone
+        label = wuxc::TextBlock();
+        label.Name(L"BurninThemeLabel");
+        label.HorizontalAlignment(winrt::Windows::UI::Xaml::HorizontalAlignment::Right);
+        label.VerticalAlignment(winrt::Windows::UI::Xaml::VerticalAlignment::Center);
+        label.Margin(winrt::Windows::UI::Xaml::Thickness{0, 0, 10, 0});
+        label.FontSize(11);
+        label.Opacity(0.85);
+        label.IsHitTestVisible(false);
+        host.Child(label);
+    }
+    label.Text(name);
+    if (!font.empty()) label.FontFamily(Media::FontFamily(font));
+    if (color) {
+        label.Foreground(Media::SolidColorBrush(winrt::Windows::UI::Color{
+            (uint8_t)(color >> 24), (uint8_t)(color >> 16), (uint8_t)(color >> 8), (uint8_t)color}));
+    }
+}
+
+void UpdateThemeLabels() {
+    for (auto it = g_labelHosts.begin(); it != g_labelHosts.end();) {
+        auto host = it->get();
+        if (!host) {
+            it = g_labelHosts.erase(it);
+            continue;
+        }
+        try {
+            UpdateThemeLabel(host);
+        } catch (...) {
+            Wh_Log(L"Error %08X updating the theme label", winrt::to_hresult());
+        }
+        ++it;
+    }
+}
+
+void TrackThemeLabelHost(winrt::Windows::UI::Xaml::FrameworkElement element) {
+    if (element.Name() != L"DragBar") return;
+    auto host = element.try_as<winrt::Windows::UI::Xaml::Controls::Border>();
+    if (!host) return;
+    g_labelHosts.push_back(winrt::make_weak(host));
+    try {
+        UpdateThemeLabel(host);
+    } catch (...) {
+        Wh_Log(L"Error %08X adding the theme label", winrt::to_hresult());
+    }
+}
+
 // Sets the colour of every brush this mod inserted ("Key:=<SolidColorBrush Color="#AARRGGBB"/>"
 // lines) on the existing brush objects, so everything drawn with them updates immediately.
 void UpdateColorsInPlace() {
@@ -287,6 +360,7 @@ void UpdateColorsInPlace() {
         }
     }
     Wh_Log(L"Recoloured %d brushes", updated);
+    UpdateThemeLabels();
 }
 
 DWORD WINAPI ColorsFileWatchThread(LPVOID) {
@@ -353,6 +427,10 @@ void StopColorsFileWatch() {
 BOOL Wh_ModInit() {
 '@
 $text = $text.Replace("BOOL Wh_ModInit() {", $watch.Trim())
+# theme-name label: find Windows Terminal's DragBar as XAML elements appear
+$text = $text.Replace("void TrackSplitView(winrt::Windows::UI::Xaml::FrameworkElement element);",
+  "void TrackSplitView(winrt::Windows::UI::Xaml::FrameworkElement element);`nvoid TrackThemeLabelHost(winrt::Windows::UI::Xaml::FrameworkElement element);")
+$text = $text.Replace("            TrackSplitView(frameworkElement);", "            TrackSplitView(frameworkElement);`n            TrackThemeLabelHost(frameworkElement);")
 $text = Replace-Function $text 'bool StartStatsTimer() {' ''
 $text = Replace-Function $text 'void StopStatsTimer() {' ''
 $text = $text.Replace("PTP_TIMER g_statsTimer;`n", '')
@@ -360,7 +438,7 @@ $text = $text.Replace("    StartStatsTimer();`n`n    return TRUE;", "    return 
 $text = $text.Replace("void Wh_ModAfterInit() {`n    Wh_Log(L`">`");`n", "void Wh_ModAfterInit() {`n    Wh_Log(L`">`");`n`n    StartColorsFileWatch();`n")
 $text = $text.Replace("    StopStatsTimer();`n", "    StopColorsFileWatch();`n")
 
-foreach ($must in 'StartColorsFileWatch();', 'StopColorsFileWatch();', 'CASCADIA_HOSTING_WINDOW_CLASS', 'ReadColorsFile()') {
+foreach ($must in 'StartColorsFileWatch();', 'StopColorsFileWatch();', 'CASCADIA_HOSTING_WINDOW_CLASS', 'ReadColorsFile()', 'TrackThemeLabelHost(frameworkElement);', 'void TrackThemeLabelHost(winrt::Windows::UI::Xaml::FrameworkElement element);') {
   if (-not $text.Contains($must)) { throw "patch missing: $must" }
 }
 if ($text.Contains('StartStatsTimer();') -or $text.Contains('g_themeDensy')) { throw 'leftover stats/theme code' }

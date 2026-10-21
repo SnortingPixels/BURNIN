@@ -158,6 +158,31 @@ $wtThemes = foreach ($t in $index) {
 Ensure $j 'themes' (@(@($j.themes) | Where-Object { $_ -and -not "$($_.name)".EndsWith($Suffix) -and "$($_.name)" -notmatch $OldNames }) + @($wtThemes))
 Ensure $j 'theme' "$Theme$Suffix"
 Ensure $j 'useAcrylicInTabRow' $false
+
+# One profile per theme, so each tab, pane or window can have its own theme. They open the same shell as the
+# default profile and sit together in one "BURNIN" folder of the new-tab menu instead of crowding it.
+$fire = $Suffix.Trim()
+$bulgeNow = try { (Get-Content "$InstallDir\crt-options.json" -Raw | ConvertFrom-Json).bulge } catch { 'historic' }
+$cellInfo = (Get-Content "$InstallDir\dist\themes-index.json" -Raw -Encoding UTF8 | ConvertFrom-Json).cell
+$base = @($j.profiles.list) | Where-Object { $_ -and $_.guid -eq $j.defaultProfile } | Select-Object -First 1
+$shell = if ($base -and $base.commandline) { $base.commandline } else { '%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe' }
+$md5 = [Security.Cryptography.MD5]::Create()
+$themeProfiles = foreach ($t in $index) {
+  $g = '{' + (New-Object Guid (, $md5.ComputeHash([Text.Encoding]::UTF8.GetBytes("burnin:$($t.slug)")))).ToString() + '}'
+  $p = [ordered]@{
+    guid = $g; name = "$($t.name)$Suffix"; icon = $fire; commandline = $shell; colorScheme = 'Retro Source'; cursorShape = $t.cursor
+    font = [pscustomobject][ordered]@{ face = $t.fontWindows; size = $t.size; cellWidth = "$($cellInfo.width)px"; cellHeight = "$($cellInfo.height)px" }
+    'experimental.pixelShaderPath' = "$InstallDir\dist\windows-terminal\$(if ($bulgeNow -eq 'flat') { 'flat' } else { 'historic' })\$($t.slug).hlsl"
+  }
+  if ($base -and $base.startingDirectory) { $p.startingDirectory = $base.startingDirectory }
+  [pscustomobject]$p
+}
+$ours = @($themeProfiles | ForEach-Object guid)
+Ensure $j.profiles 'list' (@(@($j.profiles.list) | Where-Object { $_ -and $ours -notcontains $_.guid }) + @($themeProfiles))
+$folder = [pscustomobject][ordered]@{ type = 'folder'; name = 'BURNIN'; icon = $fire; inline = 'never'
+  entries = @($ours | ForEach-Object { [pscustomobject]@{ type = 'profile'; profile = $_ } }) }
+$menu = if ($j.PSObject.Properties['newTabMenu'] -and $j.newTabMenu) { @($j.newTabMenu) } else { @([pscustomobject]@{ type = 'remainingProfiles' }) }
+Ensure $j 'newTabMenu' (@($menu | Where-Object { -not ($_.type -eq 'folder' -and $_.name -eq 'BURNIN') }) + $folder)
 [IO.File]::WriteAllText($SettingsPath, ($j | ConvertTo-Json -Depth 32), (New-Object Text.UTF8Encoding $false))
 
 $optFile = "$InstallDir\crt-options.json"
