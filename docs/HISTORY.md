@@ -586,6 +586,154 @@ John Ross of Smith Engineering conceived the Vectrex in 1980; Gerry Karr designe
 
 Sources: [Vectrex (Wikipedia)](https://en.wikipedia.org/wiki/Vectrex), [Vectrex Wait_Recal (Pforzheim)](https://itwww.hs-pforzheim.de/daten/mitarbeiter/johannsen/vectrex_lab/projects/wait_recal/wait_recal.htm), [Relief SingleLine (GitHub)](https://github.com/isdat-type/Relief-SingleLine)
 
+# Legends
+
+Twelve famous screens. Seven are tributes to fictional computers from films, a TV series and a game: they borrow only the colours, mood and type, and the colours were measured by fans or estimated (each section says which). Five are real machines that became legends.
+
+<a id="mu-th-ur-6000"></a>
+
+## 🛸 MU-TH-UR 6000
+
+<a href="screenshots/mu-th-ur-6000.jpg"><img src="screenshots/mu-th-ur-6000.jpg" width="480" alt="MU-TH-UR 6000 theme"></a>
+
+In Ridley Scott's *Alien* (1979), the crew of the Nostromo talk to the ship's computer, "Mother", through glowing green text screens. American Cinematographer reported that the bridge was surrounded by about forty TV monitors fed live from a central video room built out of salvaged aircraft, car, radio and TV parts; Michael Seymour was the production designer. Dave Addey's *Typeset in the Future* notes that the high-resolution inserts of the 2003 Special Edition set Mother's words in Berthold City, a rare serif face for a science-fiction computer.
+
+**The theme:** a tribute, not a copy. Green text on near-black with scanlines and a soft glow; the colours are estimates, as no measured values exist. The font is Glass TTY VT220 (public domain), closer to the 1979 terminal look than the 2003 inserts.
+
+Sources: [American Cinematographer: Behind the scenes of Alien](https://theasc.com/articles/behind-the-scenes-of-alien), [Typeset in the Future: Alien](https://typesetinthefuture.com/2014/12/01/alien/), [Brian Wyvill on the Alien graphics](https://cspages.ucalgary.ca/~blob/alien.html)
+
+<a id="wargames-wopr"></a>
+
+## 🎮 WarGames WOPR
+
+<a href="screenshots/wargames-wopr.jpg"><img src="screenshots/wargames-wopr.jpg" width="480" alt="WarGames WOPR theme"></a>
+
+In *WarGames* (1983), a teenager dials into the NORAD war computer WOPR, whose program Joshua greets him with "GREETINGS PROFESSOR FALKEN" and "SHALL WE PLAY A GAME?". The terminal text was generated live on a CompuPro computer, whose video boards were modified to scan at 24 frames per second so the screens could be filmed without rolling bars. The NORAD wall graphics, by Colin Cantwell, were drawn on HP vector displays and filmed through rotating colour filters, about a minute per frame. Geoffrey Kirkland was the production designer.
+
+**The theme:** a tribute. Pale blue (#7cb4fc) on dark navy, taken from Christopher Anderton's frame-by-frame IMSAI recreation, so fan-measured rather than official. Font: VT323 (OFL), which that recreation also uses; the film's own characters came from a custom character generator that was never released as a font.
+
+Sources: [WarGames (Wikipedia)](https://en.wikipedia.org/wiki/WarGames), [WarGames ASCII analysis (48k.ca)](https://48k.ca/wgascii.html), [Mini-Micro Systems, June 1984](https://bitsavers.mirrorservice.org/magazines/Mini-Micro_Systems/198406_Making_Wargames.pdf), [IMSAI recreation colours](https://gist.github.com/tuliopc23/f80511fe784695624a042474f24a3c6b)
+
+<a id="robco-terminal"></a>
+
+## ☢️ RobCo Terminal
+
+<a href="screenshots/robco-terminal.jpg"><img src="screenshots/robco-terminal.jpg" width="480" alt="RobCo Terminal theme"></a>
+
+The *Fallout* games (Fallout 3, 2008; New Vegas, 2010; Fallout 4, 2015) fill their post-nuclear world with RobCo Industries terminals: retro-futurist green-screen computers, with a word-guessing hacking minigame. They are drawn by the game engine as a fake CRT with heavy glow, a rolling bright band, curvature and noise. New Vegas switched its interface colour to amber.
+
+**The theme:** a tribute. Fallout 3's terminal green (25, 255, 128, from the game's settings as documented by modders) on dark green, with strong bloom, the rolling band, curvature and noise. Font: Share Tech Mono (OFL), which modders identify as the font Fallout 4's terminals use.
+
+Sources: [Fallout 4 terminal font (Nexus Mods)](https://www.nexusmods.com/fallout4/mods/78733), [Fallout 3 colour values (Nexus Mods)](https://www.nexusmods.com/fallout3/mods/4737)
+
+<a id="the-matrix"></a>
+
+## 🟩 The Matrix
+
+<a href="screenshots/the-matrix.jpg"><img src="screenshots/the-matrix.jpg" width="480" alt="The Matrix theme"></a>
+
+The green "digital rain" of *The Matrix* (1999) was designed by Simon Whiteley, who built it from mirrored katakana and digits, scanned, he said, from his wife's Japanese cookbook. The glyphs don't move: each "raindrop" is a wave of brightness running down a column of fixed, flickering symbols, with a bright head and a fading tail.
+
+**The theme:** a tribute. Green text over falling columns of glyph-like dot patterns, in the colours of Rezmason's widely used recreation (#89f76e text, #176105 trails). The rain is drawn by the shader, so it uses abstract dot patterns, not the film's katakana. Font: Share Tech Mono (OFL).
+
+Sources: [Digital rain (Wikipedia)](https://en.wikipedia.org/wiki/Digital_rain), [befores & afters: Secrets of the Matrix code](https://beforesandafters.com/secrets-of-the-matrix-code/), [Rezmason/matrix (GitHub)](https://github.com/Rezmason/matrix)
+
+<a id="tron"></a>
+
+## 🔵 Tron
+
+<a href="screenshots/tron.jpg"><img src="screenshots/tron.jpg" width="480" alt="Tron theme"></a>
+
+Steven Lisberger's *Tron* (Disney, 1982) put actors inside a computer. Its glowing world was mostly not computer-generated: the live action was shot in black and white on a black set, then backlit and colour-filtered frame by frame, about 12 passes per shot and up to 50 for some. Mœbius, Syd Mead and Peter Lloyd designed the world, and MAGI and Triple-I made the CGI. Good programs glow blue, evil ones red, and some scenes kept an earlier yellow scheme.
+
+**The theme:** a tribute. Pale cyan text with the strongest glow in BURNIN, on pure black; coloured text takes Tron's cyan, red-orange or yellow. The colours are estimates. Font: Share Tech Mono (OFL).
+
+Sources: [Tron (Wikipedia)](https://en.wikipedia.org/wiki/Tron), [Electronic Games, October 1982](https://www.dix-project.net/document/electronic-games_1982-10_the-magnificent-look-of-tron)
+
+<a id="severance-mdr"></a>
+
+## 🏢 Severance MDR
+
+<a href="screenshots/severance-mdr.jpg"><img src="screenshots/severance-mdr.jpg" width="480" alt="Severance MDR theme"></a>
+
+In *Severance* (Apple TV+, 2022, created by Dan Erickson), the "refiners" of Lumon Industries' Macrodata Refinement department sort "scary" numbers on deep, rounded CRT terminals with built-in trackballs, without knowing what the numbers mean. Production designer Jeremy Hindle's team built the workstations as part of Lumon's uncanny corporate modernism.
+
+**The theme:** a tribute. Pale cyan (#b7e6fa, from a fan recreation's CSS) on dark blue-green, on a strongly curved tube with gentle scanlines; the background is an estimate. The show's screen font is undocumented, so the font is DM Mono (OFL), a geometric monospace.
+
+Sources: [Metropolis: the corporate modernism of Severance](https://metropolismag.com/viewpoints/building-the-uncanny-corporate-modernism-of-severance/), [Domus on Severance's set design](https://domusweb.it/en/speciali/modern-work/gallery/2022/through-set-design-severance-reveals-the-gruesome-nature-of-office-work.html), [Fonts in Use: Severance](https://fontsinuse.com/uses/47788/severance-tv-series)
+
+<a id="lcars"></a>
+
+## 🖖 LCARS
+
+<a href="screenshots/lcars.jpg"><img src="screenshots/lcars.jpg" width="480" alt="LCARS theme"></a>
+
+LCARS (Library Computer Access/Retrieval System) is the interface Michael Okuda, scenic art supervisor, designed for *Star Trek: The Next Generation* (1987). The panels were backlit artwork rather than real screens; Gene Roddenberry asked that they not show much activity, so the technology would look more advanced. Okuda set the type in Helvetica Ultra Compressed, and the crew's initials hidden on buttons became known as "Okudagrams".
+
+**The theme:** a tribute. Orange text on black, flat and steady like a backlit panel; coloured text takes the LCARS orange, violet, blue or red from thelcars.com's community "classic" palette. Font: Antonio (OFL), a free condensed grotesque close to Helvetica Ultra Compressed; it is proportional, so it looks widely spaced in a terminal.
+
+Sources: [LCARS (Wikipedia)](https://en.wikipedia.org/wiki/LCARS), [thelcars.com colours](https://www.thelcars.com/colors.php), [Okuda on the typeface (Modiphius forum)](https://forums.modiphius.com/t/super-strange-question-but-what-font-are-the-miscellaneous-portions-of-text-typed-in/15780)
+
+<a id="bloomberg-terminal"></a>
+
+## 💹 Bloomberg Terminal
+
+<a href="screenshots/bloomberg-terminal.jpg"><img src="screenshots/bloomberg-terminal.jpg" width="480" alt="Bloomberg Terminal theme"></a>
+
+Michael Bloomberg founded Innovative Market Systems with his Salomon Brothers buyout money, and its "Market Master" terminal shipped in December 1982; Merrill Lynch was the first client. At launch it showed only US government bond prices and bond calculations, on a monochrome CRT with colour-coded, labelled keys. Today's Bloomberg Terminal is famous for its dense amber-on-black screens.
+
+**The theme:** amber (#f49f31) on black, with light curvature and a tight glow so dense text stays sharp; the colours come from community themes inspired by the terminal, not from Bloomberg. The terminal's own typeface is proprietary, so the font is IBM Plex Mono (OFL).
+
+Sources: [Bloomberg L.P. (Wikipedia)](https://en.wikipedia.org/wiki/Bloomberg_L.P.), [IEEE Spectrum: the Bloomberg terminal](https://spectrum.ieee.org/bloomberg-terminal), [berg theme (GitHub)](https://github.com/jx22/berg)
+
+<a id="apollo-dsky"></a>
+
+## 🌙 Apollo DSKY
+
+<a href="screenshots/apollo-dsky.jpg"><img src="screenshots/apollo-dsky.jpg" width="480" alt="Apollo DSKY theme"></a>
+
+The DSKY (display and keyboard) was the astronauts' interface to the Apollo Guidance Computer: they typed two-digit verb and noun codes and read the answers on green electroluminescent seven-segment digits. The segments ran on 250 V AC at 800 Hz, switched by latching relays because transistors of the time couldn't switch them well, and they lost brightness with use (about 60 % after 2,000 hours, per a 2024 restoration). The indicator was Sylvania's SD195A.
+
+**The theme:** EL green (estimated from the phosphor's emission) on a dark panel, with a soft glow and no afterglow, since EL segments switch off in microseconds. Font: DSEG14 Classic (OFL), a 14-segment display font; it has no `# ; [ ] { }`, which fall back to another font.
+
+Sources: [NASSP: DSKY](https://nassp.space/index.php/DSKY), [VCF West 2024 DSKY restoration](https://vcfed.org/wp-content/uploads/2025/02/VCF_WEST_2024_SLIDES_DSKY_Restoration.pdf), [DSEG (GitHub)](https://github.com/keshikan/DSEG)
+
+<a id="eniac"></a>
+
+## 🧮 ENIAC
+
+<a href="screenshots/eniac.jpg"><img src="screenshots/eniac.jpg" width="480" alt="ENIAC theme"></a>
+
+ENIAC, built by J. Presper Eckert and John Mauchly at the University of Pennsylvania's Moore School and unveiled in 1946, had no screen at all. Its twenty ten-digit accumulators, each adding about 5,000 times a second with ring counters of vacuum tubes, showed their contents on rows of neon lamps; the Computer History Museum's photo captions read the numbers straight off them.
+
+**The theme:** neon orange dots on a dark panel with a strong glow. The orange is estimated from neon's emission lines, and neon has no visible afterglow. Font: Doto (OFL), a round-dot matrix face, standing in for rows of lamps.
+
+Sources: [ENIAC (Wikipedia)](https://en.wikipedia.org/wiki/ENIAC), [Computer History Museum: ENIAC](https://www.computerhistory.org/revolution/birth-of-the-computer/4/intro/318)
+
+<a id="macintosh-128k"></a>
+
+## 💻 Macintosh 128K
+
+<a href="screenshots/macintosh-128k.jpg"><img src="screenshots/macintosh-128k.jpg" width="480" alt="Macintosh 128K theme"></a>
+
+Apple's first Macintosh (January 1984) put a crisp 9-inch black-and-white screen of 512 by 342 pixels in a small all-in-one case, redrawn from RAM about 60 times a second. Susan Kare designed its bitmap fonts, including Chicago for the menus and Monaco (with Kris Holmes and Charles Bigelow's later outline version) for fixed-width text.
+
+**The theme:** black text on the screen's slightly blue white, on a gently curved 9-inch tube; the white's tint is an estimate (the tube is believed to use the common P4 phosphor). Monaco is Apple's, so the font is ProFont IIx (MIT), a free font made as an improved Monaco for programmers.
+
+Sources: [Macintosh 128K (Wikipedia)](https://en.wikipedia.org/wiki/Macintosh_128K), [Monaco (Wikipedia)](https://en.wikipedia.org/wiki/Monaco_(typeface)), [ProFont (Nerd Fonts source)](https://github.com/ryanoasis/nerd-fonts/tree/master/src/unpatched-fonts/ProFont)
+
+<a id="pdp-1-spacewar"></a>
+
+## 🚀 PDP-1 Spacewar!
+
+<a href="screenshots/pdp-1-spacewar.jpg"><img src="screenshots/pdp-1-spacewar.jpg" width="480" alt="PDP-1 Spacewar! theme"></a>
+
+*Spacewar!*, conceived in 1961 by Martin Graetz, Steve Russell and Wayne Wiitanen and written at MIT in 1962, is one of the first video games. It ran on DEC's PDP-1 and its Type 30 display, which plotted single points (1,024 by 1,024, about 20,000 a second) on a round tube coated with P7 phosphor: each point flashed bright blue, then left a dim yellow-green afterglow lasting seconds, so ships trailed fading ghosts. Its blue flash could also trigger a light pen.
+
+**The theme:** P7's blue-white flash fading to a yellow-green afterglow on a round tube; with the Windows burn-in mod, changing text leaves the same fading trails. The colours are tuned from P7's emission peaks. The Type 30 had no characters, so the font is Cutive Mono (OFL), a typewriter face for the PDP-1's console typewriter.
+
+Sources: [Spacewar! (Wikipedia)](https://en.wikipedia.org/wiki/Spacewar!), [Inside Spacewar! (masswerk.at)](https://www.masswerk.at/spacewar/inside/), [Computer History Museum: PDP-1](https://www.computerhistory.org/pdp-1/spacewar/)
+
 # Looks from cool-retro-term
 
 [cool-retro-term](https://github.com/Swordfish90/cool-retro-term) is a free terminal emulator by Filippo Scognamiglio (Swordfish90) and contributors that imitates old CRT screens, and BURNIN's shader is a port of its code. These themes copy its built-in profiles. They are styles, not specific machines.

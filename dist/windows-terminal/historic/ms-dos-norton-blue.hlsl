@@ -65,6 +65,16 @@ cbuffer BurninFrame : register(b1) {
 #define REFRESH_DEPTH     0.0    // how deep the pulse is at that rate, from the phosphor's decay time (src/build.py)
 #define SCANLINES_PER_ROW 16.0    // the real screen's scan lines per text row; sets the scanline pitch (0 = PIXEL_SIZE)
 #define INTERLACED        0      // 1 = interlaced: odd and even scan lines refresh in turn, each at half the rate
+#define CELL_WIDTH        12.0   // text column width in pixels at 100 % scaling
+#define LAMP_SIZE         0.8    // RASTER 5 (lamps / plotted points): lamp diameter as a fraction of its spacing
+#define RAIN              0      // 1 = falling "digital rain" behind the text (The Matrix)
+#define RAIN_COLOR        float3(0.0, 1.0, 0.25)
+#define RAIN_STRENGTH     0.35   // brightness of the rain's trails
+#define PALETTE_SIZE      0      // 1..4: coloured text takes the nearest of these colours (e.g. LCARS)
+#define PALETTE_0         float3(1.0, 1.0, 1.0)
+#define PALETTE_1         float3(1.0, 1.0, 1.0)
+#define PALETTE_2         float3(1.0, 1.0, 1.0)
+#define PALETTE_3         float3(1.0, 1.0, 1.0)
 #define REFRESH_ACROSS    0      // 1 = the picture is scanned left to right (a mirror-swept LED column), not top to bottom
 
 float hash(float2 p) { return frac(sin(dot(p, float2(12.9898, 78.233))) * 43758.5453); }
@@ -86,6 +96,35 @@ float3 afterglow(float3 light, float amount)
     return lerp(light, a, amount);
 }
 
+
+// Coloured text takes the palette colour closest in hue (PALETTE_SIZE > 0).
+float3 paletteColour(float3 full)
+{
+    float3 best = PALETTE_0;
+    float score = dot(normalize(full + 1e-4), normalize(PALETTE_0 + 1e-4));
+    if (PALETTE_SIZE > 1) { float k = dot(normalize(full + 1e-4), normalize(PALETTE_1 + 1e-4)); if (k > score) { score = k; best = PALETTE_1; } }
+    if (PALETTE_SIZE > 2) { float k = dot(normalize(full + 1e-4), normalize(PALETTE_2 + 1e-4)); if (k > score) { score = k; best = PALETTE_2; } }
+    if (PALETTE_SIZE > 3) { float k = dot(normalize(full + 1e-4), normalize(PALETTE_3 + 1e-4)); if (k > score) { score = k; best = PALETTE_3; } }
+    return best;
+}
+
+// Falling code: columns of glyph-like dot patterns with a bright head and a fading trail (y counted from the top).
+float3 digitalRain(float2 p, float s)
+{
+    float2 cell = float2(CELL_WIDTH, CELL_HEIGHT) * s;
+    float col = floor(p.x / cell.x), row = floor(p.y / cell.y);
+    float rows = Resolution.y / cell.y + 24.0;
+    float speed = lerp(5.0, 14.0, hash(float2(col, 3.1)));
+    float head = frac(Time * speed / rows + hash(float2(col, 7.7))) * rows;
+    float d = head - row;   // rows behind the head
+    float trail = d >= 0.0 ? exp(-d / 7.0) : 0.0;
+    float2 gl = floor(frac(p / cell) * float2(5.0, 9.0));
+    float shape = step(0.45, hash(float2(col * 7.0 + gl.x, row * 13.0 + gl.y) + floor(Time * 2.0 + hash(float2(col, row)) * 9.0)));
+    shape *= step(1.0, gl.y) * step(gl.y, 7.0);
+    float headLight = step(0.0, d) * step(d, 1.0);
+    return (RAIN_COLOR * trail + headLight * 0.3) * shape * RAIN_STRENGTH;
+}
+
 float3 chroma(float3 c)
 {
     float grey = rgb2grey(c);
@@ -102,6 +141,7 @@ float3 tint(float3 c)
     // Terminal draws text on black, so anti-aliased edges are "colour x coverage".
     // Rebuild them over the theme background instead, so edges fade into the screen, not into black.
     float3 full = c / max(hi, 0.0001);
+    if (PALETTE_SIZE > 0) full = paletteColour(full);
     float3 accent = lerp(BACK_COLOR, full * ACCENT_SCALE, hi);
     return lerp(chroma(c), accent, keep * KEEP_ACCENTS);
 }
@@ -146,6 +186,8 @@ float3 raster(float2 uv, float3 texel, float density)
     float2 c2 = cell * cell;
     float mask = 1.0 - c2.x - c2.y;
     return lerp(texel, lerp(loC, hiC, mask), intensity);
+  #elif RASTER == 5
+    return texel;   // lamps: shaped in main
   #elif RASTER == 4
     float mask = 1.0 - abs(cell.x);   // vertical columns (a scanned LED column)
     return lerp(texel, lerp(loC, hiC, mask), intensity);
@@ -190,6 +232,9 @@ float4 main(float4 pos : SV_POSITION, float2 tex : TEXCOORD) : SV_TARGET
         extra = extra * lit + flash * 0.12;   // the beam lights the noise ("grass") as it passes
     }
     float3 surround = chroma(extra);   // BACK_COLOR plus noise and scan line
+#if RAIN
+    surround += digitalRain(pos.xy, s);
+#endif
     if (SWEEP_PERIOD > 0.0)
         surround = BACK_COLOR + afterglow(surround - BACK_COLOR, 1.0 - flash);
 
@@ -208,7 +253,14 @@ float4 main(float4 pos : SV_POSITION, float2 tex : TEXCOORD) : SV_TARGET
         // Jitter.
         coords += (float2(n1, n2) - 0.5) * float2(0.007, 0.002) * JITTER * JITTER;
 
+#if RASTER == 5
+        // Lamps / plotted points: each lamp shows the text at its centre, as a round spot.
+        float2 lampPx = coords * Resolution / density;
+        float2 lampOff = frac(lampPx) * 2.0 - 1.0;
+        float3 txt = sampleRgb((floor(lampPx) + 0.5) * density / Resolution) * smoothstep(LAMP_SIZE, LAMP_SIZE * 0.6, length(lampOff)) * lit;
+#else
         float3 txt = raster(coords, sampleRgb(coords), density) * lit;
+#endif
 
         // Work on light above the background, so empty screen equals the margin exactly.
         float3 pic = tint(txt) - BACK_COLOR;
