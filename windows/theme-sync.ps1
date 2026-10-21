@@ -94,6 +94,10 @@ function UiColors($t) {
   foreach ($target in 'TerminalApp.TerminalPage', 'MenuFlyoutItem', 'ToggleMenuFlyoutItem', 'MenuFlyoutSubItem', 'ToolTip') {
     $lines += "@$target|FontFamily=$($t.font)"
   }
+  # Theme-name label next to the minimize button (drawn by the same Windhawk mod)
+  $lines += "!ThemeLabel=$($t.name)"
+  $lines += "!ThemeLabelColor=$(Mix $bg $fg 0.85)"
+  $lines += "!ThemeLabelFont=$($t.font)"
   ($lines -join "`r`n") + "`r`n"
 }
 function Apply {
