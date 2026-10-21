@@ -190,10 +190,13 @@ def families(path, override):
     """(Windows/DirectWrite family, macOS/Linux family) for a font file."""
     if override:
         return override["windows"], override["unix"]
-    names = TTFont(str(path), lazy=True)["name"]
+    font = TTFont(str(path), lazy=True)
+    names = font["name"]
     fam = names.getDebugName(16) or names.getDebugName(1)
     sub = names.getDebugName(17)
     win = f"{fam} {sub}" if sub and sub.lower() not in STANDARD_STYLES else fam
+    if "fvar" in font:
+        win = fam   # variable font: DirectWrite lists one family and picks the weight itself (e.g. "Doto", not "Doto Black")
     return win, fam
 
 
