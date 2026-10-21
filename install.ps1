@@ -1,7 +1,7 @@
 # BURNIN - one-line Windows install:
 #     irm https://raw.githubusercontent.com/SnortingPixels/BURNIN/main/install.ps1 | iex
 # Downloads this repository and runs windows\install.ps1.
-# Options (set before running):  $env:CRT_THEME = 'Commodore 64'   $env:CRT_MENUS = '1'  (Windhawk menu styling)
+# Options (set before running):  $env:CRT_THEME = 'Commodore 64'   $env:CRT_MENUS = '1'  (Windhawk menu styling)  $env:CRT_BURNIN = '1'  (Windhawk burn-in)
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 $repo = 'SnortingPixels/BURNIN'
@@ -16,6 +16,7 @@ try {
   $psArgs = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', "$($src.FullName)\windows\install.ps1")
   if ($env:CRT_THEME) { $psArgs += '-Theme', $env:CRT_THEME }
   if ($env:CRT_MENUS -eq '1') { $psArgs += '-WithMenus' }
+  if ($env:CRT_BURNIN -eq '1') { $psArgs += '-WithBurnIn' }
   & powershell.exe @psArgs
 } finally {
   Remove-Item $tmp -Recurse -Force -ErrorAction SilentlyContinue

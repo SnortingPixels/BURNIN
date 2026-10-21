@@ -94,6 +94,7 @@
     "themes":  [
                    {
                        "name":  "Default Amber",
+                       "phosphor":  "P3",
                        "note":  "cool-retro-term profile",
                        "fg":  "#ff8100",
                        "bg":  "#000000",
@@ -118,6 +119,7 @@
                    },
                    {
                        "name":  "Monochrome Green",
+                       "phosphor":  "P1",
                        "note":  "cool-retro-term profile",
                        "fg":  "#0ccc68",
                        "bg":  "#000000",
@@ -142,6 +144,7 @@
                    },
                    {
                        "name":  "Deep Blue",
+                       "phosphor":  "P1",
                        "note":  "cool-retro-term profile",
                        "fg":  "#7fb4ff",
                        "bg":  "#000000",
@@ -166,6 +169,7 @@
                    },
                    {
                        "name":  "Neon Cyan",
+                       "phosphor":  "P1",
                        "note":  "cool-retro-term profile",
                        "fg":  "#52f7ff",
                        "bg":  "#001018",
@@ -190,6 +194,7 @@
                    },
                    {
                        "name":  "Plasma",
+                       "phosphor":  "P1",
                        "note":  "cool-retro-term profile",
                        "fg":  "#ff9bd6",
                        "bg":  "#070014",
@@ -214,6 +219,7 @@
                    },
                    {
                        "name":  "Ghost Terminal",
+                       "phosphor":  "P1",
                        "note":  "cool-retro-term profile",
                        "fg":  "#a6b3c0",
                        "bg":  "#0b1014",
@@ -238,6 +244,7 @@
                    },
                    {
                        "name":  "Boring",
+                       "phosphor":  "P4",
                        "note":  "cool-retro-term profile",
                        "fg":  "#ffffff",
                        "bg":  "#000000",
@@ -262,6 +269,7 @@
                    },
                    {
                        "name":  "E-Ink",
+                       "phosphor":  "paper",
                        "note":  "cool-retro-term profile",
                        "fg":  "#101010",
                        "bg":  "#f2f2ec",
@@ -286,6 +294,7 @@
                    },
                    {
                        "name":  "DEC VT100",
+                       "phosphor":  "P4",
                        "note":  "P4 white, Glass TTY VT220 font",
                        "fg":  "#b4d8ff",
                        "bg":  "#05070a",
@@ -310,6 +319,7 @@
                    },
                    {
                        "name":  "DEC VT220 Amber",
+                       "phosphor":  "P3",
                        "note":  "P3 amber, Glass TTY VT220 font",
                        "fg":  "#ffa700",
                        "bg":  "#0a0600",
@@ -334,6 +344,7 @@
                    },
                    {
                        "name":  "DEC VT220 Green",
+                       "phosphor":  "P1",
                        "note":  "P1 green, Glass TTY VT220 font",
                        "fg":  "#33ff66",
                        "bg":  "#020a04",
@@ -358,6 +369,7 @@
                    },
                    {
                        "name":  "Zenith Z-19",
+                       "phosphor":  "P1",
                        "note":  "green, Heathkit-H19 ROM font",
                        "fg":  "#33ff66",
                        "bg":  "#020a04",
@@ -382,6 +394,7 @@
                    },
                    {
                        "name":  "IBM 5151 MDA",
+                       "phosphor":  "P39",
                        "note":  "P39 green, IBM VGA ROM font",
                        "fg":  "#33ff66",
                        "bg":  "#020803",
@@ -406,6 +419,7 @@
                    },
                    {
                        "name":  "IBM PC CGA",
+                       "phosphor":  "P22",
                        "note":  "5153 colour, IBM 8x8 ROM font",
                        "fg":  "#aaaaaa",
                        "bg":  "#000000",
@@ -430,6 +444,7 @@
                    },
                    {
                        "name":  "IBM 3278",
+                       "phosphor":  "P1",
                        "note":  "green, IBM 3270 font",
                        "fg":  "#3cff7a",
                        "bg":  "#000000",
@@ -454,6 +469,7 @@
                    },
                    {
                        "name":  "IBM P70 Plasma",
+                       "phosphor":  "plasma",
                        "note":  "orange gas plasma, VGA ROM font",
                        "fg":  "#ff6a1a",
                        "bg":  "#140500",
@@ -478,6 +494,7 @@
                    },
                    {
                        "name":  "Apple ][",
+                       "phosphor":  "P1",
                        "note":  "green monitor, Apple II ROM font",
                        "fg":  "#33ff66",
                        "bg":  "#010a03",
@@ -502,6 +519,7 @@
                    },
                    {
                        "name":  "Commodore PET",
+                       "phosphor":  "P4",
                        "note":  "P4 white, PET ROM font",
                        "fg":  "#b4d8ff",
                        "bg":  "#04060a",
@@ -526,6 +544,7 @@
                    },
                    {
                        "name":  "Commodore 64",
+                       "phosphor":  "P22",
                        "note":  "Pepto palette, C64 ROM font",
                        "fg":  "#6c5eb5",
                        "bg":  "#352879",
@@ -550,6 +569,7 @@
                    },
                    {
                        "name":  "Atari 800",
+                       "phosphor":  "P22",
                        "note":  "default blue, Atari ROM font",
                        "fg":  "#8ed6ff",
                        "bg":  "#0f1f5a",
@@ -574,6 +594,7 @@
                    },
                    {
                        "name":  "Amiga 500",
+                       "phosphor":  "P22",
                        "note":  "Workbench 1.3 palette, Topaz font",
                        "fg":  "#ffffff",
                        "bg":  "#0055aa",
@@ -598,6 +619,7 @@
                    },
                    {
                        "name":  "Tektronix 4014",
+                       "phosphor":  "storage",
                        "note":  "storage tube, tek4010 emulator colours",
                        "fg":  "#24b324",
                        "bg":  "#001400",
@@ -622,6 +644,7 @@
                    },
                    {
                        "name":  "Xerox Alto",
+                       "phosphor":  "paper",
                        "note":  "ContrAlto colours, Alto Mono font",
                        "fg":  "#000000",
                        "bg":  "#ffffff",
@@ -646,6 +669,7 @@
                    },
                    {
                        "name":  "Sun SPARCstation 20",
+                       "phosphor":  "paper",
                        "note":  "Sun console, Gallant font",
                        "fg":  "#000000",
                        "bg":  "#ffffff",
@@ -670,6 +694,7 @@
                    },
                    {
                        "name":  "SGI Indigo2",
+                       "phosphor":  "P22",
                        "note":  "IRIX winterm colours",
                        "fg":  "#feffdd",
                        "bg":  "#00004d",
@@ -694,6 +719,7 @@
                    },
                    {
                        "name":  "SGI Octane",
+                       "phosphor":  "P22",
                        "note":  "IRIX 6.5 winterm colours",
                        "fg":  "#feffdd",
                        "bg":  "#00004d",
@@ -718,6 +744,7 @@
                    },
                    {
                        "name":  "NeXTcube",
+                       "phosphor":  "paper",
                        "note":  "MegaPixel greyscale (estimate)",
                        "fg":  "#000000",
                        "bg":  "#e6e6e6",
@@ -742,6 +769,7 @@
                    },
                    {
                        "name":  "Cray-1",
+                       "phosphor":  "P1",
                        "note":  "DG maintenance console (estimate)",
                        "fg":  "#33ff66",
                        "bg":  "#001000",
@@ -766,6 +794,7 @@
                    },
                    {
                        "name":  "IBM System/360",
+                       "phosphor":  "P1",
                        "note":  "IBM 2260 display (estimate)",
                        "fg":  "#40ff40",
                        "bg":  "#001400",
@@ -790,6 +819,7 @@
                    },
                    {
                        "name":  "DEC PDP-11",
+                       "phosphor":  "P4",
                        "note":  "VT100 console, Glass TTY font",
                        "fg":  "#e8f0ff",
                        "bg":  "#050505",
@@ -814,6 +844,7 @@
                    },
                    {
                        "name":  "Apollo DN10000",
+                       "phosphor":  "paper",
                        "note":  "Display Manager pads (estimate)",
                        "fg":  "#000000",
                        "bg":  "#f0f0f0",
@@ -838,6 +869,7 @@
                    },
                    {
                        "name":  "IBM 5100",
+                       "phosphor":  "P4",
                        "note":  "built-in 5-inch CRT (estimate)",
                        "fg":  "#e0ffe8",
                        "bg":  "#000000",
@@ -862,6 +894,7 @@
                    },
                    {
                        "name":  "Altair 8800",
+                       "phosphor":  "paper",
                        "note":  "ASR-33 teletype paper",
                        "fg":  "#1a1a1a",
                        "bg":  "#f3ecd2",
@@ -886,6 +919,7 @@
                    },
                    {
                        "name":  "IMSAI 8080",
+                       "phosphor":  "paper",
                        "note":  "ASR-33 teletype paper",
                        "fg":  "#1a1a1a",
                        "bg":  "#f3ecd2",
@@ -910,6 +944,7 @@
                    },
                    {
                        "name":  "Amiga 1000",
+                       "phosphor":  "P22",
                        "note":  "Workbench 1.x palette, Topaz font",
                        "fg":  "#ffffff",
                        "bg":  "#0055aa",
@@ -934,6 +969,7 @@
                    },
                    {
                        "name":  "Apple Lisa",
+                       "phosphor":  "paper",
                        "note":  "LisaTerminal font",
                        "fg":  "#000000",
                        "bg":  "#ffffff",
@@ -958,6 +994,7 @@
                    },
                    {
                        "name":  "GRiD Compass",
+                       "phosphor":  "EL",
                        "note":  "amber EL panel",
                        "fg":  "#ff9a1f",
                        "bg":  "#140800",
@@ -982,6 +1019,7 @@
                    },
                    {
                        "name":  "Symbolics 3600",
+                       "phosphor":  "paper",
                        "note":  "Genera console (estimate)",
                        "fg":  "#000000",
                        "bg":  "#e8eee8",
@@ -1006,6 +1044,7 @@
                    },
                    {
                        "name":  "Thinking Machines CM-5",
+                       "phosphor":  "LED",
                        "note":  "red LED panel",
                        "fg":  "#ff2a1a",
                        "bg":  "#0a0000",
@@ -1030,6 +1069,7 @@
                    },
                    {
                        "name":  "DEC VT320 Amber",
+                       "phosphor":  "P3",
                        "note":  "P3 amber, VT323 font",
                        "fg":  "#ffa700",
                        "bg":  "#0a0600",
@@ -1054,6 +1094,7 @@
                    },
                    {
                        "name":  "MS-DOS Norton Blue",
+                       "phosphor":  "P22",
                        "note":  "VGA palette, IBM VGA ROM font",
                        "fg":  "#55ffff",
                        "bg":  "#0000aa",
@@ -1078,6 +1119,7 @@
                    },
                    {
                        "name":  "Hercules Amber",
+                       "phosphor":  "P3",
                        "note":  "P3 amber, IBM VGA ROM font",
                        "fg":  "#ffa700",
                        "bg":  "#0a0600",
@@ -1102,6 +1144,7 @@
                    },
                    {
                        "name":  "ZX Spectrum",
+                       "phosphor":  "P22",
                        "note":  "TV, ROM character set",
                        "fg":  "#000000",
                        "bg":  "#cdcdcd",
@@ -1126,6 +1169,7 @@
                    },
                    {
                        "name":  "Amstrad CPC 464",
+                       "phosphor":  "P22",
                        "note":  "firmware colours, ROM character set",
                        "fg":  "#ffff80",
                        "bg":  "#000080",
@@ -1150,6 +1194,7 @@
                    },
                    {
                        "name":  "BBC Micro Teletext",
+                       "phosphor":  "P22",
                        "note":  "Mode 7, SAA5050 characters",
                        "fg":  "#ffffff",
                        "bg":  "#000000",
