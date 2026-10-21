@@ -84,6 +84,9 @@ burn-in.
   * **Ctrl+Alt+B** historic screen bulge on/off. A bulge moves text slightly away from where Terminal places the mouse
     and selection, so turn it off when you need exact selection.
 * Picking a normal theme (Dark, Light, System) turns the CRT look off.
+* **A different theme per tab or window:** the new-tab menu (▾) has a **🔥 BURNIN** folder with one profile per
+  theme. Each opens your default shell in that theme (Shift+click opens it in a new window), whatever the main
+  theme is. The window frame and menus follow the main theme, since Windows Terminal has only one.
 * Restart Windows Terminal once after installing so it loads the new fonts.
 
 ### 🍎🐧 macOS / Linux (Ghostty)

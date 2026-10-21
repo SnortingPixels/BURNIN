@@ -162,6 +162,18 @@ function ToggleBulge {
   $new = if ($cur -eq 'flat') { 'historic' } else { 'flat' }
   WriteText $options (ConvertTo-Json @{ bulge = $new })
   Log "bulge -> $new"
+  # The per-theme profiles (BURNIN folder of the new-tab menu) follow the same setting.
+  $j = ReadText | ConvertFrom-Json
+  $from = if ($new -eq 'flat') { '\historic\' } else { '\flat\' }
+  $to = if ($new -eq 'flat') { '\flat\' } else { '\historic\' }
+  $changed = $false
+  foreach ($p in @($j.profiles.list)) {
+    $sp = $p.'experimental.pixelShaderPath'
+    if ($sp -and "$($p.name)".EndsWith($Suffix) -and $sp.StartsWith($root) -and $sp.Contains($from)) {
+      $p.'experimental.pixelShaderPath' = $sp.Replace($from, $to); $changed = $true
+    }
+  }
+  if ($changed) { WriteText $settings ($j | ConvertTo-Json -Depth 32) }
   Apply
 }
 
