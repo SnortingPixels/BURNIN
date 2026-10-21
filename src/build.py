@@ -56,6 +56,10 @@ PHOSPHORS = {
 
 
 # Phosphors that glow when the beam hits them; the rest (plasma, LCD, LED, EL, paper, storage) don't pulse with a refresh.
+# Refresh flicker is off: a modern LCD can't reproduce a CRT's flicker faithfully (frame-timing jitter turns it into
+# a slow, harsh pulse). The documented rates stay in themes.json; set this to True to try it.
+REFRESH_FLICKER = False
+
 BEAM_PHOSPHORS = {"P1", "P3", "P4", "P7", "P14", "P22", "P31", "P39"}
 
 
@@ -135,7 +139,7 @@ def shader(template, t, ctor, curvature, cell_height=26):
         x = set_define(x, "MESH", num(t["mesh"]["strength"]))
         x = set_define(x, "MESH_PITCH", num(t["mesh"]["pitch"]))
     x = set_define(x, "CELL_HEIGHT", num(cell_height))
-    if "refresh" in t:
+    if "refresh" in t and REFRESH_FLICKER:
         x = set_define(x, "REFRESH_HZ", num(t["refresh"]))
         line_hz = t["refresh"] / 2 if t.get("interlaced") else t["refresh"]
         x = set_define(x, "REFRESH_DEPTH", num(t.get("refreshDepth", refresh_depth(line_hz, t["phosphor"]))))

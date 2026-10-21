@@ -82,8 +82,9 @@ if ($SkipFonts) {
       $spec = $p.Value
       if ($spec.build) { continue }
       $name = if ($spec.member) { Split-Path $spec.member -Leaf } else { Split-Path ([Uri]$spec.url).LocalPath -Leaf }
+      $name = $name -replace '[\[\]]', ''   # e.g. Doto[ROND,wght].ttf: PowerShell reads brackets in paths as wildcards
       if (Test-Path (Join-Path $fontDir $name)) { Note "$name (already installed)"; continue }
-      $dl = Join-Path $tmp (Split-Path ([Uri]$spec.url).LocalPath -Leaf)
+      $dl = Join-Path $tmp ((Split-Path ([Uri]$spec.url).LocalPath -Leaf) -replace '[\[\]]', '')
       Invoke-WebRequest $spec.url -OutFile $dl -UseBasicParsing -UserAgent $UA
       if ($spec.member) {
         Add-Type -AssemblyName System.IO.Compression.FileSystem
@@ -106,12 +107,14 @@ if ($SkipFonts) {
         Note 'Building the ZX Spectrum, Amstrad CPC, BBC teletext, Virtual Boy and Elektronika fonts from their character data'
         $venv = "$InstallDir\fontbuild\venv"
         if (-not (Test-Path "$venv\Scripts\python.exe")) { & $py @pyArgs -m venv $venv }
-        & "$venv\Scripts\python.exe" -m pip install --quiet --disable-pip-version-check fonttools
+        $ErrorActionPreference = 'Continue'   # pip prints retry warnings on stderr; they aren't failures
+        & "$venv\Scripts\python.exe" -m pip install --quiet --disable-pip-version-check fonttools 2>&1 | Out-Null
         $roms = "$InstallDir\fontbuild\roms"; New-Item -ItemType Directory -Force $roms | Out-Null
         foreach ($rp in $data.roms.PSObject.Properties) {
           if (-not (Test-Path "$roms\$($rp.Name)")) { Invoke-WebRequest $rp.Value -OutFile "$roms\$($rp.Name)" -UseBasicParsing -UserAgent $UA }
         }
-        & "$venv\Scripts\python.exe" -I "$InstallDir\fontbuild\retro_fonts.py" "$roms\48.rom" "$roms\cpc464.rom" "$roms\teletext_data.js" "$roms\vuengine.font" "$roms\dvk_15ie.draw" "$InstallDir\fontbuild\out" | Out-Null
+        & "$venv\Scripts\python.exe" -I "$InstallDir\fontbuild\retro_fonts.py" "$roms\48.rom" "$roms\cpc464.rom" "$roms\teletext_data.js" "$roms\vuengine.font" "$roms\dvk_15ie.draw" "$InstallDir\fontbuild\out" 2>&1 | Out-Null
+        $ErrorActionPreference = 'Stop'
         foreach ($n in $need) { Install-FontFile "$InstallDir\fontbuild\out\$($n.Value.build)"; Note $n.Value.build }
       } else {
         Note 'Python not found: the ZX Spectrum, Amstrad CPC, BBC teletext, Virtual Boy and Elektronika themes will use a fallback font.'
@@ -199,7 +202,7 @@ if ($WithBurnIn) {
     $result | ForEach-Object { Note $_.Line }
     # marker: this installation installed the mod, so its uninstaller may remove it
     if ($result -and $result[-1].Line -eq 'OK') {
-      Set-Content "$InstallDir\windhawkurnin-installed.txt" 'local@burnin-phosphor' -Encoding ASCII
+      Set-Content "$InstallDir\windhawk\burnin-installed.txt" 'local@burnin-phosphor' -Encoding ASCII
       Note 'Burn-in starts with the next theme switch (Ctrl+Alt+T) or the next Windows Terminal start.'
     }
   } else {

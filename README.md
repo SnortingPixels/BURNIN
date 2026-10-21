@@ -136,16 +136,11 @@ Where the real screen's numbers are documented, the theme uses them:
 * **Scan lines per text row:** 10 on the DEC terminals, 14 on the IBM MDA and Hercules, 16 in VGA text mode, 8 on the
   home computers and CGA. The ~240-line screens show the dark gaps between scan lines that DEC's own documentation
   mentions.
-* **Refresh:** the tube's light pulses at its real rate, scanning down the screen like the beam: 50 Hz for the MDA,
-  Hercules and European home computers, 60 Hz for the DEC terminals and American machines, 70 Hz for VGA.
-  Interlaced screens (BBC teletext, Xerox Alto, Apple Lisa) refresh odd and even lines in turn, each at half the rate.
-  How deep the pulse is comes from the phosphor: the MDA's long-glow P39 barely pulses at 50 Hz (IBM chose it to hide
-  the flicker), while the VT100's fast P4 pulses fully. The Virtual Boy's LED column is swept left to right by its
-  50 Hz mirror.
-* The pulse is drawn as it would average over each frame of your monitor, and only when your monitor refreshes fast
-  enough to show that rate (at least twice the old screen's rate, e.g. 120 Hz or more for a 60 Hz CRT). On slower
-  monitors the screen stays steady rather than showing a fake slower flicker. On Windows it needs the burn-in mod,
-  which supplies the frame time.
+* **Refresh rates** (50 Hz for the MDA, Hercules and European home computers, 60 Hz for the DEC terminals and
+  American machines, 70 Hz for VGA, interlace for BBC teletext, the Alto and the Lisa) are recorded in
+  `themes/themes.json`, but the flicker itself is **off**. A real CRT flashes each spot for microseconds and your eye
+  smooths that out; an LCD can only show it as a whole-frame brightness pulse with uneven frame timing, which looks far
+  harsher than the real thing. `REFRESH_FLICKER` in `src/build.py` turns it on, if you want to see it anyway.
 
 Screen brightness and tube curvature are not documented for these machines, so those stay as cool-retro-term-style
 estimates.

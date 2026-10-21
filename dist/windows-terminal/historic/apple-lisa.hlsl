@@ -61,10 +61,10 @@ cbuffer BurninFrame : register(b1) {
 #define OVERLAY_BOTTOM    float3(1.0, 1.0, 1.0)
 #define MESH              0.0    // control-grid wire mesh in front of the glow (VFD): 0 none .. 1 opaque wires
 #define MESH_PITCH        4.0    // mesh spacing in pixels at 100 % scaling
-#define REFRESH_HZ        60.0    // the real screen's refresh rate; its light pulses at this rate (0 = steady)
-#define REFRESH_DEPTH     1.0    // how deep the pulse is at that rate, from the phosphor's decay time (src/build.py)
+#define REFRESH_HZ        0.0    // the real screen's refresh rate; its light pulses at this rate (0 = steady)
+#define REFRESH_DEPTH     0.0    // how deep the pulse is at that rate, from the phosphor's decay time (src/build.py)
 #define SCANLINES_PER_ROW 0.0    // the real screen's scan lines per text row; sets the scanline pitch (0 = PIXEL_SIZE)
-#define INTERLACED        1      // 1 = interlaced: odd and even scan lines refresh in turn, each at half the rate
+#define INTERLACED        0      // 1 = interlaced: odd and even scan lines refresh in turn, each at half the rate
 #define REFRESH_ACROSS    0      // 1 = the picture is scanned left to right (a mirror-swept LED column), not top to bottom
 
 float hash(float2 p) { return frac(sin(dot(p, float2(12.9898, 78.233))) * 43758.5453); }

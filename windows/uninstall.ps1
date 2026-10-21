@@ -37,7 +37,7 @@ if ((Test-Path $modKey) -and (Test-Path "$InstallDir\windhawk\mod-installed.txt"
 }
 $burnKey = 'HKLM:\SOFTWARE\Windhawk\Engine\Mods\local@burnin-phosphor'
 # only if this installation installed it (marker written by install.ps1 -WithBurnIn)
-if ((Test-Path $burnKey) -and (Test-Path "$InstallDir\windhawkurnin-installed.txt")) {
+if ((Test-Path $burnKey) -and (Test-Path "$InstallDir\windhawk\burnin-installed.txt")) {
   Write-Host 'Removing the Windhawk burn-in mod (Windows will ask for admin)...'
   Start-Process powershell.exe -Verb RunAs -Wait -ArgumentList '-NoProfile', '-Command', "Remove-Item '$burnKey' -Recurse -Force"
 }
