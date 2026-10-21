@@ -17,7 +17,7 @@ irm https://raw.githubusercontent.com/SnortingPixels/BURNIN/main/install.ps1 | i
 Or download the double-click installer for your system from [Releases](https://github.com/SnortingPixels/BURNIN/releases/latest).
 
 Turn your everyday terminal into a glowing CRT, and pick the screen of a real historic machine: a DEC VT100,
-an Apple ][, a Commodore 64, an IBM 3278 mainframe terminal, a Teletype on paper, a ZX Spectrum on a TV and 39 more.
+an Apple ][, a Commodore 64, an IBM 3278 mainframe terminal, a Teletype on paper, a ZX Spectrum on a TV, a radar scope, a Game Boy and 47 more.
 
 * **Windows:** [Windows Terminal](https://aka.ms/terminal), with a CRT pixel shader, matching window colours,
   theme switching from Settings, and optional CRT-styled menus.
@@ -89,7 +89,7 @@ burn-in.
 ### 🍎🐧 macOS / Linux (Ghostty)
 
 ```sh
-crt-theme list                 # all 45 themes
+crt-theme list                 # all 55 themes
 crt-theme set "Commodore 64"   # pick one
 crt-theme next                 # or prev
 crt-theme bulge off            # flat screen (bulge on = historic)
@@ -109,7 +109,8 @@ How long, and how it fades, depends on the phosphor, so each theme uses its mach
 | **P1** green (Zn₂SiO₄:Mn) | DEC VT220 Green, and the green screens whose phosphor isn't documented | exponential, 10 % after 24.5 ms |
 | **P3** amber (Zn₈BeSi₅O₁₉:Mn) | the DEC VT220/VT320 and Hercules ambers, Default Amber | exponential, 10 % after 13 ms |
 | **P4** white, colour CRTs | DEC VT100, Commodore PET, the home computers and workstations | gone within about a millisecond: no visible trail |
-| none | storage tube, plasma, EL, LED, paper, LCD, e-ink | nothing glows on |
+| **P7** / **P14** cascade | Radar Scope P7, SAGE Console | blue-white flash, then a yellow-green (P7) or orange (P14) afterglow that lasts seconds |
+| none | storage tube, plasma, VFD, EL, LED, paper, LCD, e-ink | nothing glows on |
 
 Brightness decays in linear light: exponentially for the manganese-activated silicates (the Mn²⁺ glow has a fixed
 lifetime) and as 1/(1+t/τ)ⁿ for trap-limited phosphors like P39. Times are from RCA's *Phosphors* (TPM-1508A, 1961),
@@ -169,6 +170,10 @@ Every theme, rendered with its real shader. Click a picture for full size, a nam
 <tr><td align="center" valign="top"><a href="docs/screenshots/grid-compass.jpg"><img src="docs/screenshots/grid-compass.jpg" width="260" alt="GRiD Compass"></a><br><b><a href="docs/HISTORY.md#grid-compass">GRiD Compass</a></b><br><sub>amber EL panel<br>DepartureMono Nerd Font Mono<br><code>#ff9a1f</code> on <code>#140800</code> · bulge flat</sub></td><td align="center" valign="top"><a href="docs/screenshots/symbolics-3600.jpg"><img src="docs/screenshots/symbolics-3600.jpg" width="260" alt="Symbolics 3600"></a><br><b><a href="docs/HISTORY.md#symbolics-3600">Symbolics 3600</a></b><br><sub>Genera console (estimate)<br>DepartureMono Nerd Font Mono<br><code>#000000</code> on <code>#e8eee8</code> · bulge 0.15</sub></td><td align="center" valign="top"><a href="docs/screenshots/thinking-machines-cm-5.jpg"><img src="docs/screenshots/thinking-machines-cm-5.jpg" width="260" alt="Thinking Machines CM-5"></a><br><b><a href="docs/HISTORY.md#thinking-machines-cm-5">Thinking Machines CM-5</a></b><br><sub>red LED panel<br>DepartureMono Nerd Font Mono<br><code>#ff2a1a</code> on <code>#0a0000</code> · bulge flat</sub></td></tr>
 <tr><td align="center" valign="top"><a href="docs/screenshots/dec-vt320-amber.jpg"><img src="docs/screenshots/dec-vt320-amber.jpg" width="260" alt="DEC VT320 Amber"></a><br><b><a href="docs/HISTORY.md#dec-vt320-amber">DEC VT320 Amber</a></b><br><sub>P3 amber, VT323 font<br>VT323<br><code>#ffa700</code> on <code>#0a0600</code> · bulge 0.3</sub></td><td align="center" valign="top"><a href="docs/screenshots/ms-dos-norton-blue.jpg"><img src="docs/screenshots/ms-dos-norton-blue.jpg" width="260" alt="MS-DOS Norton Blue"></a><br><b><a href="docs/HISTORY.md#ms-dos-norton-blue">MS-DOS Norton Blue</a></b><br><sub>VGA palette, IBM VGA ROM font<br>PxPlus IBM VGA 8x16<br><code>#55ffff</code> on <code>#0000aa</code> · bulge 0.3</sub></td><td align="center" valign="top"><a href="docs/screenshots/hercules-amber.jpg"><img src="docs/screenshots/hercules-amber.jpg" width="260" alt="Hercules Amber"></a><br><b><a href="docs/HISTORY.md#hercules-amber">Hercules Amber</a></b><br><sub>P3 amber, IBM VGA ROM font<br>PxPlus IBM VGA 8x16<br><code>#ffa700</code> on <code>#0a0600</code> · bulge 0.3</sub></td></tr>
 <tr><td align="center" valign="top"><a href="docs/screenshots/zx-spectrum.jpg"><img src="docs/screenshots/zx-spectrum.jpg" width="260" alt="ZX Spectrum"></a><br><b><a href="docs/HISTORY.md#zx-spectrum">ZX Spectrum</a></b><br><sub>TV, ROM character set<br>ZX Spectrum ROM<br><code>#000000</code> on <code>#cdcdcd</code> · bulge 0.4</sub></td><td align="center" valign="top"><a href="docs/screenshots/amstrad-cpc-464.jpg"><img src="docs/screenshots/amstrad-cpc-464.jpg" width="260" alt="Amstrad CPC 464"></a><br><b><a href="docs/HISTORY.md#amstrad-cpc-464">Amstrad CPC 464</a></b><br><sub>firmware colours, ROM character set<br>Amstrad CPC ROM<br><code>#ffff80</code> on <code>#000080</code> · bulge 0.3</sub></td><td align="center" valign="top"><a href="docs/screenshots/bbc-micro-teletext.jpg"><img src="docs/screenshots/bbc-micro-teletext.jpg" width="260" alt="BBC Micro Teletext"></a><br><b><a href="docs/HISTORY.md#bbc-micro-teletext">BBC Micro Teletext</a></b><br><sub>Mode 7, SAA5050 characters<br>BBC Teletext SAA5050<br><code>#ffffff</code> on <code>#000000</code> · bulge 0.35</sub></td></tr>
+<tr><td align="center" valign="top"><a href="docs/screenshots/radar-scope-p7.jpg"><img src="docs/screenshots/radar-scope-p7.jpg" width="260" alt="Radar Scope P7"></a><br><b><a href="docs/HISTORY.md#radar-scope-p7">Radar Scope P7</a></b><br><sub>P7 cascade phosphor PPI, 15 rpm sweep (colours estimate)<br>B612 Mono<br><code>#c8d4ff</code> on <code>#050805</code> · bulge 0.5</sub></td><td align="center" valign="top"><a href="docs/screenshots/nintendo-virtual-boy.jpg"><img src="docs/screenshots/nintendo-virtual-boy.jpg" width="260" alt="Nintendo Virtual Boy"></a><br><b><a href="docs/HISTORY.md#nintendo-virtual-boy">Nintendo Virtual Boy</a></b><br><sub>red LED column + 50 Hz mirror, VUEngine font<br>Virtual Boy VUEngine<br><code>#ff0000</code> on <code>#000000</code> · bulge 0</sub></td><td align="center" valign="top"><a href="docs/screenshots/nintendo-game-boy.jpg"><img src="docs/screenshots/nintendo-game-boy.jpg" width="260" alt="Nintendo Game Boy"></a><br><b><a href="docs/HISTORY.md#nintendo-game-boy">Nintendo Game Boy</a></b><br><sub>SameBoy DMG palette, STN LCD ghosting (response estimate)<br>Early GameBoy<br><code>#081810</code> on <code>#c6de8c</code> · bulge 0</sub></td></tr>
+<tr><td align="center" valign="top"><a href="docs/screenshots/plato-iv.jpg"><img src="docs/screenshots/plato-iv.jpg" width="260" alt="PLATO IV"></a><br><b><a href="docs/HISTORY.md#plato-iv">PLATO IV</a></b><br><sub>orange neon plasma panel, PLATO character set<br>PlatoAscii<br><code>#ffa500</code> on <code>#000000</code> · bulge 0</sub></td><td align="center" valign="top"><a href="docs/screenshots/sage-console.jpg"><img src="docs/screenshots/sage-console.jpg" width="260" alt="SAGE Console"></a><br><b><a href="docs/HISTORY.md#sage-console">SAGE Console</a></b><br><sub>Charactron, blue flash with orange afterglow (colours estimate)<br>B612 Mono<br><code>#b0c4ff</code> on <code>#070605</code> · bulge 0.6</sub></td><td align="center" valign="top"><a href="docs/screenshots/minitel-1.jpg"><img src="docs/screenshots/minitel-1.jpg" width="260" alt="Minitel 1"></a><br><b><a href="docs/HISTORY.md#minitel-1">Minitel 1</a></b><br><sub>9-inch monochrome CRT, Minitel font (phosphor tint estimate)<br>Minitel<br><code>#e8e8e8</code> on <code>#000000</code> · bulge 0.5</sub></td></tr>
+<tr><td align="center" valign="top"><a href="docs/screenshots/elektronika-15ie.jpg"><img src="docs/screenshots/elektronika-15ie.jpg" width="260" alt="Elektronika 15IE"></a><br><b><a href="docs/HISTORY.md#elektronika-15ie">Elektronika 15IE</a></b><br><sub>Soviet DVK terminal, MAME colours, KOI-8 ROM font<br>Elektronika 15IE<br><code>#00c000</code> on <code>#000000</code> · bulge 0.4</sub></td><td align="center" valign="top"><a href="docs/screenshots/green-bar-printout.jpg"><img src="docs/screenshots/green-bar-printout.jpg" width="260" alt="Green-Bar Printout"></a><br><b><a href="docs/HISTORY.md#green-bar-printout">Green-Bar Printout</a></b><br><sub>line-printer paper, 3-line green bars (colours estimate)<br>NearlyQMono<br><code>#2b2b33</code> on <code>#f4f1e6</code> · bulge 0</sub></td><td align="center" valign="top"><a href="docs/screenshots/vacuum-fluorescent.jpg"><img src="docs/screenshots/vacuum-fluorescent.jpg" width="260" alt="Vacuum Fluorescent"></a><br><b><a href="docs/HISTORY.md#vacuum-fluorescent">Vacuum Fluorescent</a></b><br><sub>ZnO:Zn 505 nm glow behind a wire mesh<br>Doto Black<br><code>#00ffb8</code> on <code>#0a1412</code> · bulge 0</sub></td></tr>
+<tr><td align="center" valign="top"><a href="docs/screenshots/vectrex.jpg"><img src="docs/screenshots/vectrex.jpg" width="260" alt="Vectrex"></a><br><b><a href="docs/HISTORY.md#vectrex">Vectrex</a></b><br><sub>vector CRT with a coloured overlay (overlay colours estimate)<br>Relief SingleLine Outline<br><code>#eef2ff</code> on <code>#050505</code> · bulge 0.3</sub></td></tr>
 </table>
 
 *Bulge* is the screen curvature on cool-retro-term's 0 to 1 scale: strong for small 1970s/80s tubes, slight for flat
@@ -222,6 +227,9 @@ To add or change a theme, edit `themes/themes.json` and run the build.
     its ROMs for emulation.
   * The SAA5050 teletext characters from [jsbeeb](https://github.com/mattgodbolt/jsbeeb) /
     [b-em](https://github.com/stardot/b-em).
+  * The Virtual Boy font from [VUEngine Core](https://github.com/VUEngine/VUEngine-Core)'s default font (MIT).
+  * The Elektronika 15IE character generator from Rob Hagemans'
+    [hoard-of-bitfonts](https://github.com/robhagemans/hoard-of-bitfonts).
 * **Fonts**, downloaded from their authors and used under their own licences:
   * Terminus/Terminess, Departure Mono, BigBlue Terminal, Iosevka, Fira Code, JetBrains Mono, Hack (Nerd Font builds).
   * [Print Char 21, Pet Me, LisaTerminal](https://www.kreativekorp.com/software/fonts/) (Kreative Software).
@@ -235,6 +243,13 @@ To add or change a theme, edit `themes/themes.json` and run the build.
   * [Teletype33](https://github.com/progs-n-things/Teletype33-Font).
   * [Alto Mono](https://damieng.com/typography/) (Damien Guard).
   * [VT323](https://github.com/google/fonts/tree/main/ofl/vt323) (Peter Hull).
+  * [B612 Mono](https://github.com/polarsys/b612) (Airbus, Intactile Design, ENAC).
+  * [Early GameBoy](https://www.dafont.com/early-gameboy.font) (Jimmy Campbell).
+  * [PlatoAscii](https://github.com/kej715/DtCyber) (the DtCyber / Cyber1 PLATO project).
+  * [Minitel](https://github.com/zigazou/minitel-canvas) (Frédéric Bisson, CC0).
+  * [NearlyQ Mono](https://github.com/scruss/nearlyq) (Stewart Russell).
+  * [Doto](https://github.com/google/fonts/tree/main/ofl/doto) (Óliver Lalan).
+  * [Relief SingleLine](https://github.com/isdat-type/Relief-SingleLine) (isdaT type).
 
 ## 📜 License
 

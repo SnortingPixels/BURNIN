@@ -462,6 +462,130 @@ Sources: [BBC Micro (Wikipedia)](https://en.wikipedia.org/wiki/BBC_Micro), [Mull
 
 ---
 
+# Strange screens
+
+Ten displays that worked in unusual ways: a radar scope, a red LED mirror, a pocket LCD, the first plasma panel, a Cold War console, France's pre-internet terminal, a Soviet terminal, a printout, a vacuum fluorescent display and a vector console. Each theme uses that display's own effect, not just its colours.
+
+<a id="radar-scope-p7"></a>
+
+## 📡 Radar Scope P7
+
+<a href="screenshots/radar-scope-p7.jpg"><img src="screenshots/radar-scope-p7.jpg" width="480" alt="Radar Scope P7 theme"></a>
+
+Plan-position-indicator (PPI) radar scopes of the Second World War and after drew a map around the antenna: a beam line turned with the antenna, and echoes lit up where it passed. They used the two-layer P7 "cascade" phosphor, (Zn,Cd)S:Cu: the beam made a blue-white flash, and a second layer kept a yellow-green afterglow for seconds, so operators could "observe target positions for several seconds" until the beam came round again. The same long afterglow made P7 useless for television or fast oscilloscopes.
+
+**The theme:** the beam sweeps clockwise once every 4 seconds (15 rpm, a typical search-radar speed; an estimate). Text lights blue-white as the beam passes and fades through yellow-green on P7's 1/t decay (10 % after 400 ms). The exact colours are estimates from the phosphor's emission peaks (440 nm and 558 nm). The font is B612 Mono, the Airbus cockpit typeface; real scopes showed almost no text.
+
+Sources: [Phosphor (Wikipedia)](https://en.wikipedia.org/wiki/Phosphor), [RCA Phosphors TPM-1508A](https://bitsavers.mirrorservice.org/components/rca/crt/TPM-1508A_RCA_Phosphors_Oct61.pdf), [US DOT report on radar displays](https://rosap.ntl.bts.gov/view/dot/81457/dot_81457_DS1.pdf), [B612 (GitHub)](https://github.com/polarsys/b612)
+
+<a id="nintendo-virtual-boy"></a>
+
+## 🔴 Nintendo Virtual Boy
+
+<a href="screenshots/nintendo-virtual-boy.jpg"><img src="screenshots/nintendo-virtual-boy.jpg" width="480" alt="Nintendo Virtual Boy theme"></a>
+
+Gunpei Yokoi's Virtual Boy (Japan 21 July 1995, US 14 August 1995) used Reflection Technology's "Private Eye" display, licensed exclusively by Nintendo. Each eye had a single column of 224 red LEDs; a mirror oscillating at 50 Hz swept that column across 384 positions to build a 384 by 224 picture, and the two eyes' images were offset for 3D. Red LEDs were chosen because they were cheap. Games reminded players to pause every 30 minutes, and only about 770,000 were sold.
+
+**The theme:** pure red (#ff0000) on black as in the Beetle VB emulator, with vertical column structure from the scanned LED column and a little flicker from the 50 Hz mirror. The console had no built-in font, so the font is built pixel by pixel from the VUEngine homebrew engine's default 8 by 8 character set (MIT).
+
+Sources: [Virtual Boy (Wikipedia)](https://en.wikipedia.org/wiki/Virtual_Boy), [Virtual Boy architecture (Rodrigo Copetti)](https://www.copetti.org/writings/consoles/virtual-boy/), [Beetle VB (libretro)](https://docs.libretro.com/library/beetle_vb/), [VUEngine Core (GitHub)](https://github.com/VUEngine/VUEngine-Core)
+
+<a id="nintendo-game-boy"></a>
+
+## 🟩 Nintendo Game Boy
+
+<a href="screenshots/nintendo-game-boy.jpg"><img src="screenshots/nintendo-game-boy.jpg" width="480" alt="Nintendo Game Boy theme"></a>
+
+Nintendo R&D1, under Gunpei Yokoi and Satoru Okada, built the Game Boy on Yokoi's idea of "lateral thinking with withered technology": cheap, proven parts. Its 2.5-inch reflective STN LCD showed 160 by 144 pixels in four shades of green-grey at 59.73 Hz. The project nearly stopped in 1988 because the screen was hard to see, until a Sharp STN panel saved it. It was released on 21 April 1989; the first 300,000 sold out in two weeks. The slow liquid crystal smeared moving images, a blur that reviewers criticised and that the 1996 Game Boy Pocket's faster screen "mostly eliminated".
+
+**The theme:** SameBoy's DMG palette (#c6de8c, #84a563, #396139, #081810), snapped to exactly four shades, with a visible pixel grid. With the Windows burn-in mod, slow pixels smear both ways when text changes; no measured response time was found, so its 40 ms time constant is an estimate. Font: Early GameBoy by Jimmy Campbell.
+
+Sources: [Game Boy (Wikipedia)](https://en.wikipedia.org/wiki/Game_Boy), [SameBoy display.c](https://github.com/LIJI32/SameBoy/blob/master/Core/display.c), [Early GameBoy (dafont)](https://www.dafont.com/early-gameboy.font)
+
+<a id="plato-iv"></a>
+
+## 🟠 PLATO IV
+
+<a href="screenshots/plato-iv.jpg"><img src="screenshots/plato-iv.jpg" width="480" alt="PLATO IV theme"></a>
+
+Donald Bitzer, H. Gene Slottow and student Robert Willson invented the plasma display panel at the University of Illinois in 1964, for the PLATO teaching system. PLATO IV terminals (1972, on CDC mainframes, about $12,000 each) had a 512 by 512 orange neon panel that "incorporated both memory and bitmapped graphics": every dot held its own on/off state, so the picture needed no refresh and never flickered. The terminals also had a touch panel. PLATO grew one of the first online communities, with chat, message boards and multiplayer games, and in 1972 student Bruce Parello drew some of the first digital emoji on it.
+
+**The theme:** neon orange (#ffa500, the colour the Cyber1 PLATO terminal emulator uses) on black, with the panel's dot structure, no flicker and no afterglow. Font: PlatoAscii, an ASCII mapping of Don Bitzer's PLATO character set, from the DtCyber project.
+
+Sources: [PLATO (Wikipedia)](https://en.wikipedia.org/wiki/PLATO_(computer_system)), [Plasma display (Wikipedia)](https://en.wikipedia.org/wiki/Plasma_display), [Illinois ECE Hall of Fame](https://ece.illinois.edu/about/history/hall-of-fame/plasmas), [DtCyber pterm](https://github.com/kej715/DtCyber)
+
+<a id="sage-console"></a>
+
+## 🛡️ SAGE Console
+
+<a href="screenshots/sage-console.jpg"><img src="screenshots/sage-console.jpg" width="480" alt="SAGE Console theme"></a>
+
+SAGE (Semi-Automatic Ground Environment) was the US air-defence network built by MIT Lincoln Laboratory and IBM. Each AN/FSQ-7 computer had about 60,000 vacuum tubes, weighed about 250 tons and drew up to 3 MW; the first Direction Center opened on 26 June 1958 and the 23 sites ran into the 1980s. Operators watched 19-inch Charactron tubes (from Convair), which formed characters by firing the beam through a stencil plate of about 64 character shapes, then steering the shaped beam into place. They picked aircraft tracks with a light gun, and the consoles famously had built-in cigarette lighters and ashtrays. A 1958 report describes the tubes' "bright blue light during intensification followed by a relatively long yellow afterglow".
+
+**The theme:** a blue flash fading to an orange-yellow afterglow (the P14 description), on a strongly curved round tube with slow-refresh flicker. The colours and the afterglow timing (taken from P7) are estimates. Font: B612 Mono.
+
+Sources: [AN/FSQ-7 (Wikipedia)](https://en.wikipedia.org/wiki/AN/FSQ-7_Combat_Direction_Central), [SAGE (Wikipedia)](https://en.wikipedia.org/wiki/Semi-Automatic_Ground_Environment), [Charactron (Wikipedia)](https://en.wikipedia.org/wiki/Charactron), [NRC 1958 symposium](https://nap.nationalacademies.org/read/9554/chapter/4)
+
+<a id="minitel-1"></a>
+
+## 🇫🇷 Minitel 1
+
+<a href="screenshots/minitel-1.jpg"><img src="screenshots/minitel-1.jpg" width="480" alt="Minitel 1 theme"></a>
+
+The French PTT designed the Minitel from 1978, trialled it in Saint-Malo in July 1980 and launched it nationally in 1982, to get more use from phone lines and to replace printed phone directories. Terminals were lent free. A 9-inch monochrome screen showed 25 rows of 40 characters, with "mosaic" block characters for pictures, connecting by V.23 modem over the Transpac network. About 9 million were in use by 1999, and the service closed on 30 June 2012. On monochrome units the eight colours appeared as eight grey levels.
+
+**The theme:** light grey on black on a small curved tube with scanlines. The phosphor tint is an estimate. Font: Minitel by Frédéric Bisson (Zigazou), CC0.
+
+Sources: [Minitel (Wikipedia)](https://en.wikipedia.org/wiki/Minitel), [miedit (Zigazou)](https://github.com/zigazou/miedit), [minitel-canvas (Zigazou)](https://github.com/zigazou/minitel-canvas)
+
+<a id="elektronika-15ie"></a>
+
+## ☭ Elektronika 15IE
+
+<a href="screenshots/elektronika-15ie.jpg"><img src="screenshots/elektronika-15ie.jpg" width="480" alt="Elektronika 15IE theme"></a>
+
+The DVK was a Soviet PDP-11-compatible computer family (Elektronika MS-0501/0502) designed at the Research Institute of Precision Technology in Zelenograd and released in 1983. Its 15IE-00-013 terminal connected over RS-232 or current loop and was mostly VT52-compatible. It switched to Cyrillic with the SO/SI control codes, using the KOI character sets, which modern terminal programs often still can't display.
+
+**The theme:** green (#00c000, from MAME's emulation of the terminal) on black, with scanlines on a curved tube. The font is built pixel by pixel from the terminal's 8 by 8 character generator, Cyrillic included. The phosphor type is undocumented; Soviet tubes generally used sulfide phosphors, which leave no visible afterglow.
+
+Sources: [DVK (Wikipedia)](https://en.wikipedia.org/wiki/DVK), [MAME ie15.cpp](https://github.com/mamedev/mame/blob/master/src/devices/machine/ie15.cpp), [hoard-of-bitfonts](https://github.com/robhagemans/hoard-of-bitfonts)
+
+<a id="green-bar-printout"></a>
+
+## 🖨️ Green-Bar Printout
+
+<a href="screenshots/green-bar-printout.jpg"><img src="screenshots/green-bar-printout.jpg" width="480" alt="Green-Bar Printout theme"></a>
+
+Before screens were common, computers answered on paper. Continuous fan-fold paper dates back to around 1910; in the computer era line printers and DECwriters printed 132-column listings on 14 7/8-inch "green-bar" paper. Light green bands half an inch high (three lines at six lines per inch) guided the eye across wide rows, and sprocket holes half an inch apart down both sides fed it through the printer.
+
+**The theme:** dark ribbon ink on off-white paper with green bars three text rows high. The exact paper, bar and ink colours are estimates. Font: NearlyQ Mono by Stewart Russell, traced from a 9-pin dot-matrix printer's character ROM.
+
+Sources: [Continuous stationery (Wikipedia)](https://en.wikipedia.org/wiki/Continuous_stationery), [Green-bar paper (pdp8online)](https://pdp8online.com/images/greenbar.shtml), [NearlyQ (GitHub)](https://github.com/scruss/nearlyq)
+
+<a id="vacuum-fluorescent"></a>
+
+## 💠 Vacuum Fluorescent
+
+<a href="screenshots/vacuum-fluorescent.jpg"><img src="screenshots/vacuum-fluorescent.jpg" width="480" alt="Vacuum Fluorescent theme"></a>
+
+A vacuum fluorescent display is a tiny triode: a hot, oxide-coated filament gives off electrons, a fine metal mesh grid controls them, and phosphor-coated anodes glow where they land. Philips made the first one (the DM160) in 1959, and Ise Electronics made the first seven-segment VFD in 1967. VFDs avoided the royalties on Nixie tubes and took over desk calculators, then 1980s car dashboards, video recorders and microwave ovens. Their ZnO:Zn phosphor (P24) glows bluish-green, peaking near 505 nm, and the filament wires and mesh sit in front of the glowing segments.
+
+**The theme:** ZnO:Zn green (#00ffb8, computed from the 505 nm emission band) on dark glass, seen through a fine wire mesh. P24 decays in microseconds, so there is no afterglow. Font: Doto, a dot-matrix typeface.
+
+Sources: [Vacuum fluorescent display (Wikipedia)](https://en.wikipedia.org/wiki/Vacuum_fluorescent_display), [Phosphor (Wikipedia)](https://en.wikipedia.org/wiki/Phosphor), [Doto (Google Fonts)](https://github.com/google/fonts/tree/main/ofl/doto)
+
+<a id="vectrex"></a>
+
+## 📈 Vectrex
+
+<a href="screenshots/vectrex.jpg"><img src="screenshots/vectrex.jpg" width="480" alt="Vectrex theme"></a>
+
+John Ross of Smith Engineering conceived the Vectrex in 1980; Gerry Karr designed its vector generator. GCE launched it in October 1982 at $199, Milton Bradley bought GCE, and it was discontinued in February 1984. Unlike other consoles it had its own built-in black-and-white tube (a Samsung 240RB40), drawn by a beam steered along lines instead of a raster. Each game came with a translucent coloured plastic overlay that added colour and cut glare and flicker. Frames were redrawn at 50 Hz, and games with too much to draw visibly flickered.
+
+**The theme:** white vector lines through a three-band overlay. The overlay colours are estimates (every game had its own), and the white P4 tube is an inference. The flicker and wobble are deliberately strong. Font: Relief SingleLine Outline, a single-stroke typeface that looks drawn by a beam.
+
+Sources: [Vectrex (Wikipedia)](https://en.wikipedia.org/wiki/Vectrex), [Vectrex Wait_Recal (Pforzheim)](https://itwww.hs-pforzheim.de/daten/mitarbeiter/johannsen/vectrex_lab/projects/wait_recal/wait_recal.htm), [Relief SingleLine (GitHub)](https://github.com/isdat-type/Relief-SingleLine)
+
 # Looks from cool-retro-term
 
 [cool-retro-term](https://github.com/Swordfish90/cool-retro-term) is a free terminal emulator by Filippo Scognamiglio (Swordfish90) and contributors that imitates old CRT screens, and BURNIN's shader is a port of its code. These themes copy its built-in profiles. They are styles, not specific machines.
