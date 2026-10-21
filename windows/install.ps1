@@ -11,7 +11,7 @@
     2. downloads the fonts from their original sources and installs them for this user
        (the ZX Spectrum / Amstrad CPC / BBC teletext fonts are built from ROM data, which needs Python)
     3. backs up Windows Terminal's settings.json, then adds the colour scheme, one window theme per CRT
-       theme ("Retro <dot> <name>") and the default profile settings, and selects -Theme
+       theme ("BURNIN <dot> <name>") and the default profile settings, and selects -Theme
     4. starts the theme helper (theme switching from Settings > Appearance > Theme, Ctrl+Alt+T / Ctrl+Alt+B)
        and adds it to the Startup folder
     5. -WithMenus: installs Windhawk (winget) and the menu-styling mod; both ask for admin
@@ -28,7 +28,8 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
-$Prefix = 'Retro ' + [char]0x00B7 + ' '   # window theme names: "Retro <middle dot> <theme>"
+$Prefix = 'BURNIN ' + [char]0x00B7 + ' '   # window theme names: "BURNIN <middle dot> <theme>"
+$OldPrefix = 'Retro ' + [char]0x00B7 + ' '   # names used before v1.2.1; replaced on install
 $repo = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
 $UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36'
 
@@ -130,6 +131,8 @@ $backup = "$SettingsPath.crt-backup-$(Get-Date -Format yyyyMMdd-HHmmss)"
 Copy-Item $SettingsPath $backup
 Note "backup: $backup"
 $j = Get-Content $SettingsPath -Raw -Encoding UTF8 | ConvertFrom-Json
+# Reinstall / update: keep the theme that is already selected, unless -Theme was given.
+if (-not $PSBoundParameters.ContainsKey('Theme') -and "$($j.theme)" -match '^(Retro|BURNIN) \u00B7 (.+)$') { $Theme = $Matches[2] }
 function Ensure($obj, [string]$name, $value) { $obj | Add-Member -Force NoteProperty $name $value }
 if (-not $j.profiles.defaults) { Ensure $j.profiles 'defaults' ([pscustomobject]@{}) }
 
@@ -149,7 +152,7 @@ $wtThemes = foreach ($t in $index) {
     tab    = [pscustomobject][ordered]@{ background = $t.bg; unfocusedBackground = $t.bg; showCloseButton = 'hover'; iconStyle = 'monochrome' }
   }
 }
-Ensure $j 'themes' (@(@($j.themes) | Where-Object { $_ -and $_.name -notlike "$Prefix*" }) + @($wtThemes))
+Ensure $j 'themes' (@(@($j.themes) | Where-Object { $_ -and $_.name -notlike "$Prefix*" -and $_.name -notlike "$OldPrefix*" }) + @($wtThemes))
 Ensure $j 'theme' "$Prefix$Theme"
 Ensure $j 'useAcrylicInTabRow' $false
 [IO.File]::WriteAllText($SettingsPath, ($j | ConvertTo-Json -Depth 32), (New-Object Text.UTF8Encoding $false))

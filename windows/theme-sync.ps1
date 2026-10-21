@@ -1,5 +1,5 @@
 # Makes Windows Terminal's Settings > Appearance > Theme switch the whole look.
-# Checks settings.json twice a second; when "theme" is a "Retro <dot> <name>" theme, sets the default
+# Checks settings.json twice a second; when "theme" is a "BURNIN <dot> <name>" theme, sets the default
 # profile's CRT shader, colour scheme, font and cursor to match (Terminal then re-skins every open
 # tab), and writes themes\ui-current.txt, the menu/Settings-page colours read by the Windhawk mod
 # "Windows Terminal Retro Styler" (optional). Any other theme turns all of it off again.
@@ -8,7 +8,7 @@
 # Part of BURNIN (GPL-3.0). Runs hidden from the Startup folder. -Once applies the current theme and exits.
 param([switch]$Once, [int]$Cycle = 0, [string]$UiFor = '', [string]$UiOut = '', [string]$SettingsPath = '')   # -UiFor <theme> -UiOut <file>: write that theme's menu colours to a file (testing)   # -Cycle 1 / -1: step the theme once and exit
 $ErrorActionPreference = 'Stop'
-$Prefix = 'Retro ' + [char]0x00B7 + ' '   # window theme names: "Retro <middle dot> <theme>"
+$Prefix = 'BURNIN ' + [char]0x00B7 + ' '   # window theme names: "BURNIN <middle dot> <theme>"
 $root     = Split-Path -Parent $MyInvocation.MyCommand.Path   # the install folder (holds dist\ and this script)
 # Windows Terminal settings: -SettingsPath, else the Store, Preview or unpackaged install
 $settings = if ($SettingsPath) { $SettingsPath } else { @("$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json",
@@ -32,8 +32,8 @@ function WriteText([string]$path, [string]$text) {
   if ($path -eq $settings) {
     # Safety net: never write a settings file that has lost the colour scheme or the window themes,
     # and keep the previous version next to it (settings.json.crt-prev).
-    if ($text -notmatch '"Retro Source"' -or $text -notmatch '"name":\s*"Retro ') {
-      Log 'refused to write settings.json: Retro Source scheme or Retro window themes missing'
+    if ($text -notmatch '"Retro Source"' -or $text -notmatch '"name":\s*"BURNIN ') {
+      Log 'refused to write settings.json: Retro Source scheme or BURNIN window themes missing'
       return
     }
     Copy-Item $settings "$settings.crt-prev" -Force -ErrorAction SilentlyContinue
@@ -136,7 +136,7 @@ function Apply {
   Log "applied '$theme'"
 }
 
-# Step to the next/previous Retro theme (from the current one, or the first).
+# Step to the next/previous BURNIN theme (from the current one, or the first).
 function Cycle([int]$step) {
   $index = LoadIndex
   $text = ReadText

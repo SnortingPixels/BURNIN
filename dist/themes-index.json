@@ -703,7 +703,7 @@
       "light": false,
       "cursor": "filledBox",
       "font": "doto",
-      "fontWindows": "Doto Black",
+      "fontWindows": "Doto",
       "fontUnix": "Doto",
       "size": 15.5
     },
