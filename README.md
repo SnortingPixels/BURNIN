@@ -107,9 +107,10 @@ How long, and how it fades, depends on the phosphor, so each theme uses its mach
 |---|---|---|
 | **P39** green (Zn₂SiO₄:Mn,As) | IBM 5151 MDA | 10 % after 150 ms, then a long dim 1/t tail: the famous MDA smear |
 | **P1** green (Zn₂SiO₄:Mn) | DEC VT220 Green, and the green screens whose phosphor isn't documented | exponential, 10 % after 24.5 ms |
-| **P3** amber (Zn₈BeSi₅O₁₉:Mn) | the DEC VT220/VT320 and Hercules ambers, Default Amber | exponential, 10 % after 13 ms |
-| **P4** white, colour CRTs | DEC VT100, Commodore PET, the home computers and workstations | gone within about a millisecond: no visible trail |
-| **P7** / **P14** cascade | Radar Scope P7, SAGE Console | blue-white flash, then a yellow-green (P7) or orange (P14) afterglow that lasts seconds |
+| **P3** amber (Zn₈BeSi₅O₁₉:Mn) | Hercules Amber, Default Amber | exponential, 10 % after 13 ms |
+| **P4** white, **P31** green, colour CRTs | DEC VT100, Commodore PET, Apple ][, the home computers and workstations | gone within about a millisecond: no visible trail |
+| **P134** DEC amber | DEC VT220 and VT320 Amber | decay undocumented, so none is modelled |
+| **P7** cascade ((Zn,Cd)S:Cu) | Radar Scope P7, SAGE Console | blue-white flash, then a yellow-green afterglow: 10 % after 400 ms, then a 1/t tail lasting seconds |
 | none | storage tube, plasma, VFD, EL, LED, paper, LCD, e-ink | nothing glows on |
 
 Brightness decays in linear light: exponentially for the manganese-activated silicates (the Mn²⁺ glow has a fixed
@@ -127,6 +128,27 @@ decay laws from Dyall (MIT RLE TR-56, 1948). The cool-retro-term looks borrow P1
 
 <p align="center"><img src="docs/burn-in.jpg" width="520" alt="IBM 5151 MDA theme scrolled up three lines, the old lines still glowing"><br>
 <i>IBM 5151 MDA, one 60 Hz frame after scrolling three lines: the P39 phosphor is still at half brightness.</i></p>
+
+### 📺 Refresh and scan lines
+
+Where the real screen's numbers are documented, the theme uses them:
+
+* **Scan lines per text row:** 10 on the DEC terminals, 14 on the IBM MDA and Hercules, 16 in VGA text mode, 8 on the
+  home computers and CGA. The ~240-line screens show the dark gaps between scan lines that DEC's own documentation
+  mentions.
+* **Refresh:** the tube's light pulses at its real rate, scanning down the screen like the beam: 50 Hz for the MDA,
+  Hercules and European home computers, 60 Hz for the DEC terminals and American machines, 70 Hz for VGA.
+  Interlaced screens (BBC teletext, Xerox Alto, Apple Lisa) refresh odd and even lines in turn, each at half the rate.
+  How deep the pulse is comes from the phosphor: the MDA's long-glow P39 barely pulses at 50 Hz (IBM chose it to hide
+  the flicker), while the VT100's fast P4 pulses fully. The Virtual Boy's LED column is swept left to right by its
+  50 Hz mirror.
+* The pulse is drawn as it would average over each frame of your monitor, and only when your monitor refreshes fast
+  enough to show that rate (at least twice the old screen's rate, e.g. 120 Hz or more for a 60 Hz CRT). On slower
+  monitors the screen stays steady rather than showing a fake slower flicker. On Windows it needs the burn-in mod,
+  which supplies the frame time.
+
+Screen brightness and tube curvature are not documented for these machines, so those stay as cool-retro-term-style
+estimates.
 
 ## 🤖 Using Claude Code?
 

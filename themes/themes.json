@@ -346,11 +346,13 @@
                        "ambient":  0.03,
                        "accents":  1,
                        "cursor":  "filledBox",
-                       "light":  false
+                       "light":  false,
+                       "refresh":  60,
+                       "scanlines":  10
                    },
                    {
                        "name":  "DEC VT220 Amber",
-                       "phosphor":  "P3",
+                       "phosphor":  "P134",
                        "note":  "P3 amber, Glass TTY VT220 font",
                        "fg":  "#ffa700",
                        "bg":  "#0a0600",
@@ -371,7 +373,9 @@
                        "ambient":  0.04,
                        "accents":  1,
                        "cursor":  "filledBox",
-                       "light":  false
+                       "light":  false,
+                       "refresh":  60,
+                       "scanlines":  10
                    },
                    {
                        "name":  "DEC VT220 Green",
@@ -396,7 +400,9 @@
                        "ambient":  0.04,
                        "accents":  1,
                        "cursor":  "filledBox",
-                       "light":  false
+                       "light":  false,
+                       "refresh":  60,
+                       "scanlines":  10
                    },
                    {
                        "name":  "Zenith Z-19",
@@ -446,7 +452,9 @@
                        "ambient":  0.03,
                        "accents":  1,
                        "cursor":  "underscore",
-                       "light":  false
+                       "light":  false,
+                       "refresh":  50,
+                       "scanlines":  14
                    },
                    {
                        "name":  "IBM PC CGA",
@@ -471,7 +479,9 @@
                        "ambient":  0.02,
                        "accents":  1,
                        "cursor":  "underscore",
-                       "light":  false
+                       "light":  false,
+                       "refresh":  59.92,
+                       "scanlines":  8
                    },
                    {
                        "name":  "IBM 3278",
@@ -525,7 +535,7 @@
                    },
                    {
                        "name":  "Apple ][",
-                       "phosphor":  "P1",
+                       "phosphor":  "P31",
                        "note":  "green monitor, Apple II ROM font",
                        "fg":  "#33ff66",
                        "bg":  "#010a03",
@@ -546,7 +556,9 @@
                        "ambient":  0.06,
                        "accents":  1,
                        "cursor":  "filledBox",
-                       "light":  false
+                       "light":  false,
+                       "refresh":  60,
+                       "scanlines":  8
                    },
                    {
                        "name":  "Commodore PET",
@@ -571,7 +583,9 @@
                        "ambient":  0,
                        "accents":  1,
                        "cursor":  "filledBox",
-                       "light":  false
+                       "light":  false,
+                       "refresh":  60,
+                       "scanlines":  8
                    },
                    {
                        "name":  "Commodore 64",
@@ -596,7 +610,9 @@
                        "ambient":  0.08,
                        "accents":  1,
                        "cursor":  "filledBox",
-                       "light":  false
+                       "light":  false,
+                       "refresh":  50.12,
+                       "scanlines":  8
                    },
                    {
                        "name":  "Atari 800",
@@ -621,7 +637,9 @@
                        "ambient":  0.02,
                        "accents":  1,
                        "cursor":  "filledBox",
-                       "light":  false
+                       "light":  false,
+                       "refresh":  59.94,
+                       "scanlines":  8
                    },
                    {
                        "name":  "Amiga 500",
@@ -646,7 +664,9 @@
                        "ambient":  0.02,
                        "accents":  1,
                        "cursor":  "filledBox",
-                       "light":  false
+                       "light":  false,
+                       "refresh":  50,
+                       "scanlines":  8
                    },
                    {
                        "name":  "Tektronix 4014",
@@ -675,7 +695,7 @@
                    },
                    {
                        "name":  "Xerox Alto",
-                       "phosphor":  "paper",
+                       "phosphor":  "P4",
                        "note":  "ContrAlto colours, Alto Mono font",
                        "fg":  "#000000",
                        "bg":  "#ffffff",
@@ -696,11 +716,13 @@
                        "ambient":  0,
                        "accents":  1,
                        "cursor":  "bar",
-                       "light":  true
+                       "light":  true,
+                       "refresh":  60,
+                       "interlaced":  true
                    },
                    {
                        "name":  "Sun SPARCstation 20",
-                       "phosphor":  "paper",
+                       "phosphor":  "P22",
                        "note":  "Sun console, Gallant font",
                        "fg":  "#000000",
                        "bg":  "#ffffff",
@@ -721,7 +743,8 @@
                        "ambient":  0,
                        "accents":  1,
                        "cursor":  "filledBox",
-                       "light":  true
+                       "light":  true,
+                       "refresh":  76
                    },
                    {
                        "name":  "SGI Indigo2",
@@ -775,7 +798,7 @@
                    },
                    {
                        "name":  "NeXTcube",
-                       "phosphor":  "paper",
+                       "phosphor":  "P4",
                        "note":  "MegaPixel greyscale (estimate)",
                        "fg":  "#000000",
                        "bg":  "#e6e6e6",
@@ -796,7 +819,8 @@
                        "ambient":  0,
                        "accents":  1,
                        "cursor":  "filledBox",
-                       "light":  true
+                       "light":  true,
+                       "refresh":  68
                    },
                    {
                        "name":  "Cray-1",
@@ -846,7 +870,9 @@
                        "ambient":  0.05,
                        "accents":  1,
                        "cursor":  "underscore",
-                       "light":  false
+                       "light":  false,
+                       "refresh":  30,
+                       "scanAcross":  true
                    },
                    {
                        "name":  "DEC PDP-11",
@@ -871,11 +897,13 @@
                        "ambient":  0.03,
                        "accents":  1,
                        "cursor":  "filledBox",
-                       "light":  false
+                       "light":  false,
+                       "refresh":  60,
+                       "scanlines":  10
                    },
                    {
                        "name":  "Apollo DN10000",
-                       "phosphor":  "paper",
+                       "phosphor":  "P4",
                        "note":  "Display Manager pads (estimate)",
                        "fg":  "#000000",
                        "bg":  "#f0f0f0",
@@ -996,11 +1024,13 @@
                        "ambient":  0.02,
                        "accents":  1,
                        "cursor":  "filledBox",
-                       "light":  false
+                       "light":  false,
+                       "refresh":  60,
+                       "scanlines":  8
                    },
                    {
                        "name":  "Apple Lisa",
-                       "phosphor":  "paper",
+                       "phosphor":  "P4",
                        "note":  "LisaTerminal font",
                        "fg":  "#000000",
                        "bg":  "#ffffff",
@@ -1021,7 +1051,9 @@
                        "ambient":  0,
                        "accents":  1,
                        "cursor":  "filledBox",
-                       "light":  true
+                       "light":  true,
+                       "refresh":  60,
+                       "interlaced":  true
                    },
                    {
                        "name":  "GRiD Compass",
@@ -1050,7 +1082,7 @@
                    },
                    {
                        "name":  "Symbolics 3600",
-                       "phosphor":  "paper",
+                       "phosphor":  "P4",
                        "note":  "Genera console (estimate)",
                        "fg":  "#000000",
                        "bg":  "#e8eee8",
@@ -1100,7 +1132,7 @@
                    },
                    {
                        "name":  "DEC VT320 Amber",
-                       "phosphor":  "P3",
+                       "phosphor":  "P134",
                        "note":  "P3 amber, VT323 font",
                        "fg":  "#ffa700",
                        "bg":  "#0a0600",
@@ -1146,7 +1178,9 @@
                        "ambient":  0.02,
                        "accents":  1,
                        "cursor":  "underscore",
-                       "light":  false
+                       "light":  false,
+                       "refresh":  70,
+                       "scanlines":  16
                    },
                    {
                        "name":  "Hercules Amber",
@@ -1171,7 +1205,9 @@
                        "ambient":  0.04,
                        "accents":  1,
                        "cursor":  "underscore",
-                       "light":  false
+                       "light":  false,
+                       "refresh":  50,
+                       "scanlines":  14
                    },
                    {
                        "name":  "ZX Spectrum",
@@ -1196,7 +1232,9 @@
                        "ambient":  0,
                        "accents":  1,
                        "cursor":  "filledBox",
-                       "light":  true
+                       "light":  true,
+                       "refresh":  50.08,
+                       "scanlines":  8
                    },
                    {
                        "name":  "Amstrad CPC 464",
@@ -1221,7 +1259,9 @@
                        "ambient":  0.02,
                        "accents":  1,
                        "cursor":  "filledBox",
-                       "light":  false
+                       "light":  false,
+                       "refresh":  50,
+                       "scanlines":  8
                    },
                    {
                        "name":  "BBC Micro Teletext",
@@ -1246,7 +1286,10 @@
                        "ambient":  0.02,
                        "accents":  1,
                        "cursor":  "underscore",
-                       "light":  false
+                       "light":  false,
+                       "refresh":  50,
+                       "scanlines":  20,
+                       "interlaced":  true
                    },
                    {
                        "name":  "Radar Scope P7",
@@ -1297,7 +1340,10 @@
                        "ambient":  0,
                        "accents":  0,
                        "cursor":  "filledBox",
-                       "light":  false
+                       "light":  false,
+                       "refresh":  50,
+                       "scanAcross":  true,
+                       "refreshDepth":  1
                    },
                    {
                        "name":  "Nintendo Game Boy",
@@ -1353,9 +1399,9 @@
                    },
                    {
                        "name":  "SAGE Console",
-                       "phosphor":  "P14",
-                       "note":  "Charactron, blue flash with orange afterglow (colours estimate)",
-                       "fg":  "#b0c4ff",
+                       "phosphor":  "P7",
+                       "note":  "Charactron, P7 blue flash with yellow-green afterglow (colours estimate)",
+                       "fg":  "#c8d4ff",
                        "bg":  "#070605",
                        "font":  "b612",
                        "size":  16,
@@ -1508,7 +1554,8 @@
                        "accents":  0,
                        "cursor":  "filledBox",
                        "light":  false,
-                       "overlay":  ["#ff7a7a", "#8fb8ff", "#7dff9a"]
+                       "overlay":  ["#ff7a7a", "#8fb8ff", "#7dff9a"],
+                       "refresh":  50
                    }
                ]
 }

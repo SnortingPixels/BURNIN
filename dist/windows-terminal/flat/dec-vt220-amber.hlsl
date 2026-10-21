@@ -44,7 +44,7 @@ cbuffer BurninFrame : register(b1) {
 #define RASTER            1      // 0 none, 1 scanlines, 2 pixel grid, 3 RGB subpixels
 #define PIXEL_SIZE        2.0    // screen pixels per font pixel
 #define RASTER_STRENGTH  0.5    // -1 = automatic like cool-retro-term (shows from 3 px up), else 0..1
-#define PHOSPHOR_TAU      0.0056   // P3
+#define PHOSPHOR_TAU      0.0   // P134
 #define PHOSPHOR_POWER    0.0    // 0 = exponential decay, n = hyperbolic 1/(1+t/tau)^n with a long dim tail
 #define AFTERGLOW_COLOR   float3(0.0, 0.0, 0.0)   // cascade phosphors (P7): the colour the glow turns as it fades; 0 = unchanged
 #define LCD_RESPONSE      0.0    // LCD pixel response time constant in seconds: slow pixels smear both ways; 0 = not an LCD
@@ -61,6 +61,11 @@ cbuffer BurninFrame : register(b1) {
 #define OVERLAY_BOTTOM    float3(1.0, 1.0, 1.0)
 #define MESH              0.0    // control-grid wire mesh in front of the glow (VFD): 0 none .. 1 opaque wires
 #define MESH_PITCH        4.0    // mesh spacing in pixels at 100 % scaling
+#define REFRESH_HZ        60.0    // the real screen's refresh rate; its light pulses at this rate (0 = steady)
+#define REFRESH_DEPTH     0.0    // how deep the pulse is at that rate, from the phosphor's decay time (src/build.py)
+#define SCANLINES_PER_ROW 10.0    // the real screen's scan lines per text row; sets the scanline pitch (0 = PIXEL_SIZE)
+#define INTERLACED        0      // 1 = interlaced: odd and even scan lines refresh in turn, each at half the rate
+#define REFRESH_ACROSS    0      // 1 = the picture is scanned left to right (a mirror-swept LED column), not top to bottom
 
 float hash(float2 p) { return frac(sin(dot(p, float2(12.9898, 78.233))) * 43758.5453); }
 float rgb2grey(float3 v) { return dot(v, float3(0.21, 0.72, 0.04)); }
@@ -162,7 +167,7 @@ float4 main(float4 pos : SV_POSITION, float2 tex : TEXCOORD) : SV_TARGET
     float frame = floor(Time * 60.0);
     float r1 = hash(float2(frame, 1.7));
     float r2 = hash(float2(frame, 9.1));
-    float density = PIXEL_SIZE * s;
+    float density = SCANLINES_PER_ROW > 0.0 ? CELL_HEIGHT * s / max(SCANLINES_PER_ROW, 1.0) : PIXEL_SIZE * s;
 
     // Whole-window effects (picture and margin alike): grain, rolling scan line.
     float2 grain = floor(pos.xy / max(2.0 * s, density));
@@ -238,6 +243,22 @@ float4 main(float4 pos : SV_POSITION, float2 tex : TEXCOORD) : SV_TARGET
 
     // Flicker scales the light, not the background.
     color = BACK_COLOR + (color - BACK_COLOR) * (1.0 + (r2 - 0.5) * FLICKERING);
+
+    // Refresh: the real screen's light pulses at its refresh rate as the beam scans down. Shown as the pulse's
+    // fundamental, averaged over this monitor's frame (needs the frame time from the Windhawk mod); left out when this
+    // monitor is too slow to show that rate, rather than faking a slower flicker.
+    if (REFRESH_HZ > 0.0 && REFRESH_DEPTH > 0.0 && BurninDt > 0.0)
+    {
+        float fdt = min(BurninDt, 0.1);
+        float x = 3.14159265 * REFRESH_HZ * fdt;
+        float shown = step(REFRESH_HZ * fdt, 0.5) * sin(x) / max(x, 1e-4);
+        float rate = INTERLACED ? REFRESH_HZ * 0.5 : REFRESH_HZ;   // each line's own refresh rate
+        x = 3.14159265 * rate * fdt;
+        shown = step(rate * fdt, 0.5) * sin(x) / max(x, 1e-4);
+        float odd = INTERLACED ? fmod(floor(pos.y / density), 2.0) * 0.5 : 0.0;   // the other field comes half a frame later
+        float pulse = cos(6.2831853 * ((Time - fdt * 0.5) * rate - (REFRESH_ACROSS ? tex.x : tex.y) - odd));
+        color *= 1.0 + REFRESH_DEPTH * shown * pulse;   // all the tube's light pulses, background glow included
+    }
 
 #if SHADES == 4
     // Four-shade LCD: snap to the nearest of the panel's shades along the background-to-text line.

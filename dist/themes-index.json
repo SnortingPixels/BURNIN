@@ -645,8 +645,8 @@
     {
       "name": "SAGE Console",
       "slug": "sage-console",
-      "note": "Charactron, blue flash with orange afterglow (colours estimate)",
-      "fg": "#b0c4ff",
+      "note": "Charactron, P7 blue flash with yellow-green afterglow (colours estimate)",
+      "fg": "#c8d4ff",
       "bg": "#070605",
       "light": false,
       "cursor": "filledBox",

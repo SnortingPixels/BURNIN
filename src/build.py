@@ -44,6 +44,7 @@ PHOSPHORS = {
     "P24": (0.0, 0, None, "ZnO:Zn (VFD) green, 1-10 us: nothing visible"),
     "P31": (0.0, 0, None, "ZnS:Cu green, 10 % after 38 us: nothing visible (its very dim tail is undocumented)"),
     "LCD": (0.0, 0, None, "liquid crystal: no glow; slow pixels come from the theme's \"lcd\" response time"),
+    "P134": (0.0, 0, None, "DEC amber (VR201 and its terminals); its decay is undocumented, so no afterglow is modelled"),
     "P4": (0.0, 0, None, "sulfide white, 10 % after 60 us: nothing visible at screen refresh rates"),
     "P22": (0.0, 0, None, "colour CRT (rare-earth red, sulfide green and blue): microseconds to ~1 ms, nothing visible"),
     "storage": (0.0, 0, None, "direct-view storage tube: the picture doesn't fade; it stays until erased"),
@@ -52,6 +53,21 @@ PHOSPHORS = {
     "LED": (0.0, 0, None, "LED panel: no afterglow"),
     "paper": (0.0, 0, None, "paper, LCD or e-ink: nothing glows"),
 }
+
+
+# Phosphors that glow when the beam hits them; the rest (plasma, LCD, LED, EL, paper, storage) don't pulse with a refresh.
+BEAM_PHOSPHORS = {"P1", "P3", "P4", "P7", "P14", "P22", "P31", "P39"}
+
+
+def refresh_depth(hz, phosphor):
+    """Size of the light's pulse at the refresh rate, relative to its average: the first Fourier component of a train of
+    decaying flashes, 2 / sqrt(1 + (2 pi f tau)^2), capped at 1 (fast phosphors flash and go dark: a full pulse)."""
+    if phosphor not in BEAM_PHOSPHORS:
+        return 0.0
+    tau, power, _, _ = PHOSPHORS[phosphor]
+    if power > 0:
+        tau = tau * (10 ** (1 / power) - 1) / math.log(10)   # same time to 10 % as an exponential
+    return round(min(1.0, 2 / math.sqrt(1 + (2 * math.pi * hz * tau) ** 2)), 3)
 
 
 def slug(name):
@@ -119,6 +135,16 @@ def shader(template, t, ctor, curvature, cell_height=26):
         x = set_define(x, "MESH", num(t["mesh"]["strength"]))
         x = set_define(x, "MESH_PITCH", num(t["mesh"]["pitch"]))
     x = set_define(x, "CELL_HEIGHT", num(cell_height))
+    if "refresh" in t:
+        x = set_define(x, "REFRESH_HZ", num(t["refresh"]))
+        line_hz = t["refresh"] / 2 if t.get("interlaced") else t["refresh"]
+        x = set_define(x, "REFRESH_DEPTH", num(t.get("refreshDepth", refresh_depth(line_hz, t["phosphor"]))))
+        if t.get("interlaced"):
+            x = set_define(x, "INTERLACED", "1")
+        if t.get("scanAcross"):
+            x = set_define(x, "REFRESH_ACROSS", "1")
+    if "scanlines" in t:
+        x = set_define(x, "SCANLINES_PER_ROW", num(t["scanlines"]))
     # cool-retro-term curvature * its 0.6 size factor, in this shader's units (* 0.25)
     return set_define(x, "CURVATURE", num(curvature))
 

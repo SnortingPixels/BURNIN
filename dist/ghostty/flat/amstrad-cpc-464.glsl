@@ -47,6 +47,11 @@
 #define OVERLAY_BOTTOM    vec3(1.0, 1.0, 1.0)
 #define MESH              0.0    // control-grid wire mesh in front of the glow (VFD): 0 none .. 1 opaque wires
 #define MESH_PITCH        4.0    // mesh spacing in pixels
+#define REFRESH_HZ        50.0    // the real screen's refresh rate; its light pulses at this rate (0 = steady)
+#define REFRESH_DEPTH     1.0    // how deep the pulse is at that rate, from the phosphor's decay time (src/build.py)
+#define SCANLINES_PER_ROW 8.0    // the real screen's scan lines per text row; sets the scanline pitch (0 = PIXEL_SIZE)
+#define INTERLACED        0      // 1 = interlaced: odd and even scan lines refresh in turn, each at half the rate
+#define REFRESH_ACROSS    0      // 1 = the picture is scanned left to right (a mirror-swept LED column), not top to bottom
 
 float hash(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
 float rgb2grey(vec3 v) { return dot(v, vec3(0.21, 0.72, 0.04)); }
@@ -149,7 +154,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     float frame = floor(iTime * 60.0);
     float r1 = hash(vec2(frame, 1.7));
     float r2 = hash(vec2(frame, 9.1));
-    float density = PIXEL_SIZE * s;
+    float density = SCANLINES_PER_ROW > 0.0 ? CELL_HEIGHT * s / max(SCANLINES_PER_ROW, 1.0) : PIXEL_SIZE * s;
 
     // Whole-window effects (picture and margin alike): grain, rolling scan line.
     vec2 grain = floor(fragCoord / max(2.0 * s, density));
@@ -241,6 +246,21 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
 
     // Flicker scales the light, not the background.
     color = BACK_COLOR + (color - BACK_COLOR) * (1.0 + (r2 - 0.5) * FLICKERING);
+
+    // Refresh: the real screen's light pulses at its refresh rate as the beam scans down. Shown as the pulse's
+    // fundamental, averaged over this monitor's frame; left out when this monitor is too slow to show that rate.
+    if (REFRESH_HZ > 0.0 && REFRESH_DEPTH > 0.0 && iTimeDelta > 0.0)
+    {
+        float fdt = min(iTimeDelta, 0.1);
+        float x = 3.14159265 * REFRESH_HZ * fdt;
+        float shown = step(REFRESH_HZ * fdt, 0.5) * sin(x) / max(x, 1e-4);
+        float rate = INTERLACED != 0 ? REFRESH_HZ * 0.5 : REFRESH_HZ;   // each line's own refresh rate
+        x = 3.14159265 * rate * fdt;
+        shown = step(rate * fdt, 0.5) * sin(x) / max(x, 1e-4);
+        float odd = INTERLACED != 0 ? mod(floor((iResolution.y - fragCoord.y) / density), 2.0) * 0.5 : 0.0;   // the other field comes half a frame later
+        float pulse = cos(6.2831853 * ((iTime - fdt * 0.5) * rate - (REFRESH_ACROSS != 0 ? tex.x : yDown) - odd));
+        color *= 1.0 + REFRESH_DEPTH * shown * pulse;   // all the tube's light pulses, background glow included
+    }
 
 #if SHADES == 4
     // Four-shade LCD: snap to the nearest of the panel's shades along the background-to-text line.
